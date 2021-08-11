@@ -17,15 +17,13 @@ import '@openzeppelin/contracts/utils/Arrays.sol';
 import '@openzeppelin/contracts/utils/Strings.sol';
 
 // Access
-import '@openzeppelin/contracts/access/AccessControl.sol';
-// import '@openzeppelin/contracts/access/AccessControlEnumerable.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
 // Security
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 // This is Token C
-contract Fuji is ERC20 {
+contract Fuji is ERC20, Ownable {
   using Address for address;
   using Arrays for uint256[];
   using SafeMath for uint256;
@@ -39,13 +37,20 @@ contract Fuji is ERC20 {
     payable
     ERC20(name_, symbol_)
   {
-    console.log('constructor()');
+    console.log(
+      'constructor(string memory name_: %s, string memory symbol_: %s)',
+      name_,
+      symbol_
+    );
   }
 
-  function mint(address owner, uint256 amount) external {
-    console.log('mint()');
-    console.log(owner);
-    console.log(amount);
+  function mint(address account, uint256 amount) external {
+    console.log(
+      'mint(address account: %s, uint256 amount: %s)',
+      account,
+      amount
+    );
+    _mint(account, amount);
   }
 
   /**

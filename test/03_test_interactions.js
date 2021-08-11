@@ -1,4 +1,4 @@
-const DEBUG = true;
+const DEBUG = false;
 
 const { use, expect } = require('chai');
 use(require('chai-as-promised')).should();
@@ -29,10 +29,12 @@ describe('Test Suite', (temp) => {
   beforeEach(async (testSuite) => {
     console.log('beforeEach()');
   });
+
   describe('Deployment', async () => {
     if (DEBUG) {
       debugger;
     }
+
     fuji = await Fuji.deployed('Fuji', 'FUJI');
     // [owner, sender, receiver, user] = accounts;
 

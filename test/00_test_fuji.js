@@ -21,11 +21,18 @@ const Fuji = artifacts.require('Fuji');
 
 contract('Fuji', (accounts) => {
   let fuji, contractAddress;
-  const [owner, sender, receiver, user] = accounts;
+  let deployer = { balance: 0 },
+    sender = { balance: 0 },
+    receiver = { balance: 0 },
+    user = { balance: 0 };
+  deployer.address = accounts[0];
+  sender.address = accounts[1];
+  receiver.address = accounts[2];
+  user.address = accounts[3];
 
   before(async () => {
     fuji = await Fuji.deployed();
-    contractAddress = await fuji.address;
+    contractAddress = fuji.address;
   });
 
   describe('Deployment', async () => {
@@ -40,7 +47,11 @@ contract('Fuji', (accounts) => {
       if (DEBUG) {
         debugger;
       }
-      fuji.mint(owner, 10000);
+      const mintTransaction = await fuji.mint(deployer.address, 10);
+
+      const balanceOfTransaction = await fuji.balanceOf(deployer.address);
+      const balance1 = utils.hexToNumber(balanceOfTransaction);
+      deployer.balance = balance1;
     });
   });
 
