@@ -27,7 +27,7 @@
     "solhint": "^3.3.6"
   },
   "scripts": {
-    "test": "truffle migrate --network localhost",
+    "test": "truffle compile && truffle migrate",
     "truffle-compile": "truffle compile",
     "truffle-migrate": "truffle migrate",
     "truffle-test": "truffle test",

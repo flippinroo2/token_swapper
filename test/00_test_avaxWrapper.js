@@ -1,17 +1,18 @@
-const TestToken = artifacts.require('TestToken');
+const Storage = artifacts.require('Storage');
+const AvaxWrapper = artifacts.require('AvaxWrapper');
 
 require('chai').use(require('chai-as-promised')).should();
 
-contract('TEST', (accounts) => {
-  let testToken;
+contract('AvaxWrapper', (accounts) => {
+  let avaxWrapper;
   let owner, sender, receiver, user;
   let contractAddress;
 
   before(async () => {
-    testToken = await TestToken.new('TEST');
-    // TestToken.setAsDeployed(testToken);
-    const testTokenInstance = await TestToken.deployed('TEST');
-    contractAddress = await testTokenInstance.address;
+    // avaxWrapperInstance = await AvaxWrapper.new('TEST');
+    // AvaxWrapper.setAsDeployed(avaxWrapperInstance);
+    const avaxWrapper = await AvaxWrapper.deployed('TEST');
+    contractAddress = await avaxWrapper.address;
     [owner, sender, receiver, user] = accounts;
   });
 
@@ -24,7 +25,7 @@ contract('TEST', (accounts) => {
     });
 
     it('MINT', async () => {
-      erc20Example.mint(owner, 100000000000);
+      avaxWrapper.mint(owner, 10000);
     });
   });
 
