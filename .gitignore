@@ -60,5 +60,7 @@ node_modules/
 #  Custom - Files  #
 ####################
 
+
 # Custom - Folders #
 ####################
+artifacts/

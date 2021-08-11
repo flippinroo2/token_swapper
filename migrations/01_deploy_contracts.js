@@ -2,7 +2,8 @@
 const DEBUG = false;
 
 const { cache, resolver, require } = artifacts;
-const TestToken = artifacts.require('TestToken');
+const Storage = artifacts.require('Storage');
+const AvaxWrapper = artifacts.require('AvaxWrapper');
 
 module.exports = async function (deployer) {
   if (DEBUG) {
@@ -13,8 +14,11 @@ module.exports = async function (deployer) {
     debugger;
   }
 
-  await deployer.deploy(TestToken, 'TEST');
-  const testToken = await TestToken.deployed();
+  await deployer.deploy(Storage);
+  const storage = await Storage.deployed();
+
+  await deployer.deploy(AvaxWrapper);
+  const avaxWrapper = await AvaxWrapper.deployed();
 
   if (DEBUG) {
     debugger;

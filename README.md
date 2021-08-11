@@ -1,5 +1,14 @@
 # AVA LABA ASSIGNMENT
 
+>Started @ 12:54 on 8/11/2021
+
+Ava Labs Path: /Users/kloy/go/pkg/mod/github.com/ava-labs/
+
+Avalanche Go Version: 1.4.11
+Avalanche Go Binary Path: /Users/kloy/go/src/github.com/ava-labs/avalanchego/build/avalanchego
+
+Avash Version: 1.1.9
+Avash Node Config File Path: /Users/kloy/.avash.yaml
 # REMIX
 
 Remix is a website that allows for interacting with & debugging smart contracts.

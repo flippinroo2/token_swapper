@@ -1,3 +1,8 @@
+const Web3 = require('web3');
+const protocol = 'http';
+const ip = 'localhost';
+const port = 9650;
+
 module.exports = {
   debug: true,
   stacktrace: true,
@@ -5,12 +10,24 @@ module.exports = {
   networks: {
     // MNEMONIC - walnut budget shift deer remove morning any move humble debris cheese soon
     localhost: {
-      host: '127.0.0.1',
+      provider: function () {
+        return new Web3.providers.HttpProvider(
+          `${protocol}://${ip}:9651/ext/bc/C/rpc`,
+        );
+      },
       network_id: '*', // Match any network id
+      // "startnode node1 --db-type=memdb --staking-enabled=true --http-port=9650 --staking-port=9651 --log-level=debug --bootstrap-ips= --staking-tls-cert-file=certs/keys1/staker.crt --staking-tls-key-file=certs/keys1/staker.key",
+      // "startnode node2 --db-type=memdb --staking-enabled=true --http-port=9652 --staking-port=9653 --log-level=debug --bootstrap-ips=127.0.0.1:9651 --bootstrap-ids=NodeID-7Xhw2mDxuDS44j42TCB6U5579esbSt3Lg --staking-tls-cert-file=certs/keys2/staker.crt --staking-tls-key-file=certs/keys2/staker.key",
     },
     development: {
-      host: '127.0.0.1',
-      network_id: '*', // Match any network id
+      provider: function () {
+        return new Web3.providers.HttpProvider(
+          `${protocol}://${ip}:${port}/ext/bc/C/rpc`,
+        );
+      },
+      network_id: '*',
+      gas: 3000000,
+      gasPrice: 225000000000,
     },
   },
   build_directory: './artifacts',
