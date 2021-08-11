@@ -22,7 +22,7 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 // This is Token C
-contract Fuji {
+contract Fuji is ERC20({
   /**
    * Convert an amount of input token_ to an equivalent amount of the output token
    *

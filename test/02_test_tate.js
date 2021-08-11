@@ -1,4 +1,5 @@
-const Storage = artifacts.require('Storage');
+const DEBUG = false;
+
 const Tate = artifacts.require('Tate');
 
 require('chai').use(require('chai-as-promised')).should();

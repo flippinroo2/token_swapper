@@ -1,4 +1,5 @@
-const Storage = artifacts.require('Storage');
+const DEBUG = false;
+
 const Haku = artifacts.require('Haku');
 
 require('chai').use(require('chai-as-promised')).should();

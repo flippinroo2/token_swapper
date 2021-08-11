@@ -1,14 +1,19 @@
-const Storage = artifacts.require('Storage');
+const DEBUG = true;
+
 const Fuji = artifacts.require('Fuji');
 
 require('chai').use(require('chai-as-promised')).should();
 
 contract('Fuji', (accounts) => {
+  debugger;
   let fuji;
   let owner, sender, receiver, user;
   let contractAddress;
 
   before(async () => {
+    if (DEBUG) {
+      debugger;
+    }
     // fujiInstance = await Fuji.new('TEST');
     // Fuji.setAsDeployed(fujiInstance);
     const fuji = await Fuji.deployed('TEST');
@@ -25,6 +30,9 @@ contract('Fuji', (accounts) => {
     });
 
     it('MINT', async () => {
+      if (DEBUG) {
+        debugger;
+      }
       fuji.mint(owner, 10000);
     });
   });
