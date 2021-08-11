@@ -1,20 +1,34 @@
 const DEBUG = false;
 
+const { use, expect } = require('chai');
+use(require('chai-as-promised')).should();
+
+/*
+_
+artifacts
+Atomics
+btoa
+config
+console
+crypto
+debug
+WebAssembly
+*/
+
+const { eth, utils } = web3;
+
 const Tate = artifacts.require('Tate');
 
-require('chai').use(require('chai-as-promised')).should();
-
 contract('Tate', (accounts) => {
-  let tate;
-  let owner, sender, receiver, user;
-  let contractAddress;
+  let deployer = { balance: 0, address: accounts[0] },
+    sender = { balance: 0, address: accounts[1] },
+    receiver = { balance: 0, address: accounts[2] },
+    user = { balance: 0, address: accounts[3] };
+  let tate, contractAddress;
 
   before(async () => {
-    // tateInstance = await Tate.new('Tate', 'TATE');
-    // Tate.setAsDeployed(tateInstance);
-    const tate = await Tate.deployed('Tate', 'TATE');
-    contractAddress = await tate.address;
-    [owner, sender, receiver, user] = accounts;
+    tate = await Tate.deployed();
+    contractAddress = tate.address;
   });
 
   describe('Deployment', async () => {
@@ -26,7 +40,17 @@ contract('Tate', (accounts) => {
     });
 
     it('MINT', async () => {
-      tate.mint(owner, 10000);
+      if (DEBUG) {
+        // debugger;
+      }
+      const mintTransaction = await tate.mint(deployer.address, 10);
+
+      const balanceOfTransaction = await tate.balanceOf(deployer.address);
+      deployer.balance = utils.hexToNumber(balanceOfTransaction);
+      if (DEBUG) {
+        debugger;
+      }
+      expect(deployer.balance).to.equal(10);
     });
   });
 

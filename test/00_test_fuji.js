@@ -1,4 +1,4 @@
-const DEBUG = true;
+const DEBUG = false;
 
 const { use, expect } = require('chai');
 use(require('chai-as-promised')).should();
@@ -20,19 +20,16 @@ const { eth, utils } = web3;
 const Fuji = artifacts.require('Fuji');
 
 contract('Fuji', (accounts) => {
+  let owner = { balance: 0, address: accounts[0] },
+    sender = { balance: 0, address: accounts[1] },
+    receiver = { balance: 0, address: accounts[2] },
+    user = { balance: 0, address: accounts[3] };
   let fuji, contractAddress;
-  let deployer = { balance: 0 },
-    sender = { balance: 0 },
-    receiver = { balance: 0 },
-    user = { balance: 0 };
-  deployer.address = accounts[0];
-  sender.address = accounts[1];
-  receiver.address = accounts[2];
-  user.address = accounts[3];
 
   before(async () => {
     fuji = await Fuji.deployed();
     contractAddress = fuji.address;
+    console.log('fuji address: %s', contractAddress);
   });
 
   describe('Deployment', async () => {
@@ -45,17 +42,22 @@ contract('Fuji', (accounts) => {
 
     it('MINT', async () => {
       if (DEBUG) {
+        // debugger;
+      }
+      const mintTransaction = await fuji.mint(owner.address, 10);
+
+      const balanceOfTransaction = await fuji.balanceOf(owner.address);
+      owner.balance = utils.hexToNumber(balanceOfTransaction);
+      if (DEBUG) {
         debugger;
       }
-      const mintTransaction = await fuji.mint(deployer.address, 10);
-
-      const balanceOfTransaction = await fuji.balanceOf(deployer.address);
-      const balance1 = utils.hexToNumber(balanceOfTransaction);
-      deployer.balance = balance1;
+      expect(owner.balance).to.equal(10);
     });
   });
 
   describe('Testing', async () => {
-    it('DEBUG', async () => {});
+    it('DEBUG', async () => {
+      console.log('DEBUG');
+    });
   });
 });

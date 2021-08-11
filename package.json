@@ -30,11 +30,12 @@
     "solhint": "^3.3.6"
   },
   "scripts": {
-    "test": "hardhat compile && hardhat run scripts/deploy.js --show-stack-traces && truffle test",
-    "hardhat": "hardhat compile && hardhat run scripts/deploy.js --show-stack-traces",
-    "hardhat-compile": "hardhat compile",
-    "hardhat-run": "hardhat run scripts/deploy.js --show-stack-traces",
-    "truffle": "truffle compile && truffle migrate",
+    "debug": "hardhat compile && hardhat run scripts/deploy.js --show-stack-traces && hardhat delete && truffle compile && truffle test",
+    "test": "hardhat delete && truffle compile && truffle test",
+    "hardhat": "hardhat delete && hardhat compile && hardhat run scripts/deploy.js --show-stack-traces",
+    "hardhat-compile": "hardhat delete && hardhat compile",
+    "hardhat-deploy": "hardhat run scripts/deploy.js --show-stack-traces",
+    "truffle": "hardhat delete && truffle compile && truffle migrate && truffle test",
     "truffle-compile": "truffle compile",
     "truffle-migrate": "truffle migrate",
     "truffle-test": "truffle test",

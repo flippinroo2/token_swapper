@@ -1,20 +1,34 @@
 const DEBUG = false;
 
+const { use, expect } = require('chai');
+use(require('chai-as-promised')).should();
+
+/*
+_
+artifacts
+Atomics
+btoa
+config
+console
+crypto
+debug
+WebAssembly
+*/
+
+const { eth, utils } = web3;
+
 const Haku = artifacts.require('Haku');
 
-require('chai').use(require('chai-as-promised')).should();
-
 contract('Haku', (accounts) => {
-  let haku;
-  let owner, sender, receiver, user;
-  let contractAddress;
+  let deployer = { balance: 0, address: accounts[0] },
+    sender = { balance: 0, address: accounts[1] },
+    receiver = { balance: 0, address: accounts[2] },
+    user = { balance: 0, address: accounts[3] };
+  let haku, contractAddress;
 
   before(async () => {
-    // hakuInstance = await Haku.new('Haku', 'HAKU');
-    // Haku.setAsDeployed(hakuInstance);
-    const haku = await Haku.deployed('Haku', 'HAKU');
-    contractAddress = await haku.address;
-    [owner, sender, receiver, user] = accounts;
+    haku = await Haku.deployed();
+    contractAddress = haku.address;
   });
 
   describe('Deployment', async () => {
@@ -26,7 +40,17 @@ contract('Haku', (accounts) => {
     });
 
     it('MINT', async () => {
-      haku.mint(owner, 10000);
+      if (DEBUG) {
+        // debugger;
+      }
+      const mintTransaction = await haku.mint(deployer.address, 10);
+
+      const balanceOfTransaction = await haku.balanceOf(deployer.address);
+      deployer.balance = utils.hexToNumber(balanceOfTransaction);
+      if (DEBUG) {
+        debugger;
+      }
+      expect(deployer.balance).to.equal(10);
     });
   });
 
