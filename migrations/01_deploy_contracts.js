@@ -1,26 +1,20 @@
-/* eslint-disable no-undef */
-const DEBUG = false;
-
-const { cache, resolver, require } = artifacts;
 const Storage = artifacts.require('Storage');
-const AvaxWrapper = artifacts.require('AvaxWrapper');
+const Fuji = artifacts.require('Fuji');
+const Haku = artifacts.require('Haku');
+const Tate = artifacts.require('Tate');
 
 module.exports = async function (deployer) {
-  if (DEBUG) {
-    const { chain, networks, provider } = deployer;
-    const { migration_directory } = config;
-    const { agent, connected, headers, host, httpAgent, send } = provider;
-    const { eth, networkType, providers, utils } = web3;
-    debugger;
-  }
+  const { deploy } = deployer;
 
-  await deployer.deploy(Storage);
+  await deploy(Storage);
   const storage = await Storage.deployed();
 
-  await deployer.deploy(AvaxWrapper);
-  const avaxWrapper = await AvaxWrapper.deployed();
+  await deploy(Fuji);
+  const fuji = await Fuji.deployed();
 
-  if (DEBUG) {
-    debugger;
-  }
+  await deploy(Haku);
+  const haku = await Haku.deployed();
+
+  await deploy(Tate);
+  const tate = await Tate.deployed();
 };
