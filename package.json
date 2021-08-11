@@ -1,0 +1,40 @@
+{
+  "name": "ava_labs_assignment",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@gitlab.com:flippinroo2/ava_labs_assignment.git",
+  "author": "flippinroo2 <flippinroo2@gmx.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@chainlink/abi": "^0.1.4",
+    "@chainlink/belt": "^0.0.5-alpha",
+    "@chainlink/contracts": "^0.2.1",
+    "@openzeppelin/contracts": "^4.2.0",
+    "chai": "^4.3.4",
+    "chai-as-promised": "^7.1.1",
+    "ethereum-waffle": "^3.4.0",
+    "ethers": "^5.4.3",
+    "mocha": "^9.0.3",
+    "truffle": "^5.4.3"
+  },
+  "devDependencies": {
+    "@openzeppelin/test-helpers": "^0.5.12",
+    "@remix-project/remixd": "^0.5.0",
+    "@truffle/debugger": "^9.1.8",
+    "eslint": "^7.32.0",
+    "prettier": "^2.3.2",
+    "solhint": "^3.3.6"
+  },
+  "scripts": {
+    "test": "",
+    "truffle-compile": "truffle compile",
+    "truffle-migrate": "truffle migrate",
+    "truffle-test": "truffle test",
+    "truffle-test-debug": "truffle test --stacktrace-extra",
+    "watch": "node scripts/watch.js",
+    "start": "open -a Ganache",
+    "remix-ide": "remixd -s /Users/kloy/Development/Code/crypto/Smart Contracts/Test/packages/hardhat --remix-ide https://remix.ethereum.org",
+    "safe-remix-ide": "remixd -s /Users/kloy/Development/Code/crypto/Smart Contracts/Test/packages/hardhat --read-only --remix-ide https://remix.ethereum.org/",
+    "solhint": "solhint -f table contracts/**/*.sol"
+  }
+}
