@@ -33,8 +33,8 @@
     "truffle-test-debug": "truffle test --stacktrace-extra",
     "watch": "node scripts/watch.js",
     "start": "open -a Ganache",
-    "remix-ide": "remixd -s /Users/kloy/Development/Code/crypto/Smart Contracts/Test/packages/hardhat --remix-ide https://remix.ethereum.org",
-    "safe-remix-ide": "remixd -s /Users/kloy/Development/Code/crypto/Smart Contracts/Test/packages/hardhat --read-only --remix-ide https://remix.ethereum.org/",
+    "remix-ide": "remixd -s /Users/kloy/Development/Code/ava_labs_assignment --remix-ide http://remix.ethereum.org",
+    "safe-remix-ide": "remixd -s /Users/kloy/Development/Code/ava_labs_assignment --read-only --remix-ide http://remix.ethereum.org/",
     "solhint": "solhint -f table contracts/**/*.sol"
   }
 }
