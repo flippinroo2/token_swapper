@@ -30,6 +30,7 @@
     "solhint": "^3.3.6"
   },
   "scripts": {
+    "custom": "hardhat delete && hardhat compile && hardhat run scripts/deploy.js --show-stack-traces && truffle test",
     "debug": "hardhat compile && hardhat run scripts/deploy.js --show-stack-traces && hardhat delete && truffle compile && truffle test",
     "test": "hardhat delete && truffle compile && truffle test",
     "hardhat": "hardhat delete && hardhat compile && hardhat run scripts/deploy.js --show-stack-traces",

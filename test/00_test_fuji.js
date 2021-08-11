@@ -1,4 +1,4 @@
-const DEBUG = false;
+const DEBUG = true;
 
 const { use, expect } = require('chai');
 use(require('chai-as-promised')).should();
@@ -15,6 +15,15 @@ debug
 WebAssembly
 */
 
+const hre = require('hardhat');
+
+const hardhatArtifacts = hre.artifacts;
+const hardhatConfig = hre.config;
+const hardhatEthers = hre.ethers;
+const hardhatNetwork = hre.network;
+const hardhatWaffle = hre.waffle;
+const hardhatWeb3 = hre.web3;
+
 const { eth, utils } = web3;
 
 const Fuji = artifacts.require('Fuji');
@@ -25,8 +34,12 @@ contract('Fuji', (accounts) => {
     receiver = { balance: 0, address: accounts[2] },
     user = { balance: 0, address: accounts[3] };
   let fuji, contractAddress;
+  let test;
 
   before(async () => {
+    // These functions below only work if hardhat has compiled the abis
+    // const temp = await hardhatEthers.getContractFactory('Fuji');
+    // test = await temp.deploy('Fuji', 'FUJI');
     fuji = await Fuji.deployed();
     contractAddress = fuji.address;
     console.log('fuji address: %s', contractAddress);
@@ -41,11 +54,7 @@ contract('Fuji', (accounts) => {
     });
 
     it('MINT', async () => {
-      if (DEBUG) {
-        // debugger;
-      }
       const mintTransaction = await fuji.mint(owner.address, 10);
-
       const balanceOfTransaction = await fuji.balanceOf(owner.address);
       owner.balance = utils.hexToNumber(balanceOfTransaction);
       if (DEBUG) {
