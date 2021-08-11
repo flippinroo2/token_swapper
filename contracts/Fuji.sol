@@ -23,13 +23,13 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 // This is Token C
-contract Fuji is ERC20, Ownable {
+contract Fuji is ERC20, Ownable, ReentrancyGuard {
   using Address for address;
   using Arrays for uint256[];
   using SafeMath for uint256;
   using Strings for string;
 
-  address admin;
+  address private _admin;
 
   uint8 public constant TOKEN_DECIMALS = 18;
 
@@ -42,6 +42,7 @@ contract Fuji is ERC20, Ownable {
       name_,
       symbol_
     );
+    setAdmin(msg.sender);
   }
 
   function mint(address account, uint256 amount) external {
@@ -59,7 +60,13 @@ contract Fuji is ERC20, Ownable {
    * @param token_ address of token to swap
    * @param amount amount of token to swap/receive
    */
-  function swap(address token_, uint256 amount) external {}
+  function swap(address token_, uint256 amount) external {
+    console.log(
+      'swap(address token_ %s, uint256 amount %s)',
+      token_,
+      amount
+    );
+  }
 
   /**
    * Convert an amount of the output token to an equivalent amount of input token_
@@ -67,5 +74,21 @@ contract Fuji is ERC20, Ownable {
    * @param token_ address of token to receive
    * @param amount amount of token to swap/receive
    */
-  function unswap(address token_, uint256 amount) external {}
+  function unswap(address token_, uint256 amount) external {
+    console.log(
+      'unswap(address token_ %s, uint256 amount %s)',
+      token_,
+      amount
+    );
+  }
+
+  function setAdmin(address admin) internal {
+    _admin = admin;
+    _setOwner(admin);
+  }
+
+  function testFunction() internal {
+    console.log('_admin: %s', _admin);
+    console.log('_owner: %s', _owner);
+  }
 }
