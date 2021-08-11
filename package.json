@@ -10,10 +10,11 @@
     "@chainlink/belt": "^0.0.5-alpha",
     "@chainlink/contracts": "^0.2.1",
     "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
     "@openzeppelin/contracts": "^4.2.0",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
-    "ethers": "^5.4.4",
+    "ethereum-waffle": "^3.4.0",
     "hardhat": "^2.6.0",
     "mocha": "^9.0.3",
     "truffle": "^5.4.5",
@@ -28,7 +29,7 @@
     "solhint": "^3.3.6"
   },
   "scripts": {
-    "test": "truffle compile && truffle migrate",
+    "test": "hardhat compile && hardhat run scripts/deploy.js --show-stack-traces && truffle test",
     "hardhat": "hardhat compile && hardhat run scripts/deploy.js --show-stack-traces",
     "hardhat-compile": "hardhat compile",
     "hardhat-run": "hardhat run scripts/deploy.js --show-stack-traces",

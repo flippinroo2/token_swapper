@@ -1,15 +1,15 @@
-const ethers = require('ethers');
-
 async function main() {
-  debugger;
-  const [deployer] = await ethers.getSigners();
+  const { artifacts, config, ethers, network, waffle } = hre;
+  const { getContractFactory, getSigners } = ethers;
+
+  const [deployer] = await getSigners();
 
   console.log('Account balance:', (await deployer.getBalance()).toString());
 
-  const Fuji = await ethers.getContractFactory('Fuji');
+  const Fuji = await getContractFactory('Fuji');
   const fuji = await Fuji.deploy('Fuji', 'FUJI');
 
-  console.log('Token address:', token.address);
+  console.log('Fuji address:', fuji.address);
 }
 
 main()
