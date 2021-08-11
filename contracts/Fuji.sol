@@ -1,8 +1,11 @@
 pragma solidity ^0.8.0;
 
+// Hardhat - Console Log
+import 'hardhat/console.sol';
+
 // Token
 import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
-import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+// import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
 // Math
 // import '@openzeppelin/contracts/utils/math/SafeCast.sol';
@@ -22,7 +25,29 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 // This is Token C
-contract Fuji is ERC20({
+contract Fuji is ERC20 {
+  using Address for address;
+  using Arrays for uint256[];
+  using SafeMath for uint256;
+  using Strings for string;
+
+  address admin;
+
+  uint8 public constant TOKEN_DECIMALS = 18;
+
+  constructor(string memory name_, string memory symbol_)
+    payable
+    ERC20(name_, symbol_)
+  {
+    console.log('constructor()');
+  }
+
+  function mint(address owner, uint256 amount) external {
+    console.log('mint()');
+    console.log(owner);
+    console.log(amount);
+  }
+
   /**
    * Convert an amount of input token_ to an equivalent amount of the output token
    *

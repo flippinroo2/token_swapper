@@ -8,7 +8,7 @@ module.exports = {
   stacktrace: true,
   stacktraceExtra: true,
   networks: {
-    // MNEMONIC - walnut budget shift deer remove morning any move humble debris cheese soon
+    // MNEMONIC - hurdle fault mercy shallow rule update audit whisper acoustic horror light nephew
     localhost: {
       provider: function () {
         return new Web3.providers.HttpProvider(`http://127.0.0.1:7545`, {

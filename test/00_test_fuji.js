@@ -1,24 +1,31 @@
 const DEBUG = true;
 
+const { use, expect } = require('chai');
+use(require('chai-as-promised')).should();
+
+/*
+_
+artifacts
+Atomics
+btoa
+config
+console
+crypto
+debug
+WebAssembly
+*/
+
+const { eth, utils } = web3;
+
 const Fuji = artifacts.require('Fuji');
 
-require('chai').use(require('chai-as-promised')).should();
-
 contract('Fuji', (accounts) => {
-  debugger;
-  let fuji;
-  let owner, sender, receiver, user;
-  let contractAddress;
+  let fuji, contractAddress;
+  const [owner, sender, receiver, user] = accounts;
 
   before(async () => {
-    if (DEBUG) {
-      debugger;
-    }
-    // fujiInstance = await Fuji.new('TEST');
-    // Fuji.setAsDeployed(fujiInstance);
-    const fuji = await Fuji.deployed('TEST');
+    fuji = await Fuji.deployed();
     contractAddress = await fuji.address;
-    [owner, sender, receiver, user] = accounts;
   });
 
   describe('Deployment', async () => {
@@ -38,8 +45,6 @@ contract('Fuji', (accounts) => {
   });
 
   describe('Testing', async () => {
-    it('DEBUG', async () => {
-      console.log('DEBUG');
-    });
+    it('DEBUG', async () => {});
   });
 });

@@ -10,9 +10,9 @@ contract('Tate', (accounts) => {
   let contractAddress;
 
   before(async () => {
-    // tateInstance = await Tate.new('TEST');
+    // tateInstance = await Tate.new('Tate', 'TATE');
     // Tate.setAsDeployed(tateInstance);
-    const tate = await Tate.deployed('TEST');
+    const tate = await Tate.deployed('Tate', 'TATE');
     contractAddress = await tate.address;
     [owner, sender, receiver, user] = accounts;
   });

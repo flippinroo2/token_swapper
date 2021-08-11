@@ -7,12 +7,12 @@ module.exports = async function (deployer) {
   await deployer.deploy(Storage);
   const storage = await Storage.deployed();
 
-  await deployer.deploy(Fuji);
+  await deployer.deploy(Fuji, 'Fuji', 'FUJI');
   const fuji = await Fuji.deployed();
 
-  await deployer.deploy(Haku);
+  await deployer.deploy(Haku, 'Haku', 'HAKU');
   const haku = await Haku.deployed();
 
-  await deployer.deploy(Tate);
+  await deployer.deploy(Tate, 'Tate', 'TATE');
   const tate = await Tate.deployed();
 };

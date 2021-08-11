@@ -10,9 +10,9 @@ contract('Haku', (accounts) => {
   let contractAddress;
 
   before(async () => {
-    // hakuInstance = await Haku.new('TEST');
+    // hakuInstance = await Haku.new('Haku', 'HAKU');
     // Haku.setAsDeployed(hakuInstance);
-    const haku = await Haku.deployed('TEST');
+    const haku = await Haku.deployed('Haku', 'HAKU');
     contractAddress = await haku.address;
     [owner, sender, receiver, user] = accounts;
   });

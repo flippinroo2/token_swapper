@@ -64,3 +64,4 @@ node_modules/
 # Custom - Folders #
 ####################
 artifacts/
+cache/

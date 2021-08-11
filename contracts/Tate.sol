@@ -22,7 +22,21 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 // This is Token B
-contract Tate {
+contract Tate is ERC20 {
+  using Address for address;
+  using Arrays for uint256[];
+  using SafeMath for uint256;
+  using Strings for string;
+
+  address admin;
+
+  uint8 public constant TOKEN_DECIMALS = 18;
+
+  constructor(string memory name_, string memory symbol_)
+    payable
+    ERC20(name_, symbol_)
+  {}
+
   /**
    * Convert an amount of input token_ to an equivalent amount of the output token
    *
