@@ -146,8 +146,8 @@ describe('Wrapper', function () {
         sender.address,
       );
 
-      // const fujiMintTransaction1 = await fuji.mint(owner.address, 3);
-      // const [fujiMint1] = fujiMintTransaction1.words;
+      const fujiMintTransaction1 = await fuji.transfer(owner.address, 3);
+      const [fujiMint1] = fujiMintTransaction1.words;
 
       if (DEBUG) {
         debugger;

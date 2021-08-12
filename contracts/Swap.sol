@@ -19,56 +19,55 @@ import '@openzeppelin/contracts/utils/Strings.sol';
 import './Template.sol'; // Template
 
 contract Swap {
-  using Address for address;
-  using SafeMath for uint256;
-  using Strings for string;
+    using Address for address;
+    using SafeMath for uint256;
+    using Strings for string;
 
-  // Most likely make these private.
-  address public _address1;
-  // address public _token1Address;
-  Template public _token1;
+    // Most likely make these private.
+    address public _address1;
+    // address public _token1Address;
+    Template public _token1;
 
-  address public _address2;
-  // address public _token2Address;
-  Template public _token2;
+    address public _address2;
+    // address public _token2Address;
+    Template public _token2;
 
-  constructor(
-    address address1_,
-    Template token1_,
-    address address2_,
-    Template token2_
-  ) {
-    _address1 = address1_;
-    _token1 = token1_;
-    _address2 = address2_;
-    _token2 = token2_;
-  }
+    constructor(
+        address address1_,
+        Template token1_,
+        address address2_,
+        Template token2_
+    ) {
+        _address1 = address1_;
+        _token1 = token1_;
+        _address2 = address2_;
+        _token2 = token2_;
+    }
 
-  function _swap(uint256 amount) public {
-    // We need to approve this contract to spend both other coins tokens.
-    // require(
-    //   msg.sender == _address1 || msg.sender == _address2,
-    //   'Not an authorized address.'
-    // );
-    // require(
-    //   _token1Address.allowance(_address1, address(this)) >= amount,
-    //   'Token 1 allowance is too low.'
-    // );
-    // require(
-    //   _token2Address.allowance(_address2, address(this)) >= amount,
-    //   'Token 2 allowance is too low.'
-    // );
-    // _safeTransferFrom(_token1Address, _address1, _address2, amount);
-    // _safeTransferFrom(_token2Address, _address2, _address1, amount);
-  }
+    function _swap(uint256 amount) public {
+        require(
+            msg.sender == _address1 || msg.sender == _address2,
+            'Not an authorized address.'
+        );
+        require(
+            _token1Address.allowance(_address1, address(this)) >= amount,
+            'Token 1 allowance is too low.'
+        );
+        require(
+            _token2Address.allowance(_address2, address(this)) >= amount,
+            'Token 2 allowance is too low.'
+        );
+        // _safeTransferFrom(_token1Address, _address1, _address2, amount);
+        // _safeTransferFrom(_token2Address, _address2, _address1, amount);
+    }
 
-  function _safeTransferFrom(
-    Template token,
-    address sender,
-    address receiver,
-    uint256 amount
-  ) private {
-    bool sent = token.transferFrom(sender, receiver, amount);
-    require(sent, 'Token transfer failed.');
-  }
+    function _safeTransferFrom(
+        Template token,
+        address sender,
+        address receiver,
+        uint256 amount
+    ) private {
+        bool sent = token.transferFrom(sender, receiver, amount);
+        require(sent, 'Token transfer failed.');
+    }
 }

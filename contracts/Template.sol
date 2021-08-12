@@ -20,48 +20,52 @@ contract Template is IERC20 {
     using SafeMath for uint256;
     using Strings for string;
 
-    address private _admin;
-    string private _name;
-    string private _symbol;
-    uint256 private _totalSupply;
-    uint256 public _totalMinted;
+    // The variables are oredered this way for memory efficiency.
     uint8 public constant TOKEN_DECIMALS = 18;
     uint8 private constant _NOT_ENTERED = 1;
     uint8 private constant _ENTERED = 2;
     uint8 private _status;
 
+    address private _admin;
+    string private _name;
+    string private _symbol;
+    uint256 private _totalSupply;
+    uint256 public _totalMinted;
+
     mapping(address => uint256) private _balances;
     mapping(address => mapping(address => uint256)) private _allowances;
 
+    // Events
     event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
     event Fallback(address indexed sender, uint256 value);
 
+    // Function Modifiers
     modifier security {
-      require(msg.sender == _admin, 'Must be contract admin');
-      _;
+        require(msg.sender == _admin, 'Must be contract admin');
+        _;
     }
 
     modifier safe(address account) {
-      require(account != address(0), 'Cannot transact with the zero address');
-      _;
+        require(account != address(0), 'Cannot transact with the zero address');
+        _;
     }
 
     modifier restricted(uint256 number) {
-      require(number != 0, 'Number cannot be zero');
-      require(number > 0, 'Must be a positive number.');
-      require(number <= _totalSupply, 'Must be less than total supply.');
-      require(
-        (_totalMinted + number) <= _totalSupply,
-        'This would cause the total minted coins to be more than the total supply.'
-      );
-      _;
+        require(number != 0, 'Number cannot be zero');
+        require(number > 0, 'Must be a positive number.');
+        require(number <= _totalSupply, 'Must be less than total supply.');
+        require(
+            (_totalMinted + number) <= _totalSupply,
+            'This would cause the total minted coins to be more than the total supply.'
+        );
+        _;
     }
 
     modifier reentrancyProtection() {
-      require(_status != _ENTERED, 'Reentrant call');
-      _status = _ENTERED;
-      _;
-      _status = _NOT_ENTERED;
+        require(_status != _ENTERED, 'Reentrant call');
+        _status = _ENTERED;
+        _;
+        _status = _NOT_ENTERED;
     }
 
     constructor(
@@ -77,6 +81,10 @@ contract Template is IERC20 {
         return _totalSupply;
     }
 
+    function setTotalSupply(uint256 totalSupply_) internal {
+        _totalSupply = totalSupply_;
+    }
+
     function balanceOf(address account)
         external
         view
@@ -86,53 +94,23 @@ contract Template is IERC20 {
         return _balances[account];
     }
 
-    function setTotalSupply(uint256 totalSupply_) internal {
-        _totalSupply = totalSupply_;
-    }
-
-    function getTotalMinted() public view returns (uint256) {
-        return _totalMinted;
-    }
-
-
     function transfer(address recipient, uint256 amount) public override returns (bool){
-          _transfer(msg.sender, recipient, amount);
-          return true;
+        _transfer(msg.sender, recipient, amount);
+        return true;
+    }
+
+    function allowance(address owner, address spender)
+        external
+        view
+        override
+        returns (uint256)
+    {
+        return _allowances[owner][spender];
     }
 
     function approve(address spender, uint256 amount) external override returns (bool){
         _approve(msg.sender, spender, amount);
         return true;
-    }
-
-    function _approve(address owner, address spender, uint256 amount) internal {
-        require(owner != address(0), "ERC20: approve from the zero address");
-        require(spender != address(0), "ERC20: approve to the zero address");
-        _allowances[owner][spender] = amount;
-        emit Approval(owner, spender, amount);
-    }
-    function _transfer(address sender, address recipient, uint256 amount) internal {
-
-        require(sender != address(0), "ERC20: transfer from the zero address");
-        require(recipient != address(0), "ERC20: transfer to the zero address");
-        uint256 senderBalance = _balances[sender];
-        require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
-        unchecked {
-            _balances[sender] = senderBalance - amount;
-        }
-        _balances[recipient] += amount;
-
-        emit Transfer(sender, recipient, amount);
-    }
-
-
-    function allowance(address owner, address spender)
-      external
-      view
-      override
-      returns (uint256)
-    {
-      return _allowances[owner][spender];
     }
 
     function transferFrom(
@@ -141,14 +119,23 @@ contract Template is IERC20 {
         uint256 amount
     ) external override returns (bool) {
         _transfer(spender, recipient, amount);
-
-       address sender = msg.sender;
+        address sender = msg.sender;
         uint256 currentAllowance = _allowances[spender][sender];
         require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
         unchecked {
             _approve(spender, sender, currentAllowance - amount);
         }
         return true;
+    }
+
+    function getAdmin() public view returns (address) {
+        return _admin;
+    }
+
+    function setAdmin(address admin) internal {
+        address _previousAdmin = _admin;
+        _admin = admin;
+        emit AdminChanged(_previousAdmin, _admin);
     }
 
     function name() external view returns (string memory) {
@@ -173,16 +160,31 @@ contract Template is IERC20 {
         emit Transfer(address(0), account, amount);
     }
 
-    function getAdmin() public view returns (address) {
-       return _admin;
+    function getTotalMinted() public view returns (uint256) {
+        return _totalMinted;
     }
 
-    function setAdmin(address admin) internal {
-        address _previousAdmin = _admin;
-        _admin = admin;
-        emit AdminChanged(_previousAdmin, _admin);
+    function _transfer(address sender, address recipient, uint256 amount) internal {
+        require(sender != address(0), "ERC20: transfer from the zero address");
+        require(recipient != address(0), "ERC20: transfer to the zero address");
+        uint256 senderBalance = _balances[sender];
+        require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
+        unchecked {
+            _balances[sender] = senderBalance - amount;
+        }
+        _balances[recipient] += amount;
+
+        emit Transfer(sender, recipient, amount);
     }
 
+    function _approve(address owner, address spender, uint256 amount) internal {
+        require(owner != address(0), "ERC20: approve from the zero address");
+        require(spender != address(0), "ERC20: approve to the zero address");
+        _allowances[owner][spender] = amount;
+        emit Approval(owner, spender, amount);
+    }
+
+    // New syntax for fallback functions.
     receive() external payable {
         emit Fallback(msg.sender, msg.value);
     }
