@@ -58,7 +58,7 @@ async function main() {
   console.log('Hardhat - Wrapper address: %s', wrapper.address);
 
   if (DEBUG) {
-    debugger;
+    // debugger;
   }
 }
 

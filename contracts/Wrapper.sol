@@ -38,8 +38,14 @@ contract Wrapper {
 
   address[] public tokenAddresses;
 
-  Swap3 public _fujiTateSwapper;
-  Swap3 public _hakuTateSwapper;
+  Swap public _fujiTateSwapper;
+  Swap public _hakuTateSwapper;
+
+  Swap2 public _fujiTateSwapper2;
+  Swap2 public _hakuTateSwapper2;
+
+  Swap3 public _fujiTateSwapper3;
+  Swap3 public _hakuTateSwapper3;
 
   string[] fujiArgs = ['Fuji', 'FUJI'];
   string[] hakuArgs = ['Haku', 'HAKU'];
@@ -73,25 +79,35 @@ contract Wrapper {
     // tokenAddresses[2] = address(_tate);
     tokenAddresses.push(tateAddress);
 
-    _fujiTateSwapper1 = new Swap(
-      _address1,
-      fujiArgs[0],
-      fujiArgs[1],
-      _address2,
-      tateArgs[0],
-      tateArgs[1]
-    );
-    _hakuTateSwapper1 = new Swap(
-      _address2,
-      hakuArgs[0],
-      hakuArgs[1],
-      _address1,
-      tateArgs[0],
-      tateArgs[1]
-    );
+    // _fujiTateSwapper = new Swap(
+    //   _address1,
+    //   fujiArgs[0],
+    //   fujiArgs[1],
+    //   _address2,
+    //   tateArgs[0],
+    //   tateArgs[1]
+    // );
+    // _hakuTateSwapper = new Swap(
+    //   _address2,
+    //   hakuArgs[0],
+    //   hakuArgs[1],
+    //   _address1,
+    //   tateArgs[0],
+    //   tateArgs[1]
+    // );
 
-    _fujiTateSwapper2 = new Swap2(_address1, fujiAddress, _address2, tateAddress);
-    _hakuTateSwapper2 = new Swap2(_address1, hakuAddress, _address2, tateAddress);
+    // _fujiTateSwapper2 = new Swap2(
+    //   _address1,
+    //   fujiAddress,
+    //   _address2,
+    //   tateAddress
+    // );
+    // _hakuTateSwapper2 = new Swap2(
+    //   _address1,
+    //   hakuAddress,
+    //   _address2,
+    //   tateAddress
+    // );
 
     _fujiTateSwapper3 = new Swap3(_address1, _fuji, _address2, _tate);
     _hakuTateSwapper3 = new Swap3(_address1, _haku, _address2, _tate);
