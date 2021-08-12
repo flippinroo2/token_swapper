@@ -21,7 +21,7 @@ async function main() {
   // console.log('Account balance:', (await deployer.getBalance()).toString());
 
   const Fuji = await getContractFactory('Fuji');
-  const fuji = await Fuji.deploy('Fuji', 'FUJI');
+  const fuji = await Fuji.deploy('Fuji', 'FUJI', 1100);
 
   console.log('Hardhat - Fuji address: %s', fuji.address);
 

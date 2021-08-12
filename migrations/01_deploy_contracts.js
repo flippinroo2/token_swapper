@@ -1,4 +1,3 @@
-const Storage = artifacts.require('Storage');
 const Fuji = artifacts.require('Fuji');
 const Haku = artifacts.require('Haku');
 const Tate = artifacts.require('Tate');
@@ -8,17 +7,12 @@ module.exports = async function (
   network,
   [owner, sender, receiver, user],
 ) {
-  // const { chain, deploy, finish, link, networks, provider, start, then } = deployer;
-
-  await deployer.deploy(Storage);
-  const storage = await Storage.deployed();
-
-  await deployer.deploy(Fuji, 'Fuji', 'FUJI');
+  await deployer.deploy(Fuji, 'Fuji', 'FUJI', 1100);
   const fuji = await Fuji.deployed();
 
-  await deployer.deploy(Haku, 'Haku', 'HAKU');
+  await deployer.deploy(Haku, 'Haku', 'HAKU', 1050);
   const haku = await Haku.deployed();
 
-  await deployer.deploy(Tate, 'Tate', 'TATE');
+  await deployer.deploy(Tate, 'Tate', 'TATE', 1000);
   const tate = await Tate.deployed();
 };

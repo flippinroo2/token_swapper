@@ -24,13 +24,21 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 contract Swap is IERC20 {
-  ERC20 public tokenA;
-  address public ownerA;
+  ERC20 public _tokenA;
+  address public _addressA;
 
-  ERC20 public tokenB;
-  address public ownerB;
+  ERC20 public _tokenB;
+  address public _addressB;
 
-  constructor(address _tokenA, address _ownerA) {}
+  constructor(address tokenA_, address tokenB_) {
+    console.log(
+      'constructor(address _tokenA %s, address _tokenB %s)',
+      _tokenA,
+      _tokenB
+    );
+    _tokenA = tokenA_;
+    _tokenB = tokenB_;
+  }
 
   function swap(uint256 _amount1, uint256 _amount2) public {
     require(msg.sender == owner1 || msg.sender == owner2, 'Not authoerized');
@@ -43,10 +51,10 @@ contract Swap is IERC20 {
   }
 
   function _safeTransferFrom(
-    ERC20 token,
+    ERC20 tokenA,
     address sender,
-    address,
-    receiver,
+    ERC20 tokenB,
+    address receiver,
     uint256 amount
   ) private {
     bool sent = token.transferFrom(sender, receiver, amount);
