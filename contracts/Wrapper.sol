@@ -30,6 +30,7 @@ contract Wrapper {
   using Strings for string;
 
   address private _admin;
+  address private _contractAddress;
 
   address[] tokenAddresses;
   // ERC20[] tokens;
@@ -47,6 +48,7 @@ contract Wrapper {
 
   constructor() {
     _admin = msg.sender;
+    _contractAddress = address(this);
 
     // fuji = new Fuji('Fuji', 'FUJI', 1100);
     // tokens.push(fuji);
