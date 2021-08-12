@@ -1,4 +1,4 @@
-const DEBUG = false;
+const DEBUG = true;
 
 const { use, expect } = require('chai');
 use(require('chai-as-promised')).should();
@@ -24,14 +24,36 @@ const hardhatNetwork = hre.network;
 const hardhatWaffle = hre.waffle;
 const hardhatWeb3 = hre.web3;
 
+const ethersUtils = hardhatEthers.utils;
+
 const { eth, utils } = web3;
-const { getAccounts, personal } = eth;
+const { getAccounts, net, personal, requestAccounts } = eth;
 
 const timeout = 300000;
 
 const Fuji = artifacts.require('Fuji');
 const Haku = artifacts.require('Haku');
 const Tate = artifacts.require('Tate');
+
+let fujiMetadata, hakuMetadata, tateMetadata;
+
+async function fillMetadata(token) {
+  if (DEBUG) {
+    // debugger;
+  }
+  const metadata = {
+    address: token.address,
+    owner: await token.owner(),
+    name: await token.name(),
+    symbol: await token.symbol(),
+    decimals: utils.hexToNumber(await token.decimals()),
+    totalSupply: utils.hexToNumber(await token.totalSupply()),
+  };
+  if (DEBUG) {
+    // debugger;
+  }
+  return metadata;
+}
 
 describe('Test Suite', function () {
   this.timeout(timeout);
@@ -40,8 +62,8 @@ describe('Test Suite', function () {
     sender = { fuji: {}, haku: {}, tate: {} },
     receiver = { fuji: {}, haku: {}, tate: {} },
     user = { fuji: {}, haku: {}, tate: {} };
-  let fuji,
-    fujiMetadata = {};
+
+  let fuji, haku, tate;
 
   before(async () => {
     const accounts = await getAccounts();
@@ -50,9 +72,13 @@ describe('Test Suite', function () {
     receiver.address = accounts[2];
     user.address = accounts[3];
 
-    fuji = await Fuji.at('0x450660E1FCFF8370B803321369f761b419b1770d');
-    haku = await Haku.at('0x6178153500879507063304a8d88Dde1d746ce203');
-    tate = await Tate.at('0x9da4Eb9e4513b37639f5A94BD2759B7745F2D87c');
+    fuji = await Fuji.at('0x232fB207E9CCc83cB583D336BfFe1f0986719c49');
+    haku = await Haku.at('0x2F3CA0529d87dfc0bd9A351fd2e497ac3C993286');
+    tate = await Tate.at('0x702c62C4f4C5cCDFdC2BBf3CD54B7e0817aB8A21');
+
+    fujiMetadata = await fillMetadata(fuji);
+    hakuMetadata = await fillMetadata(haku);
+    tateMetadata = await fillMetadata(tate);
   });
 
   describe('ACCESS', async () => {
@@ -76,7 +102,7 @@ describe('Test Suite', function () {
         );
       }
 
-      const mintFujiTransaction2 = await fuji.mint(sender.address, 10);
+      const mintFujiTransaction2 = await fuji.mint(user.address, 10);
       tx = mintFujiTransaction2.tx;
       receipt = mintFujiTransaction2.receipt;
       if (DEBUG) {
@@ -107,7 +133,7 @@ describe('Test Suite', function () {
         );
       }
 
-      const mintHakuTransaction2 = await haku.mint(sender.address, 20);
+      const mintHakuTransaction2 = await haku.mint(user.address, 20);
       tx = mintHakuTransaction2.tx;
       receipt = mintHakuTransaction2.receipt;
       if (DEBUG) {
@@ -138,7 +164,7 @@ describe('Test Suite', function () {
         );
       }
 
-      const mintTateTransaction2 = await tate.mint(sender.address, 50);
+      const mintTateTransaction2 = await tate.mint(user.address, 50);
       tx = mintTateTransaction2.tx;
       receipt = mintTateTransaction2.receipt;
       if (DEBUG) {
@@ -175,18 +201,18 @@ describe('Test Suite', function () {
     });
 
     it('Sender Balances', async () => {
-      const fujiBalanceOfTransaction = await fuji.balanceOf(sender.address);
-      const hakuBalanceOfTransaction = await haku.balanceOf(sender.address);
-      const tateBalanceOfTransaction = await tate.balanceOf(sender.address);
+      const fujiBalanceOfTransaction = await fuji.balanceOf(user.address);
+      const hakuBalanceOfTransaction = await haku.balanceOf(user.address);
+      const tateBalanceOfTransaction = await tate.balanceOf(user.address);
 
       const [fujiBalance] = fujiBalanceOfTransaction.words;
-      sender.fuji.balance = utils.hexToNumber(fujiBalanceOfTransaction);
+      user.fuji.balance = utils.hexToNumber(fujiBalanceOfTransaction);
 
       const [hakuBalance] = hakuBalanceOfTransaction.words;
-      sender.haku.balance = utils.hexToNumber(hakuBalanceOfTransaction);
+      user.haku.balance = utils.hexToNumber(hakuBalanceOfTransaction);
 
       const [tateBalance] = tateBalanceOfTransaction.words;
-      sender.tate.balance = utils.hexToNumber(tateBalanceOfTransaction);
+      user.tate.balance = utils.hexToNumber(tateBalanceOfTransaction);
     });
 
     it('Receiver Balances', async () => {
@@ -210,7 +236,6 @@ describe('Test Suite', function () {
       if (DEBUG) {
         debugger;
       }
-      const testTransaction = await fuji.testFunction();
     });
   });
 
