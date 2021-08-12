@@ -34,8 +34,7 @@ contract('Fuji', (accounts) => {
     receiver = { balance: 0, address: accounts[2] },
     user = { balance: 0, address: accounts[3] };
   let fuji,
-    fujiMetadata = {},
-    contractAddress;
+    fujiMetadata = {};
 
   before(async () => {
     // These functions below only work if hardhat has compiled the abis
@@ -81,9 +80,6 @@ contract('Fuji', (accounts) => {
       const balanceOfTransaction = await fuji.balanceOf(owner.address);
       const [balance] = balanceOfTransaction.words;
       owner.balance = utils.hexToNumber(balanceOfTransaction);
-      if (DEBUG) {
-        debugger;
-      }
       expect(owner.balance).to.equal(balance);
     });
   });
