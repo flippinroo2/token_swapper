@@ -71,7 +71,7 @@ describe('Wrapper', function () {
     receiver.address = accounts[2];
     user.address = accounts[3];
 
-    wrapper = await Wrapper.at('0x80c66c22a8B535B457dD729525F62b1Be18f8485');
+    wrapper = await Wrapper.at('0x783ED2bDbF116fCBf8a4D7754F8f8bDDDE6a90a2');
   });
 
   describe('ACCESS', async () => {
@@ -106,6 +106,7 @@ describe('Wrapper', function () {
 
       const fujiAdmin = await fuji.getAdmin();
       const fujiTotalSupplyTransaction1 = await fuji.totalSupply();
+      const [fujiTotalySupply] = fujiTotalSupplyTransaction1.words;
 
       if (DEBUG) {
         debugger;

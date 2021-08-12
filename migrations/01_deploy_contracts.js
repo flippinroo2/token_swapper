@@ -10,14 +10,14 @@ module.exports = async function (
   network,
   [owner, sender, receiver, user],
 ) {
-  await deployer.deploy(Fuji, 'Fuji', 'FUJI', 1100);
-  const fuji = await Fuji.deployed();
+  // await deployer.deploy(Fuji, 'Fuji', 'FUJI', 1100);
+  // const fuji = await Fuji.deployed();
 
-  await deployer.deploy(Haku, 'Haku', 'HAKU', 1050);
-  const haku = await Haku.deployed();
+  // await deployer.deploy(Haku, 'Haku', 'HAKU', 1050);
+  // const haku = await Haku.deployed();
 
-  await deployer.deploy(Tate, 'Tate', 'TATE', 1000);
-  const tate = await Tate.deployed();
+  // await deployer.deploy(Tate, 'Tate', 'TATE', 1000);
+  // const tate = await Tate.deployed();
 
   // await deployer.deploy(Swap, owner, fuji, user, tate);
   // const fujiTateSwap = await Swap.deployed();

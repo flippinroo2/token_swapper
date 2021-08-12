@@ -18,8 +18,8 @@ import '@openzeppelin/contracts/utils/Strings.sol';
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
 // Custom Tokens
-import './Swap.sol'; // Swap Utility Token
-import './Swap2.sol'; // Swap Utility Token
+// import './Swap.sol'; // Swap Utility Token
+// import './Swap2.sol'; // Swap Utility Token
 import './Swap3.sol'; // Swap Utility Token
 import './Template.sol'; // Template
 import './Fuji.sol'; // Token A
@@ -36,13 +36,13 @@ contract Wrapper {
   address public _address1;
   address public _address2;
 
-  address[] public tokenAddresses;
+  // address[] public tokenAddresses;
 
-  Swap public _fujiTateSwapper;
-  Swap public _hakuTateSwapper;
+  // Swap public _fujiTateSwapper;
+  // Swap public _hakuTateSwapper;
 
-  Swap2 public _fujiTateSwapper2;
-  Swap2 public _hakuTateSwapper2;
+  // Swap2 public _fujiTateSwapper2;
+  // Swap2 public _hakuTateSwapper2;
 
   Swap3 public _fujiTateSwapper3;
   Swap3 public _hakuTateSwapper3;
@@ -64,20 +64,20 @@ contract Wrapper {
     // fuji = new Fuji('Fuji', 'FUJI', 1100);
     // tokens.push(fuji);
 
-    address fujiAddress = address(_fuji);
-    console.log('fujiAddress: %s', fujiAddress);
-    // tokenAddresses[0] = address(_fuji);
-    tokenAddresses.push(fujiAddress);
+    // address fujiAddress = address(_fuji);
+    // console.log('fujiAddress: %s', fujiAddress);
+    // // tokenAddresses[0] = address(_fuji);
+    // tokenAddresses.push(fujiAddress);
 
-    address hakuAddress = address(_haku);
-    console.log('hakuAddress: %s', hakuAddress);
-    // tokenAddresses[1] = address(_haku);
-    tokenAddresses.push(hakuAddress);
+    // address hakuAddress = address(_haku);
+    // console.log('hakuAddress: %s', hakuAddress);
+    // // tokenAddresses[1] = address(_haku);
+    // tokenAddresses.push(hakuAddress);
 
-    address tateAddress = address(_tate);
-    console.log('tateAddress: %s', tateAddress);
-    // tokenAddresses[2] = address(_tate);
-    tokenAddresses.push(tateAddress);
+    // address tateAddress = address(_tate);
+    // console.log('tateAddress: %s', tateAddress);
+    // // tokenAddresses[2] = address(_tate);
+    // tokenAddresses.push(tateAddress);
 
     // _fujiTateSwapper = new Swap(
     //   _address1,
@@ -118,15 +118,11 @@ contract Wrapper {
 
   function swap(uint256 amount) external {
     console.log('swap(uint256 amount %s)', amount);
-    _fujiTateSwapper._swap(amount);
+    _fujiTateSwapper3._swap(amount);
   }
 
   function unswap(uint256 amount) external {
     console.log('unswap(uint amount %s)', amount);
-    _hakuTateSwapper._swap(amount);
-  }
-
-  function testFunction() external {
-    console.log('testFunction()');
+    _hakuTateSwapper3._swap(amount);
   }
 }

@@ -51,6 +51,6 @@ contract Fuji is Template {
     }
     setAdmin(msg.sender);
     setTotalSupply(totalSupply_);
-    mint(getAdmin(), totalSupply_);
+    // mint(getAdmin(), totalSupply_);
   }
 }

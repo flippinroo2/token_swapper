@@ -30,11 +30,11 @@ contract Swap3 {
 
   // Most likely make these private.
   address public _address1;
-  address public _token1Address;
+  // address public _token1Address;
   Template public _token1;
 
   address public _address2;
-  address public _token2Address;
+  // address public _token2Address;
   Template public _token2;
 
   constructor(
@@ -58,10 +58,10 @@ contract Swap3 {
 
   function _swap(uint256 amount) public {
     // We need to approve this contract to spend both other coins tokens.
-    require(
-      msg.sender == _address1 || msg.sender == _address2,
-      'Not an authorized address.'
-    );
+    // require(
+    //   msg.sender == _address1 || msg.sender == _address2,
+    //   'Not an authorized address.'
+    // );
     // require(
     //   _token1Address.allowance(_address1, address(this)) >= amount,
     //   'Token 1 allowance is too low.'
@@ -70,7 +70,6 @@ contract Swap3 {
     //   _token2Address.allowance(_address2, address(this)) >= amount,
     //   'Token 2 allowance is too low.'
     // );
-
     // _safeTransferFrom(_token1Address, _address1, _address2, amount);
     // _safeTransferFrom(_token2Address, _address2, _address1, amount);
   }
