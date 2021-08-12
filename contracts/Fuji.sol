@@ -23,7 +23,7 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 // This is Token C
-contract Fuji is ERC20, Ownable, ReentrancyGuard {
+contract Fuji is ReentrancyGuard, Ownable, ERC20 {
   using Address for address;
   using Arrays for uint256[];
   using SafeMath for uint256;
