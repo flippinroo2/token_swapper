@@ -41,9 +41,9 @@ contract Wrapper {
   Swap public _fujiTateSwapper;
   Swap public _hakuTateSwapper;
 
-  Template public _fuji = new Template('Fuji', 'FUJI', 1100);
-  Template public _haku = new Template('Haku', 'HAKU', 1050);
-  Template public _tate = new Template('Tate', 'TATE', 1000);
+  Template public _fuji = new Template('Fuji', 'FUJI');
+  Template public _haku = new Template('Haku', 'HAKU');
+  Template public _tate = new Template('Tate', 'TATE');
 
   // Fuji public _fuji = new Fuji('Fuji', 'FUJI', 1100);
   // Haku public _haku = new Haku('Haku', 'HAKU', 1050);
@@ -77,8 +77,22 @@ contract Wrapper {
     // tokenAddresses[2] = address(_tate);
     tokenAddresses.push(tateAddress);
 
-    _fujiTateSwapper = new Swap(_address1, fujiAddress, _address2, tateAddress);
-    _hakuTateSwapper = new Swap(_address2, hakuAddress, _address1, tateAddress);
+    _fujiTateSwapper = new Swap(
+      _address1,
+      'Fuji',
+      'FUJI',
+      _address2,
+      'Tate',
+      'TATE'
+    );
+    _hakuTateSwapper = new Swap(
+      _address2,
+      'Haku',
+      'HAKU',
+      _address1,
+      'Tate',
+      'TATE'
+    );
 
     // Example constructor for when trying to send Eth
     // Swap swapper = (new Swapper).value(msg.value)(admin, _haku, admin, _tate);

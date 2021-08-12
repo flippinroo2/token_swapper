@@ -79,7 +79,7 @@ contract Swap {
   }
 
   function _safeTransferFrom(
-    address token,
+    IERC20 token,
     address sender,
     address receiver,
     uint256 amount
