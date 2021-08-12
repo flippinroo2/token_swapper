@@ -80,9 +80,9 @@ describe('Test Suite', function () {
     receiver.address = accounts[2];
     user.address = accounts[3];
 
-    fuji = await Fuji.at('0xC979be9CBB653D426377BdAcFa294E235b5aAD60');
-    haku = await Haku.at('0xf1d3609b280a604Faf146A0AC8562d40f5b51Fa4');
-    tate = await Tate.at('0xf9773311E2969736B9A4C24AA690E49A3a92619D');
+    fuji = await Fuji.at('0x0418715c212f1f4d8b3760656D3D1d140D05A08c');
+    haku = await Haku.at('0x9E576De997305bAe974d49148dAF6CC670595618');
+    tate = await Tate.at('0xf00925c9Cc15eE4A75D39dA7ab9b8C59ce41754a');
 
     fujiMetadata = await fillMetadata(fuji);
     hakuMetadata = await fillMetadata(haku);

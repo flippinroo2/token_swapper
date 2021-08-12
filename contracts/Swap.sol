@@ -22,18 +22,18 @@ contract Swap {
 
   // Most likely make these private.
   address public _address1;
-  ERC20 public _token1;
+  IERC20 public _token1;
   address public _address2;
-  ERC20 public _token2;
+  IERC20 public _token2;
 
   constructor(
     address address1_,
-    ERC20 token1_,
+    IERC20 token1_,
     address address2_,
-    ERC20 token2_
+    IERC20 token2_
   ) {
     console.log(
-      'constructor(address address1_ %s, ERC20 token1_, address address2_ %s, ERC20 token2_)',
+      'constructor(address address1_ %s, IERC20 token1_, address address2_ %s, IERC20 token2_)',
       address1_,
       address2_
     );
@@ -43,7 +43,7 @@ contract Swap {
     _token2 = token2_;
   }
 
-  function swap(uint256 amount1_, uint256 amount2_) public {
+  function _swap(uint256 amount1_, uint256 amount2_) public {
     // We need to approve this contract to spend both other coins tokens.
     require(
       msg.sender == _address1 || msg.sender == _address2,
@@ -62,7 +62,7 @@ contract Swap {
   }
 
   function _safeTransferFrom(
-    ERC20 token,
+    IERC20 token,
     address sender,
     address receiver,
     uint256 amount
