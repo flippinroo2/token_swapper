@@ -5,8 +5,8 @@ pragma solidity ^0.8.0;
 import 'hardhat/console.sol';
 
 // Token
-import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
-// import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+// import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
+import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
 // Math
 // import '@openzeppelin/contracts/utils/math/SafeCast.sol';
@@ -16,12 +16,6 @@ import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 import '@openzeppelin/contracts/utils/Address.sol';
 import '@openzeppelin/contracts/utils/Arrays.sol';
 import '@openzeppelin/contracts/utils/Strings.sol';
-
-// Access
-import '@openzeppelin/contracts/access/Ownable.sol';
-
-// Security
-import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 // This is Token A
 contract Template is IERC20 {
