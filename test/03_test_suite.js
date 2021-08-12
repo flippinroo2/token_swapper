@@ -1,4 +1,4 @@
-const DEBUG = true;
+const DEBUG = false;
 
 const { use, expect } = require('chai');
 use(require('chai-as-promised')).should();
@@ -25,6 +25,7 @@ const hardhatWaffle = hre.waffle;
 const hardhatWeb3 = hre.web3;
 
 const { eth, utils } = web3;
+const { getAccounts, personal } = eth;
 
 const timeout = 300000;
 
@@ -43,14 +44,23 @@ describe('Test Suite', function () {
     fujiMetadata = {};
 
   before(async () => {
-    fuji = await Fuji.at('0xD78261090CC5604Fe4B7C380C6bFe3491AF575c2');
-    owner.address = await fuji.owner();
+    const accounts = await getAccounts();
+    owner.address = accounts[0];
+    sender.address = accounts[1];
+    receiver.address = accounts[2];
+    user.address = accounts[3];
 
-    haku = await Haku.at('0xD7dd9C73695592d88b55E5Cff18dbb878A3807f5');
-    sender.address = await haku.owner();
+    fuji = await Fuji.at('0x450660E1FCFF8370B803321369f761b419b1770d');
+    haku = await Haku.at('0x6178153500879507063304a8d88Dde1d746ce203');
+    tate = await Tate.at('0x9da4Eb9e4513b37639f5A94BD2759B7745F2D87c');
+  });
 
-    tate = await Tate.at('0x9d52065D0f6b24b1a3c84800129A425a879faF28');
-    receiver.address = await tate.owner();
+  describe('ACCESS', async () => {
+    it('Check Owners', async () => {
+      expect(await fuji.owner()).to.equal(owner.address);
+      expect(await haku.owner()).to.equal(owner.address);
+      expect(await tate.owner()).to.equal(owner.address);
+    });
   });
 
   describe('MINT', async () => {
