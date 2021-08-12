@@ -21,7 +21,7 @@ import './Fuji.sol'; // Token A
 import './Haku.sol'; // Token B
 import './Tate.sol'; // Token C
 
-contract Swap2 {
+contract Swap3 {
   using Address for address;
   using SafeMath for uint256;
   using Strings for string;
@@ -39,9 +39,9 @@ contract Swap2 {
 
   constructor(
     address address1_,
-    address token1Address_,
+    Template token1_,
     address address2_,
-    address token2Address_
+    Template token2_
   ) {
     if (DEBUG) {
       console.log(
@@ -51,9 +51,9 @@ contract Swap2 {
       );
     }
     _address1 = address1_;
-    _token1Address = token1Address_;
+    _token1 = token1_;
     _address2 = address2_;
-    _token2Address = token2Address_;
+    _token2 = token2_;
   }
 
   function _swap(uint256 amount) public {

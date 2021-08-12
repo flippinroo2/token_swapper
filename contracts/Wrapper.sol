@@ -19,6 +19,8 @@ import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
 // Custom Tokens
 import './Swap.sol'; // Swap Utility Token
+import './Swap2.sol'; // Swap Utility Token
+import './Swap3.sol'; // Swap Utility Token
 import './Template.sol'; // Template
 import './Fuji.sol'; // Token A
 import './Haku.sol'; // Token B
@@ -73,7 +75,8 @@ contract Wrapper {
     // tokenAddresses[2] = address(_tate);
     tokenAddresses.push(tateAddress);
 
-    _fujiTateSwapper = new Swap2()
+    _fujiTateSwapper = new Swap3(_address1, _fuji, _address2, _tate);
+    _hakuTateSwapper = new Swap3(_address1, _haku, _address2, _tate);
     // _fujiTateSwapper = new Swap(
     //   _address1,
     //   fujiArgs[0],

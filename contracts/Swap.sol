@@ -32,13 +32,12 @@ contract Swap {
   address public _address1;
   string public _token1Name;
   string public _token1Symbol;
+  Template public _token1;
 
   address public _address2;
   string public _token2Name;
   string public _token2Symbol;
-
-  Template public token1;
-  Template public token2;
+  Template public _token2;
 
   constructor(
     address address1_,
@@ -60,14 +59,14 @@ contract Swap {
       _token1Name,
       _token1Symbol
     );
-    token1 = new Template(_token1Name, _token1Symbol);
+    _token1 = new Template(_token1Name, _token1Symbol);
 
     console.log(
       '_token2Name: %s\n_token2Symbol: %s',
       _token2Name,
       _token2Symbol
     );
-    // token2 = new Template(_token2Name, _token2Symbol);
+    // _token2 = new Template(_token2Name, _token2Symbol);
   }
 
   function _swap(uint256 amount) public {
