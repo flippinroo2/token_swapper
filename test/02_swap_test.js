@@ -58,7 +58,8 @@ describe('Wrapper', function () {
   let owner = { fuji: {}, haku: {}, tate: {} },
     sender = { fuji: {}, haku: {}, tate: {} },
     receiver = { fuji: {}, haku: {}, tate: {} },
-    user = { fuji: {}, haku: {}, tate: {} };
+    user = { fuji: {}, haku: {}, tate: {} },
+    admin = { fuji: {}, haku: {}, tate: {} };
 
   let wrapper, fuji, haku, tate;
 
@@ -69,7 +70,9 @@ describe('Wrapper', function () {
     receiver.address = accounts[2];
     user.address = accounts[3];
 
-    wrapper = await Wrapper.at('0x6569102735Af5933fff61eEB593D1453211131FB');
+    wrapper = await Wrapper.at('0x49186E6674A162bbd4441b6f0f27F9822053Ba6D');
+    admin.address = wrapper.address;
+
     fuji = await Token.at(await wrapper._fuji());
     haku = await Token.at(await wrapper._haku());
     tate = await Token.at(await wrapper._tate());
@@ -95,6 +98,9 @@ describe('Wrapper', function () {
       user.fuji.balance = await getBalance(fuji, user);
       user.haku.balance = await getBalance(haku, user);
       user.tate.balance = await getBalance(tate, user);
+      admin.fuji.balance = await getBalance(fuji, admin);
+      admin.haku.balance = await getBalance(haku, admin);
+      admin.tate.balance = await getBalance(tate, admin);
     });
   });
 
@@ -118,13 +124,30 @@ describe('Wrapper', function () {
       // const hakuTateSwapperAddress = await wrapper._hakuTateSwapper();
       // const hakuTateSwapper = await Swap.at(hakuTateSwapperAddress);
 
+      const fujiAdminAddress = await fuji.getAdmin();
+
+      const fujiTotalSupplyTransaction1 = await fuji.totalSupply();
+      const [fujiTotalSupply] = fujiTotalSupplyTransaction1.words;
+
+      const fujiTotalMintedTransaction1 = await fuji.getTotalMinted();
+      const [fujiTotalMinted] = fujiTotalMintedTransaction1.words;
+
       if (DEBUG) {
         debugger;
       }
 
-      const fujiAdmin = await fuji.getAdmin();
-      const fujiTotalSupplyTransaction1 = await fuji.totalSupply();
-      const [fujiTotalySupply] = fujiTotalSupplyTransaction1.words;
+      const fujiApprovalTransaction1 = await fuji.approve(
+        sender.address,
+        fujiTotalSupply,
+      );
+
+      const fujiApprovalTransaction1 = await fuji.allowance(
+        admin.address,
+        sender.address,
+      );
+
+      // const fujiMintTransaction1 = await fuji.mint(owner.address, 3);
+      // const [fujiMint1] = fujiMintTransaction1.words;
 
       if (DEBUG) {
         debugger;
@@ -132,9 +155,6 @@ describe('Wrapper', function () {
 
       const swapTransaction1 = await wrapper.swap(25);
       const unSwapTransaction1 = await wrapper.unswap(10);
-      if (DEBUG) {
-        debugger;
-      }
     });
 
     it('Swap 50 Tate for Haku', async () => {
