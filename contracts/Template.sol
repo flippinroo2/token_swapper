@@ -100,7 +100,7 @@ contract Template is IERC20 {
     }
 
     function allowance(address owner, address spender)
-        external
+        public
         view
         override
         returns (uint256)
@@ -108,7 +108,7 @@ contract Template is IERC20 {
         return _allowances[owner][spender];
     }
 
-    function approve(address spender, uint256 amount) external override returns (bool){
+    function approve(address spender, uint256 amount) public override returns (bool){
         _approve(msg.sender, spender, amount);
         return true;
     }
@@ -117,7 +117,7 @@ contract Template is IERC20 {
         address spender,
         address recipient,
         uint256 amount
-    ) external override returns (bool) {
+    ) public override returns (bool) {
         _transfer(spender, recipient, amount);
         address sender = msg.sender;
         uint256 currentAllowance = _allowances[spender][sender];

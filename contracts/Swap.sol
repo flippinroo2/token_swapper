@@ -4,10 +4,6 @@ pragma solidity ^0.8.0;
 // Hardhat - Console Log
 import 'hardhat/console.sol';
 
-// Token
-import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
-import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-
 // Math
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
@@ -16,21 +12,18 @@ import '@openzeppelin/contracts/utils/Address.sol';
 import '@openzeppelin/contracts/utils/Strings.sol';
 
 // Custom Tokens
-import './Template.sol'; // Template
+import './Template.sol'; // Template Contract
 
 contract Swap {
     using Address for address;
     using SafeMath for uint256;
     using Strings for string;
 
-    // Most likely make these private.
-    address public _address1;
-    // address public _token1Address;
-    Template public _token1;
+    address private _address1;
+    Template private _token1;
 
-    address public _address2;
-    // address public _token2Address;
-    Template public _token2;
+    address private _address2;
+    Template private _token2;
 
     constructor(
         address address1_,
@@ -44,17 +37,17 @@ contract Swap {
         _token2 = token2_;
     }
 
-    function _swap(uint256 amount) public {
+    function _swap(uint256 amount) public view {
         require(
             msg.sender == _address1 || msg.sender == _address2,
             'Not an authorized address.'
         );
         require(
-            _token1Address.allowance(_address1, address(this)) >= amount,
+            _token1.allowance(_address1, address(this)) >= amount,
             'Token 1 allowance is too low.'
         );
         require(
-            _token2Address.allowance(_address2, address(this)) >= amount,
+            _token2.allowance(_address2, address(this)) >= amount,
             'Token 2 allowance is too low.'
         );
         // _safeTransferFrom(_token1Address, _address1, _address2, amount);

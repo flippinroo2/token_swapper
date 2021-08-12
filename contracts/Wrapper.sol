@@ -4,17 +4,12 @@ pragma solidity ^0.8.0;
 // Hardhat - Console Log
 import 'hardhat/console.sol';
 
-// Token
-// import '@openzeppelin/contracts/token/ERC20/IERC20.sol'
-import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
-
 // Libraries
 import '@openzeppelin/contracts/utils/Address.sol';
 import '@openzeppelin/contracts/utils/Arrays.sol';
 import '@openzeppelin/contracts/utils/Strings.sol';
 
 // Math
-// import '@openzeppelin/contracts/utils/math/SafeCast.sol';
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
 // Custom Tokens
@@ -52,12 +47,12 @@ contract Wrapper {
         _hakuTateSwapper = new Swap(_address1, _haku, _address2, _tate);
     }
 
-    function swap(uint256 amount) external {
+    function swap(uint256 amount) external view {
         console.log('swap(uint256 amount %s)', amount);
         _fujiTateSwapper._swap(amount);
     }
 
-    function unswap(uint256 amount) external {
+    function unswap(uint256 amount) external view {
         console.log('unswap(uint amount %s)', amount);
         _hakuTateSwapper._swap(amount);
     }
