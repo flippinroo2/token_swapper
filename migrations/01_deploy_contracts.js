@@ -1,8 +1,8 @@
-const Fuji = artifacts.require('Fuji');
-const Haku = artifacts.require('Haku');
-const Tate = artifacts.require('Tate');
+// const Fuji = artifacts.require('Fuji');
+// const Haku = artifacts.require('Haku');
+// const Tate = artifacts.require('Tate');
 
-const Swap = artifacts.require('Swap');
+// const Swap = artifacts.require('Swap');
 const Wrapper = artifacts.require('Wrapper');
 
 module.exports = async function (
