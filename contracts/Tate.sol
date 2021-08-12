@@ -28,7 +28,7 @@ contract Tate is Template {
   string private _name;
   string private _symbol;
   uint256 private _totalSupply;
-  uint256 private _totalMinted;
+  // uint256 private _totalMinted;
   uint8 private constant _NOT_ENTERED = 1;
   uint8 private constant _ENTERED = 2;
   uint8 private _status;

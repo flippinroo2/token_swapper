@@ -17,9 +17,10 @@ import '@openzeppelin/contracts/utils/Strings.sol';
 
 // Custom Tokens
 import './Template.sol'; // Template
-import './Fuji.sol'; // Token A
-import './Haku.sol'; // Token B
-import './Tate.sol'; // Token C
+
+// import './Fuji.sol'; // Token A
+// import './Haku.sol'; // Token B
+// import './Tate.sol'; // Token C
 
 contract Swap3 {
   using Address for address;

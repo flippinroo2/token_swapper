@@ -107,7 +107,7 @@ contract Template is IERC20 {
     _totalSupply = totalSupply_;
   }
 
-  function getTotalMinted() public view {
+  function getTotalMinted() public view returns (uint256) {
     return _totalMinted;
   }
 
