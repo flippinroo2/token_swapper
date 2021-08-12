@@ -28,9 +28,13 @@ const { eth, utils } = web3;
 
 const Fuji = artifacts.require('Fuji');
 const Haku = artifacts.require('Haku');
-// const Tate = artifacts.require('Tate');
+const Tate = artifacts.require('Tate');
 
-describe('Test Suite', () => {
+describe('Test Suite', function () {
+  // console.log(this);
+  // this.parent.timeout(30000);
+  // this.timeout(30000);
+
   const { eth, utils } = web3;
   // const {
   //   abi,
@@ -55,23 +59,23 @@ describe('Test Suite', () => {
     tate,
     tateMetadata = {};
 
-  async function fillMetadata(token) {
-    if (DEBUG) {
-      // debugger;
-    }
-    const metadata = {
-      address: token.address,
-      owner: await token.owner(),
-      name: await token.name(),
-      symbol: await token.symbol(),
-      decimals: utils.hexToNumber(await token.decimals()),
-      totalSupply: utils.hexToNumber(await token.totalSupply()),
-    };
-    if (DEBUG) {
-      // debugger;
-    }
-    return metadata;
-  }
+  // async function fillMetadata(token) {
+  //   if (DEBUG) {
+  //     // debugger;
+  //   }
+  //   const metadata = {
+  //     address: token.address,
+  //     owner: await token.owner(),
+  //     name: await token.name(),
+  //     symbol: await token.symbol(),
+  //     decimals: utils.hexToNumber(await token.decimals()),
+  //     totalSupply: utils.hexToNumber(await token.totalSupply()),
+  //   };
+  //   if (DEBUG) {
+  //     // debugger;
+  //   }
+  //   return metadata;
+  // }
 
   before(async (error) => {
     const ethAccounts = await eth.getAccounts();
@@ -82,16 +86,18 @@ describe('Test Suite', () => {
 
     fuji = await Fuji.at('0x5c1A66D05D33E4b08Ed63eE46a99011fBbF2eCE1');
     haku = await Haku.at('0x5124566b479cDBA5b85Db6F605A8e48D814EAC47');
-    // tate = await Tate.at('0x00Bc46dC89E2425FEc12f1842c31DbaFfd09fa59');
+    tate = await Tate.at('0x00Bc46dC89E2425FEc12f1842c31DbaFfd09fa59');
 
-    // Need to increase timeout for these.
-    // fujiMetadata = await fillMetadata(fuji);
-    // hakuMetadata = await fillMetadata(haku);
-    // tateMetadata = await fillMetadata(tate);
+    Need to increase timeout for these.
+    fujiMetadata = await fillMetadata(fuji);
+    hakuMetadata = await fillMetadata(haku);
+    tateMetadata = await fillMetadata(tate);
   });
 
   describe('Deployment', async () => {
+    console.log('Deployment()');
     it('MINT', async () => {
+      console.log('MINT()');
       if (DEBUG) {
         debugger;
       }
@@ -105,21 +111,24 @@ describe('Test Suite', () => {
       if (DEBUG) {
         debugger;
       }
-      // const balanceOfTransaction = await fuji.balanceOf(owner.address);
-      // const [balance] = balanceOfTransaction.words;
-      // owner.balance = utils.hexToNumber(balanceOfTransaction);
-      // expect(owner.balance).to.equal(balance);
+      const balanceOfTransaction = await fuji.balanceOf(owner.address);
+      const [balance] = balanceOfTransaction.words;
+      owner.balance = utils.hexToNumber(balanceOfTransaction);
+      expect(owner.balance).to.equal(balance);
     });
   });
 
   describe('Testing', async () => {
+    console.log('Testing()');
     it('SWAP', async () => {
+      console.log('SWAP()');
       if (DEBUG) {
         debugger;
       }
     });
 
     it('DEBUG', async () => {
+      console.log('DEBUG()');
       if (DEBUG) {
         debugger;
       }

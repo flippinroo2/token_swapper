@@ -54,4 +54,8 @@ module.exports = {
       },
     },
   },
+  mocha: {
+    enableTimeouts: false,
+    before_timeout: 120000,
+  },
 };
