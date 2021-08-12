@@ -34,12 +34,6 @@ contract Fuji is ReentrancyGuard, Ownable, ERC20 {
 
   uint8 public constant TOKEN_DECIMALS = 18;
 
-  struct Test {
-    address admin;
-    address owner;
-  }
-  Test public test;
-
   constructor(string memory name_, string memory symbol_)
     payable
     ERC20(name_, symbol_)
