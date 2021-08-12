@@ -31,10 +31,8 @@ const { getAccounts, net, personal, requestAccounts } = eth;
 
 const timeout = 300000;
 
-const Fuji = artifacts.require('Fuji');
-const Haku = artifacts.require('Haku');
-const Tate = artifacts.require('Tate');
-const Swap = artifacts.require('Swap');
+const Token = artifacts.require('Token');
+// const Swap = artifacts.require('Swap');
 const Wrapper = artifacts.require('Wrapper');
 
 let wrapperMetadata;
@@ -71,7 +69,7 @@ describe('Wrapper', function () {
     receiver.address = accounts[2];
     user.address = accounts[3];
 
-    wrapper = await Wrapper.at('0x783ED2bDbF116fCBf8a4D7754F8f8bDDDE6a90a2');
+    wrapper = await Wrapper.at('0x6569102735Af5933fff61eEB593D1453211131FB');
   });
 
   describe('ACCESS', async () => {
@@ -97,9 +95,7 @@ describe('Wrapper', function () {
     });
   });
 
-  describe('MINT', async () => {
-
-  });
+  describe('MINT', async () => {});
 
   describe('APPROVALS', async () => {
     sender.allowance = {
