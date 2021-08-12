@@ -22,21 +22,22 @@ contract Wrapper {
     using SafeMath for uint256;
     using Strings for string;
 
-    address public _admin;
+    address private _admin;
     address public contractAddress;
-    address public _address1;
-    address public _address2;
+    address private _address1;
+    address private _address2;
 
-    Swap public _fujiTateSwapper;
-    Swap public _hakuTateSwapper;
+    Swap private _fujiTateSwapper;
+    Swap private _hakuTateSwapper;
 
+    // Was testing a different method for instantiating the Swap contract.
     string[] fujiArgs = ['Fuji', 'FUJI'];
     string[] hakuArgs = ['Haku', 'HAKU'];
     string[] tateArgs = ['Tate', 'TATE'];
 
-    Template public _fuji = new Token(fujiArgs[0], fujiArgs[1], 1100);
-    Template public _haku = new Token(hakuArgs[0], hakuArgs[1], 1050);
-    Template public _tate = new Token(tateArgs[0], tateArgs[1], 1000);
+    Template private _fuji = new Token(fujiArgs[0], fujiArgs[1], 1100);
+    Template private _haku = new Token(hakuArgs[0], hakuArgs[1], 1050);
+    Template private _tate = new Token(tateArgs[0], tateArgs[1], 1000);
 
     constructor(address address1_, address address2_) {
         _admin = msg.sender;
@@ -47,12 +48,12 @@ contract Wrapper {
         _hakuTateSwapper = new Swap(_address1, _haku, _address2, _tate);
     }
 
-    function swap(uint256 amount) external view {
+    function swap(uint256 amount) public view {
         console.log('swap(uint256 amount %s)', amount);
         _fujiTateSwapper._swap(amount);
     }
 
-    function unswap(uint256 amount) external view {
+    function unswap(uint256 amount) public view {
         console.log('unswap(uint amount %s)', amount);
         _hakuTateSwapper._swap(amount);
     }

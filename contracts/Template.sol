@@ -77,7 +77,7 @@ contract Template is IERC20 {
         // mint(getAdmin(), totalSupply_);
     }
 
-    function totalSupply() external view override returns (uint256) {
+    function totalSupply() public view override returns (uint256) {
         return _totalSupply;
     }
 
@@ -117,7 +117,7 @@ contract Template is IERC20 {
         address spender,
         address recipient,
         uint256 amount
-    ) public override returns (bool) {
+    ) external override returns (bool) {
         _transfer(spender, recipient, amount);
         address sender = msg.sender;
         uint256 currentAllowance = _allowances[spender][sender];
