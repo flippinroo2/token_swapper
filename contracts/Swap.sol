@@ -55,8 +55,19 @@ contract Swap {
     _token2Name = token2Name_;
     _token2Symbol = token2Symbol_;
 
+    console.log(
+      '_token1Name: %s\n_token1Symbol: %s',
+      _token1Name,
+      _token1Symbol
+    );
     token1 = new Template(_token1Name, _token1Symbol);
-    token2 = new Template(_token2Name, _token2Symbol);
+
+    console.log(
+      '_token2Name: %s\n_token2Symbol: %s',
+      _token2Name,
+      _token2Symbol
+    );
+    // token2 = new Template(_token2Name, _token2Symbol);
   }
 
   function _swap(uint256 amount) public {
@@ -79,7 +90,7 @@ contract Swap {
   }
 
   function _safeTransferFrom(
-    IERC20 token,
+    Template token,
     address sender,
     address receiver,
     uint256 amount

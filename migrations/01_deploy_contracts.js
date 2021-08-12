@@ -25,7 +25,7 @@ module.exports = async function (
   // await deployer.deploy(Swap, owner, haku, user, tate);
   // const hakuTateSwap = await Swap.deployed();
 
-  debugger;
+  // debugger;
   await deployer.deploy(Wrapper, owner, user);
   const wrapper = await Wrapper.deployed();
 };

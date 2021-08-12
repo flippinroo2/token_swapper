@@ -41,9 +41,9 @@ contract Wrapper {
   Swap public _fujiTateSwapper;
   Swap public _hakuTateSwapper;
 
-  Template public _fuji = new Template('Fuji', 'FUJI');
-  Template public _haku = new Template('Haku', 'HAKU');
-  Template public _tate = new Template('Tate', 'TATE');
+  string[] fujiArgs = ['Fuji', 'FUJI'];
+  string[] hakuArgs = ['Haku', 'HAKU'];
+  string[] tateArgs = ['Tate', 'TATE'];
 
   // Fuji public _fuji = new Fuji('Fuji', 'FUJI', 1100);
   // Haku public _haku = new Haku('Haku', 'HAKU', 1050);
@@ -62,36 +62,36 @@ contract Wrapper {
     // tate = new Tate('Tate', 'TATE', 1000);
     // tokens.push(tate);
 
-    address fujiAddress = address(_fuji);
-    console.log('fujiAddress: %s', fujiAddress);
-    // tokenAddresses[0] = address(_fuji);
-    tokenAddresses.push(fujiAddress);
+    // address fujiAddress = address(_fuji);
+    // console.log('fujiAddress: %s', fujiAddress);
+    // // tokenAddresses[0] = address(_fuji);
+    // tokenAddresses.push(fujiAddress);
 
-    address hakuAddress = address(_haku);
-    console.log('hakuAddress: %s', hakuAddress);
-    // tokenAddresses[1] = address(_haku);
-    tokenAddresses.push(hakuAddress);
+    // address hakuAddress = address(_haku);
+    // console.log('hakuAddress: %s', hakuAddress);
+    // // tokenAddresses[1] = address(_haku);
+    // tokenAddresses.push(hakuAddress);
 
-    address tateAddress = address(_tate);
-    console.log('tateAddress: %s', tateAddress);
-    // tokenAddresses[2] = address(_tate);
-    tokenAddresses.push(tateAddress);
+    // address tateAddress = address(_tate);
+    // console.log('tateAddress: %s', tateAddress);
+    // // tokenAddresses[2] = address(_tate);
+    // tokenAddresses.push(tateAddress);
 
     _fujiTateSwapper = new Swap(
       _address1,
-      'Fuji',
-      'FUJI',
+      fujiArgs[0],
+      fujiArgs[1],
       _address2,
-      'Tate',
-      'TATE'
+      tateArgs[0],
+      tateArgs[1]
     );
     _hakuTateSwapper = new Swap(
       _address2,
-      'Haku',
-      'HAKU',
+      hakuArgs[0],
+      hakuArgs[1],
       _address1,
-      'Tate',
-      'TATE'
+      tateArgs[0],
+      tateArgs[1]
     );
 
     // Example constructor for when trying to send Eth
