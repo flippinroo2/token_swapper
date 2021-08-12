@@ -30,6 +30,8 @@ contract Tate is IERC20 {
   using SafeMath for uint256;
   using Strings for string;
 
+  bool private constant DEBUG = false;
+
   address private _admin;
   string private _name;
   string private _symbol;

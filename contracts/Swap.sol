@@ -20,6 +20,8 @@ contract Swap {
   using SafeMath for uint256;
   using Strings for string;
 
+  bool private constant DEBUG = false;
+
   // Most likely make these private.
   address public _address1;
   IERC20 public _token1;
@@ -32,11 +34,13 @@ contract Swap {
     address address2_,
     IERC20 token2_
   ) {
-    console.log(
-      'constructor(address address1_ %s, IERC20 token1_, address address2_ %s, IERC20 token2_)',
-      address1_,
-      address2_
-    );
+    if (DEBUG) {
+      console.log(
+        'constructor(address address1_ %s, IERC20 token1_, address address2_ %s, IERC20 token2_)',
+        address1_,
+        address2_
+      );
+    }
     _address1 = address1_;
     _token1 = token1_;
     _address2 = address2_;

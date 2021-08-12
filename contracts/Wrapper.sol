@@ -29,25 +29,25 @@ contract Wrapper {
   using SafeMath for uint256;
   using Strings for string;
 
-  address private _admin;
-  address private _contractAddress;
+  address public admin;
+  address public _contractAddress;
 
-  address[] tokenAddresses;
+  address[] public tokenAddresses;
   // ERC20[] tokens;
 
-  Swap private _fujiTateSwapper;
-  Swap private _hakuTateSwapper;
+  Swap public _fujiTateSwapper;
+  Swap public _hakuTateSwapper;
 
   // Fuji public fuji;
   // Haku public haku;
   // Tate public tate;
 
-  Fuji private _fuji = new Fuji('Fuji', 'FUJI', 1100);
-  Haku private _haku = new Haku('Haku', 'HAKU', 1050);
-  Tate private _tate = new Tate('Tate', 'TATE', 1000);
+  Fuji public _fuji = new Fuji('Fuji', 'FUJI', 1100);
+  Haku public _haku = new Haku('Haku', 'HAKU', 1050);
+  Tate public _tate = new Tate('Tate', 'TATE', 1000);
 
   constructor() {
-    _admin = msg.sender;
+    admin = msg.sender;
     _contractAddress = address(this);
 
     // fuji = new Fuji('Fuji', 'FUJI', 1100);
@@ -66,11 +66,11 @@ contract Wrapper {
     // tokenAddresses[2] = address(_tate);
     tokenAddresses.push(address(_tate));
 
-    _fujiTateSwapper = new Swap(_admin, _fuji, _admin, _tate);
-    _hakuTateSwapper = new Swap(_admin, _haku, _admin, _tate);
+    _fujiTateSwapper = new Swap(admin, _fuji, admin, _tate);
+    _hakuTateSwapper = new Swap(admin, _haku, admin, _tate);
 
     // Example constructor for when trying to send Eth
-    // Swap swapper = (new Swapper).value(msg.value)(_admin, _haku, _admin, _tate);
+    // Swap swapper = (new Swapper).value(msg.value)(admin, _haku, admin, _tate);
   }
 
   function swap(address token_, uint256 amount) external {

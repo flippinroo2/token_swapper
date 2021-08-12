@@ -19,11 +19,11 @@ module.exports = async function (
   await deployer.deploy(Tate, 'Tate', 'TATE', 1000);
   const tate = await Tate.deployed();
 
-  await deployer.deploy(Swap, owner, fuji, user, tate);
-  const fujiTateSwap = await Swap.deployed();
+  // await deployer.deploy(Swap, owner, fuji, user, tate);
+  // const fujiTateSwap = await Swap.deployed();
 
-  await deployer.deploy(Swap, owner, haku, user, tate);
-  const fujiTateSwap = await Swap.deployed();
+  // await deployer.deploy(Swap, owner, haku, user, tate);
+  // const hakuTateSwap = await Swap.deployed();
 
   await deployer.deploy(Wrapper);
   const wrapper = await Wrapper.deployed();

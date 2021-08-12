@@ -1,4 +1,4 @@
-const DEBUG = false;
+const DEBUG = true;
 
 const { use, expect } = require('chai');
 use(require('chai-as-promised')).should();
@@ -31,6 +31,10 @@ const { getAccounts, net, personal, requestAccounts } = eth;
 
 const timeout = 300000;
 
+const Fuji = artifacts.require('Fuji');
+const Haku = artifacts.require('Haku');
+const Tate = artifacts.require('Tate');
+const Swap = artifacts.require('Swap');
 const Wrapper = artifacts.require('Wrapper');
 
 let wrapperMetadata;
@@ -58,7 +62,7 @@ describe('Wrapper', function () {
     receiver = { fuji: {}, haku: {}, tate: {} },
     user = { fuji: {}, haku: {}, tate: {} };
 
-  let fuji, haku, tate;
+  let wrapper;
 
   before(async () => {
     const accounts = await getAccounts();
@@ -67,12 +71,12 @@ describe('Wrapper', function () {
     receiver.address = accounts[2];
     user.address = accounts[3];
 
-    wrapper = await Wrapper.at('0x0418715c212f1f4d8b3760656D3D1d140D05A08c');
+    wrapper = await Wrapper.at('0x7167866f98742577BB5B98d54a451035a8880012');
   });
 
   describe('ACCESS', async () => {
     it('Check Owners', async () => {
-      expect(await wrapper.getAdmin()).to.equal(owner.address);
+      // expect(await wrapper.admin()).to.equal(owner.address);
     });
   });
 
@@ -90,8 +94,24 @@ describe('Wrapper', function () {
 
   describe('SWAP', async () => {
     it('Swap 100 Fuji for Tate', async () => {
+      const fuji = await Fuji.at(await wrapper._fuji());
+      const haku = await Haku.at(await wrapper._haku());
+      const tate = await Tate.at(await wrapper._tate());
+
+      // const fujiTateSwapperAddress = await wrapper._fujiTateSwapper();
+      // const fujiTateSwapper = await Swap.at(fujiTateSwapperAddress);
+
+      // const hakuTateSwapperAddress = await wrapper._hakuTateSwapper();
+      // const hakuTateSwapper = await Swap.at(hakuTateSwapperAddress);
+
       if (DEBUG) {
-        // debugger;
+        debugger;
+      }
+
+      const swapTransaction1 = await wrapper.swap(5, 25);
+      const unSwapTransaction1 = await wrapper.unswap(10, 5);
+      if (DEBUG) {
+        debugger;
       }
     });
 

@@ -37,9 +37,7 @@ async function main() {
   console.log('Hardhat - Tate address: %s', tate.address);
 
   const Swap = await getContractFactory('Swap');
-  if (DEBUG) {
-    debugger;
-  }
+
   // const fujiTateSwap = await Swap.deploy(
   //   deployer.address,
   //   fuji,
