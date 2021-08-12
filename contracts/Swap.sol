@@ -30,9 +30,9 @@ contract Swap {
 
   constructor(
     address address1_,
-    IERC20 token1Address_,
+    address token1Address_,
     address address2_,
-    IERC20 token2Address_
+    address token2Address_
   ) {
     if (DEBUG) {
       console.log(
@@ -66,7 +66,7 @@ contract Swap {
   }
 
   function _safeTransferFrom(
-    IERC20 token,
+    address token,
     address sender,
     address receiver,
     uint256 amount
