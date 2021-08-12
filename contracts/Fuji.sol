@@ -146,7 +146,7 @@ contract Fuji is IERC20 {
     return _symbol;
   }
 
-  function decimals() external view returns (uint8) {
+  function decimals() external pure returns (uint8) {
     return TOKEN_DECIMALS;
   }
 

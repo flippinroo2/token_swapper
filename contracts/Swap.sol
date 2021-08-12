@@ -9,23 +9,14 @@ import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
 // Math
-// import '@openzeppelin/contracts/utils/math/SafeCast.sol';
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
 // Libraries
 import '@openzeppelin/contracts/utils/Address.sol';
-import '@openzeppelin/contracts/utils/Arrays.sol';
 import '@openzeppelin/contracts/utils/Strings.sol';
-
-// Access
-import '@openzeppelin/contracts/access/Ownable.sol';
-
-// Security
-import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 contract Swap {
   using Address for address;
-  // using Arrays for uint256[];
   using SafeMath for uint256;
   using Strings for string;
 
@@ -42,11 +33,9 @@ contract Swap {
     ERC20 token2_
   ) {
     console.log(
-      'constructor(address address1_ %s, ERC20 token1_ %s, address address2_ %s, ERC20 token2_ %s)',
+      'constructor(address address1_ %s, ERC20 token1_, address address2_ %s, ERC20 token2_)',
       address1_,
-      token1_,
-      address2_,
-      token2_
+      address2_
     );
     _address1 = address1_;
     _token1 = token1_;
