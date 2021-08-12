@@ -3,7 +3,13 @@ const Fuji = artifacts.require('Fuji');
 const Haku = artifacts.require('Haku');
 const Tate = artifacts.require('Tate');
 
-module.exports = async function (deployer) {
+module.exports = async function (
+  deployer,
+  network,
+  [owner, sender, receiver, user],
+) {
+  // const { chain, deploy, finish, link, networks, provider, start, then } = deployer;
+
   await deployer.deploy(Storage);
   const storage = await Storage.deployed();
 

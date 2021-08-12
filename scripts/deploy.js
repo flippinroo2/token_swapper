@@ -28,8 +28,13 @@ async function main() {
   const mintTransaction = await fuji.mint(deployer.address, 10);
 
   const balanceOfTransaction = await fuji.balanceOf(deployer.address);
-  const balance1 = utils.hexToNumber(balanceOfTransaction);
-  deployer.balance = balance1;
+  deployer.balance = utils.hexToNumber(balanceOfTransaction);
+
+  if (DEBUG) {
+    // debugger;
+  }
+
+  const testTransaction = await fuji.testFunction();
 
   if (DEBUG) {
     debugger;

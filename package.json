@@ -38,6 +38,7 @@
     "hardhat-deploy": "hardhat run scripts/deploy.js --show-stack-traces",
     "truffle": "hardhat delete && truffle compile && truffle migrate && truffle test",
     "truffle-compile": "truffle compile",
+    "truffle-develop": "truffle develop",
     "truffle-migrate": "truffle migrate",
     "truffle-test": "truffle test",
     "truffle-test-debug": "truffle test --stacktrace-extra",

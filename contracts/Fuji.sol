@@ -33,10 +33,17 @@ contract Fuji is ERC20, Ownable, ReentrancyGuard {
 
   uint8 public constant TOKEN_DECIMALS = 18;
 
+  struct Test {
+    address admin;
+    address owner;
+  }
+  Test public test;
+
   constructor(string memory name_, string memory symbol_)
     payable
     ERC20(name_, symbol_)
   {
+    console.log('Contract creator: %s', msg.sender);
     console.log(
       'constructor(string memory name_: %s, string memory symbol_: %s)',
       name_,
@@ -61,11 +68,7 @@ contract Fuji is ERC20, Ownable, ReentrancyGuard {
    * @param amount amount of token to swap/receive
    */
   function swap(address token_, uint256 amount) external {
-    console.log(
-      'swap(address token_ %s, uint256 amount %s)',
-      token_,
-      amount
-    );
+    console.log('swap(address token_ %s, uint256 amount %s)', token_, amount);
   }
 
   /**
@@ -75,20 +78,16 @@ contract Fuji is ERC20, Ownable, ReentrancyGuard {
    * @param amount amount of token to swap/receive
    */
   function unswap(address token_, uint256 amount) external {
-    console.log(
-      'unswap(address token_ %s, uint256 amount %s)',
-      token_,
-      amount
-    );
+    console.log('unswap(address token_ %s, uint256 amount %s)', token_, amount);
   }
 
   function setAdmin(address admin) internal {
     _admin = admin;
-    _setOwner(admin);
+    // _setOwner(admin);
   }
 
-  function testFunction() internal {
+  function testFunction() external {
     console.log('_admin: %s', _admin);
-    console.log('_owner: %s', _owner);
+    // console.log('_owner: %s', _owner);
   }
 }

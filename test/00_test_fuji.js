@@ -72,7 +72,10 @@ contract('Fuji', (accounts) => {
 
   describe('Testing', async () => {
     it('DEBUG', async () => {
-      console.log('DEBUG');
+      const testTransaction = await fuji.testFunction();
+      if (DEBUG) {
+        debugger;
+      }
     });
   });
 });
