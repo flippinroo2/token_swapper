@@ -32,11 +32,11 @@
   "scripts": {
     "custom": "hardhat delete && hardhat compile && hardhat run scripts/deploy.js --show-stack-traces && truffle test",
     "debug": "hardhat compile && hardhat run scripts/deploy.js --show-stack-traces && hardhat delete && truffle compile && truffle test",
-    "test": "hardhat delete && truffle compile && truffle test",
+    "test": "hardhat delete && truffle compile && truffle migrate && truffle test",
     "hardhat": "hardhat delete && hardhat compile && hardhat run scripts/deploy.js --show-stack-traces",
     "hardhat-compile": "hardhat delete && hardhat compile",
     "hardhat-deploy": "hardhat run scripts/deploy.js --show-stack-traces",
-    "truffle": "hardhat delete && truffle compile && truffle migrate && truffle test",
+    "truffle": "truffle compile && truffle migrate && truffle test",
     "truffle-compile": "truffle compile",
     "truffle-develop": "truffle develop",
     "truffle-migrate": "truffle migrate",
