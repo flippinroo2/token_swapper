@@ -30,7 +30,7 @@ contract Template is IERC20 {
   string private _name;
   string private _symbol;
   uint256 private _totalSupply;
-  uint256 private _totalMinted;
+  uint256 public _totalMinted;
   uint8 public constant TOKEN_DECIMALS = 18;
   uint8 private constant _NOT_ENTERED = 1;
   uint8 private constant _ENTERED = 2;
@@ -105,6 +105,10 @@ contract Template is IERC20 {
     // require() // Ensure positive #
     // Can uint256 have an overflow? If not, explain that next to variable declaration.
     _totalSupply = totalSupply_;
+  }
+
+  function getTotalMinted() public view {
+    return _totalMinted;
   }
 
   function balanceOf(address account)

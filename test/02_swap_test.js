@@ -80,7 +80,26 @@ describe('Wrapper', function () {
     });
   });
 
-  describe('MINT', async () => {});
+  describe('BALANCES', async () => {
+    it('Check Balances', async () => {
+      owner.fuji.balance = await getBalance(fuji, owner);
+      owner.haku.balance = await getBalance(haku, owner);
+      owner.tate.balance = await getBalance(tate, owner);
+      sender.fuji.balance = await getBalance(fuji, sender);
+      sender.haku.balance = await getBalance(haku, sender);
+      sender.tate.balance = await getBalance(tate, sender);
+      receiver.fuji.balance = await getBalance(fuji, receiver);
+      receiver.haku.balance = await getBalance(haku, receiver);
+      receiver.tate.balance = await getBalance(tate, receiver);
+      user.fuji.balance = await getBalance(fuji, user);
+      user.haku.balance = await getBalance(haku, user);
+      user.tate.balance = await getBalance(tate, user);
+    });
+  });
+
+  describe('MINT', async () => {
+
+  });
 
   describe('APPROVALS', async () => {
     sender.allowance = {
