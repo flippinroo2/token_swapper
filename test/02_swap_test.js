@@ -70,7 +70,6 @@ describe('Wrapper', function () {
     user.address = accounts[3];
 
     wrapper = await Wrapper.at('0x6569102735Af5933fff61eEB593D1453211131FB');
-    debugger;
     fuji = await Token.at(await wrapper._fuji());
     haku = await Token.at(await wrapper._haku());
     tate = await Token.at(await wrapper._tate());
@@ -113,15 +112,15 @@ describe('Wrapper', function () {
 
   describe('SWAP', async () => {
     it('Swap 100 Fuji for Tate', async () => {
-      const fuji = await Fuji.at(await wrapper._fuji());
-      const haku = await Haku.at(await wrapper._haku());
-      const tate = await Tate.at(await wrapper._tate());
-
       // const fujiTateSwapperAddress = await wrapper._fujiTateSwapper();
       // const fujiTateSwapper = await Swap.at(fujiTateSwapperAddress);
 
       // const hakuTateSwapperAddress = await wrapper._hakuTateSwapper();
       // const hakuTateSwapper = await Swap.at(hakuTateSwapperAddress);
+
+      if (DEBUG) {
+        debugger;
+      }
 
       const fujiAdmin = await fuji.getAdmin();
       const fujiTotalSupplyTransaction1 = await fuji.totalSupply();
