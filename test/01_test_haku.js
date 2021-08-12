@@ -47,7 +47,7 @@ contract('Haku', (accounts) => {
     // const hakuNew = await Haku.new('Haku', 'FUJI');
     // const hakuDeployed = await Haku.deployed();
 
-    haku = await Haku.at('0x188AC596a66fd69bB74D5b223FBe02471479D62F');
+    haku = await Haku.at('0x5124566b479cDBA5b85Db6F605A8e48D814EAC47');
 
     owner.address = await haku.owner();
 
@@ -74,7 +74,7 @@ contract('Haku', (accounts) => {
       const { tx, receipt } = mintTransaction;
       if (DEBUG) {
         console.log(
-          `Transaction: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
+          `Mint Transaction: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
         );
       }
       const balanceOfTransaction = await haku.balanceOf(owner.address);

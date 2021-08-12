@@ -1,4 +1,4 @@
-const DEBUG = true;
+const DEBUG = false;
 
 const { use, expect } = require('chai');
 use(require('chai-as-promised')).should();
@@ -47,7 +47,7 @@ contract('Fuji', (accounts) => {
     // const fujiNew = await Fuji.new('Fuji', 'FUJI');
     // const fujiDeployed = await Fuji.deployed();
 
-    fuji = await Fuji.at('0x188AC596a66fd69bB74D5b223FBe02471479D62F');
+    fuji = await Fuji.at('0x5c1A66D05D33E4b08Ed63eE46a99011fBbF2eCE1');
 
     owner.address = await fuji.owner();
 
@@ -74,7 +74,7 @@ contract('Fuji', (accounts) => {
       const { tx, receipt } = mintTransaction;
       if (DEBUG) {
         console.log(
-          `Transaction: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
+          `Mint Transaction: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
         );
       }
       const balanceOfTransaction = await fuji.balanceOf(owner.address);

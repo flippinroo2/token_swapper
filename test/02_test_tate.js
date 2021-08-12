@@ -47,7 +47,7 @@ contract('Tate', (accounts) => {
     // const tateNew = await Tate.new('Tate', 'FUJI');
     // const tateDeployed = await Tate.deployed();
 
-    tate = await Tate.at('0x188AC596a66fd69bB74D5b223FBe02471479D62F');
+    tate = await Tate.at('0x00Bc46dC89E2425FEc12f1842c31DbaFfd09fa59');
 
     owner.address = await tate.owner();
 
@@ -74,7 +74,7 @@ contract('Tate', (accounts) => {
       const { tx, receipt } = mintTransaction;
       if (DEBUG) {
         console.log(
-          `Transaction: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
+          `Mint Transaction: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
         );
       }
       const balanceOfTransaction = await tate.balanceOf(owner.address);
