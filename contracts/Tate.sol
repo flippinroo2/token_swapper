@@ -23,7 +23,7 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 // Security
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
-// This is Token A
+// This is Token C
 contract Tate is IERC20 {
   using Address for address;
   // using Arrays for uint256[];
@@ -115,32 +115,66 @@ contract Tate is IERC20 {
     view
     override
     returns (uint256)
-  {}
+  {
+    return _balances[account];
+  }
 
   function transfer(address recipient, uint256 amount)
-    external
+    public
     override
     returns (bool)
-  {}
+  {
+    address sender = msg.sender;
+    require(sender != address(0), "ERC20: transfer from the zero address");
+    require(recipient != address(0), "ERC20: transfer to the zero address");
+
+    uint256 senderBalance = _balances[sender];
+    require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
+    unchecked {
+      _balances[sender] = senderBalance - amount;
+    }
+    _balances[recipient] += amount;
+
+    emit Transfer(sender, recipient, amount);
+  }
 
   function allowance(address owner, address spender)
     external
     view
     override
     returns (uint256)
-  {}
+  {
+    return _allowances[owner][spender];
+  }
 
   function approve(address spender, uint256 amount)
-    external
+    public
     override
     returns (bool)
-  {}
+  {
+    address owner = msg.sender;
+    require(owner != address(0), "ERC20: approve from the zero address");
+    require(spender != address(0), "ERC20: approve to the zero address");
+    _allowances[owner][spender] = amount;
+    emit Approval(owner, spender, amount);
+    return true;
+  }
 
   function transferFrom(
     address spender,
     address recipient,
     uint256 amount
-  ) external override returns (bool) {}
+  ) external override returns (bool) {
+    transfer(spender, recipient, amount);
+
+  address sender = msg.sender;
+    uint256 currentAllowance = _allowances[spender][sender];
+    require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
+    unchecked {
+        approve(spender, sender, currentAllowance - amount);
+    }
+    return true;
+  }
 
   function name() external view returns (string memory) {
     return _name;
