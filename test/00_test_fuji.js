@@ -29,7 +29,7 @@ const { eth, utils } = web3;
 const Fuji = artifacts.require('Fuji');
 
 contract('Fuji', (accounts) => {
-  let owner = { balance: 0, address: accounts[0] },
+  let owner = { balance: 0 },
     sender = { balance: 0, address: accounts[1] },
     receiver = { balance: 0, address: accounts[2] },
     user = { balance: 0, address: accounts[3] };
@@ -40,13 +40,19 @@ contract('Fuji', (accounts) => {
     // These functions below only work if hardhat has compiled the abis
     // const temp = await hardhatEthers.getContractFactory('Fuji');
     // test = await temp.deploy('Fuji', 'FUJI');
+
     fuji = await Fuji.deployed();
+
     contractAddress = fuji.address;
     console.log('fuji address: %s', contractAddress);
+
+    owner.address = await fuji.owner();
+    console.log('owner address: %s', owner.address);
   });
 
   describe('Deployment', async () => {
-    it('DEPLOY', async () => {
+    it('DEPLOY', () => {
+      assert.equal(owner.address, accounts[0]);
       assert.notEqual(contractAddress, 0x0);
       assert.notEqual(contractAddress, '');
       assert.notEqual(contractAddress, null);
