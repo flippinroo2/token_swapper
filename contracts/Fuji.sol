@@ -30,6 +30,8 @@ contract Fuji is IERC20 {
   using SafeMath for uint256;
   using Strings for string;
 
+  bool private constant DEBUG = false;
+
   address private _admin;
   string private _name;
   string private _symbol;
@@ -85,12 +87,14 @@ contract Fuji is IERC20 {
     string memory symbol_,
     uint256 totalSupply_
   ) payable {
-    console.log('Contract creator: %s', msg.sender);
-    console.log(
-      'constructor(string memory name_: %s, string memory symbol_: %s)',
-      name_,
-      symbol_
-    );
+    if (DEBUG) {
+      console.log('Contract creator: %s', msg.sender);
+      console.log(
+        'constructor(string memory name_: %s, string memory symbol_: %s)',
+        name_,
+        symbol_
+      );
+    }
     setAdmin(msg.sender);
     setTotalSupply(totalSupply_);
     mint(getAdmin(), totalSupply_);
@@ -156,33 +160,15 @@ contract Fuji is IERC20 {
     safe(account)
     restricted(amount)
   {
-    console.log(
-      'mint(address account: %s, uint256 amount: %s)',
-      account,
-      amount
-    );
+    if (DEBUG) {
+      console.log(
+        'mint(address account: %s, uint256 amount: %s)',
+        account,
+        amount
+      );
+    }
     _balances[account] += amount;
     emit Transfer(address(0), account, amount);
-  }
-
-  /**
-   * Convert an amount of input token_ to an equivalent amount of the output token
-   *
-   * @param token_ address of token to swap
-   * @param amount amount of token to swap/receive
-   */
-  function swap(address token_, uint256 amount) public view {
-    console.log('swap(address token_ %s, uint256 amount %s)', token_, amount);
-  }
-
-  /**
-   * Convert an amount of the output token to an equivalent amount of input token_
-   *
-   * @param token_ address of token to receive
-   * @param amount amount of token to swap/receive
-   */
-  function unswap(address token_, uint256 amount) public view {
-    console.log('unswap(address token_ %s, uint256 amount %s)', token_, amount);
   }
 
   function getAdmin() public view returns (address) {
@@ -196,8 +182,10 @@ contract Fuji is IERC20 {
   }
 
   function testFunction() public view {
-    console.log('_admin: %s', _admin);
-    // console.log('_owner: %s', _owner);
+    if (DEBUG) {
+      console.log('_admin: %s', _admin);
+      // console.log('_owner: %s', _owner);
+    }
   }
 
   receive() external payable {

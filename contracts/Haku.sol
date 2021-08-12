@@ -85,12 +85,14 @@ contract Haku is IERC20 {
     string memory symbol_,
     uint256 totalSupply_
   ) payable {
-    console.log('Contract creator: %s', msg.sender);
-    console.log(
-      'constructor(string memory name_: %s, string memory symbol_: %s)',
-      name_,
-      symbol_
-    );
+    if (DEBUG) {
+      console.log('Contract creator: %s', msg.sender);
+      console.log(
+        'constructor(string memory name_: %s, string memory symbol_: %s)',
+        name_,
+        symbol_
+      );
+    }
     setAdmin(msg.sender);
     setTotalSupply(totalSupply_);
     mint(getAdmin(), totalSupply_);
@@ -156,11 +158,13 @@ contract Haku is IERC20 {
     safe(account)
     restricted(amount)
   {
-    console.log(
-      'mint(address account: %s, uint256 amount: %s)',
-      account,
-      amount
-    );
+    if (DEBUG) {
+      console.log(
+        'mint(address account: %s, uint256 amount: %s)',
+        account,
+        amount
+      );
+    }
     _balances[account] += amount;
     emit Transfer(address(0), account, amount);
   }
@@ -196,8 +200,10 @@ contract Haku is IERC20 {
   }
 
   function testFunction() public view {
-    console.log('_admin: %s', _admin);
-    // console.log('_owner: %s', _owner);
+    if (DEBUG) {
+      console.log('_admin: %s', _admin);
+      // console.log('_owner: %s', _owner);
+    }
   }
 
   receive() external payable {
