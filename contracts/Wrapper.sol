@@ -75,42 +75,6 @@ contract Template is IERC20 {
         // mint(getAdmin(), totalSupply_);
     }
 
-    function totalSupply() public view override returns (uint256) {
-        return _totalSupply;
-    }
-
-    function setTotalSupply(uint256 totalSupply_) internal {
-        _totalSupply = totalSupply_;
-    }
-
-    function balanceOf(address account)
-        external
-        view
-        override
-        returns (uint256)
-    {
-        return _balances[account];
-    }
-
-    function transfer(address recipient, uint256 amount) public override returns (bool){
-        _transfer(msg.sender, recipient, amount);
-        return true;
-    }
-
-    function allowance(address owner, address spender)
-        public
-        view
-        override
-        returns (uint256)
-    {
-        return _allowances[owner][spender];
-    }
-
-    function approve(address spender, uint256 amount) public override returns (bool){
-        _approve(msg.sender, spender, amount);
-        return true;
-    }
-
     function transferFrom(
         address spender,
         address recipient,
@@ -126,22 +90,21 @@ contract Template is IERC20 {
         return true;
     }
 
-    function getAdmin() public view returns (address) {
-        return _admin;
-    }
-
-    function setAdmin(address admin) internal {
-        address _previousAdmin = _admin;
-        _admin = admin;
-        emit AdminChanged(_previousAdmin, _admin);
-    }
-
     function name() external view returns (string memory) {
         return _name;
     }
 
     function symbol() external view returns (string memory) {
         return _symbol;
+    }
+
+    function balanceOf(address account)
+        external
+        view
+        override
+        returns (uint256)
+    {
+        return _balances[account];
     }
 
     function decimals() external pure returns (uint8) {
@@ -158,8 +121,52 @@ contract Template is IERC20 {
         emit Transfer(address(0), account, amount);
     }
 
+    function approve(address spender, uint256 amount) public override returns (bool){
+        _approve(msg.sender, spender, amount);
+        return true;
+    }
+
+    function transfer(address recipient, uint256 amount) public override returns (bool){
+        _transfer(msg.sender, recipient, amount);
+        return true;
+    }
+
+    function allowance(address owner, address spender)
+        public
+        view
+        override
+        returns (uint256)
+    {
+        return _allowances[owner][spender];
+    }
+
+    function getAdmin() public view returns (address) {
+        return _admin;
+    }
+
     function getTotalMinted() public view returns (uint256) {
         return _totalMinted;
+    }
+
+    function totalSupply() public view override returns (uint256) {
+        return _totalSupply;
+    }
+
+    function setAdmin(address admin) internal {
+        address _previousAdmin = _admin;
+        _admin = admin;
+        emit AdminChanged(_previousAdmin, _admin);
+    }
+
+    function setTotalSupply(uint256 totalSupply_) internal {
+        _totalSupply = totalSupply_;
+    }
+
+    function _approve(address owner, address spender, uint256 amount) internal {
+        require(owner != address(0), "ERC20: approve from the zero address");
+        require(spender != address(0), "ERC20: approve to the zero address");
+        _allowances[owner][spender] = amount;
+        emit Approval(owner, spender, amount);
     }
 
     function _transfer(address sender, address recipient, uint256 amount) internal {
@@ -173,13 +180,6 @@ contract Template is IERC20 {
         _balances[recipient] += amount;
 
         emit Transfer(sender, recipient, amount);
-    }
-
-    function _approve(address owner, address spender, uint256 amount) internal {
-        require(owner != address(0), "ERC20: approve from the zero address");
-        require(spender != address(0), "ERC20: approve to the zero address");
-        _allowances[owner][spender] = amount;
-        emit Approval(owner, spender, amount);
     }
 
     // New syntax for fallback functions.
