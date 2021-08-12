@@ -61,14 +61,20 @@ contract Wrapper {
     // tate = new Tate('Tate', 'TATE', 1000);
     // tokens.push(tate);
 
+    address fujiAddress = address(_fuji);
+    console.log('fujiAddress: %s', fujiAddress);
     // tokenAddresses[0] = address(_fuji);
-    tokenAddresses.push(address(_fuji));
+    tokenAddresses.push(fujiAddress);
 
+    address hakuAddress = address(_haku);
+    console.log('hakuAddress: %s', hakuAddress);
     // tokenAddresses[1] = address(_haku);
-    tokenAddresses.push(address(_haku));
+    tokenAddresses.push(hakuAddress);
 
+    address tateAddress = address(_tate);
+    console.log('tateAddress: %s', tateAddress);
     // tokenAddresses[2] = address(_tate);
-    tokenAddresses.push(address(_tate));
+    tokenAddresses.push(tateAddress);
 
     _fujiTateSwapper = new Swap(_address1, _fuji, _address2, _tate);
     _hakuTateSwapper = new Swap(_address2, _haku, _address1, _tate);
