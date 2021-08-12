@@ -8,21 +8,16 @@ import 'hardhat/console.sol';
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
 // Libraries
-import '@openzeppelin/contracts/utils/Address.sol';
 import '@openzeppelin/contracts/utils/Arrays.sol';
 import '@openzeppelin/contracts/utils/Strings.sol';
 
 // Custom Tokens
-import './Template.sol'; // Template
+import './Template.sol';
 
-// This is Token C
-contract Tate is Template {
+contract Token is Template {
   using Address for address;
-  // using Arrays for uint256[];
   using SafeMath for uint256;
   using Strings for string;
-
-  bool private constant DEBUG = false;
 
   address private _admin;
   string private _name;
@@ -41,14 +36,6 @@ contract Tate is Template {
     string memory symbol_,
     uint256 totalSupply_
   ) payable Template(name_, symbol_) {
-    if (DEBUG) {
-      console.log('Contract creator: %s', msg.sender);
-      console.log(
-        'constructor(string memory name_: %s, string memory symbol_: %s)',
-        name_,
-        symbol_
-      );
-    }
     setAdmin(msg.sender);
     setTotalSupply(totalSupply_);
     // mint(getAdmin(), totalSupply_);

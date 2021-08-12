@@ -18,16 +18,10 @@ import '@openzeppelin/contracts/utils/Strings.sol';
 // Custom Tokens
 import './Template.sol'; // Template
 
-// import './Fuji.sol'; // Token A
-// import './Haku.sol'; // Token B
-// import './Tate.sol'; // Token C
-
-contract Swap3 {
+contract Swap {
   using Address for address;
   using SafeMath for uint256;
   using Strings for string;
-
-  bool private constant DEBUG = false;
 
   // Most likely make these private.
   address public _address1;
@@ -44,13 +38,6 @@ contract Swap3 {
     address address2_,
     Template token2_
   ) {
-    if (DEBUG) {
-      console.log(
-        'constructor(address address1_ %s, IERC20 token1Address_, address address2_ %s, IERC20 token2Address_)',
-        address1_,
-        address2_
-      );
-    }
     _address1 = address1_;
     _token1 = token1_;
     _address2 = address2_;
