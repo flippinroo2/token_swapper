@@ -58,9 +58,9 @@ describe('Test Suite', () => {
 
   async function fillMetadata(token) {
     if (DEBUG) {
-      debugger;
+      // debugger;
     }
-    return {
+    const metadata = {
       address: token.address,
       owner: await token.owner(),
       name: await token.name(),
@@ -68,6 +68,17 @@ describe('Test Suite', () => {
       decimals: utils.hexToNumber(await token.decimals()),
       totalSupply: utils.hexToNumber(await token.totalSupply()),
     };
+    // const metadata = {};
+    // metadata.address = token.address;
+    // metadata.owner = await token.owner();
+    // metadata.name = await token.name();
+    // metadata.symbol = await token.symbol();
+    // metadata.decimals = utils.hexToNumber(await token.decimals());
+    // metadata.totalSupply = utils.hexToNumber(await token.totalSupply());
+    if (DEBUG) {
+      // debugger;
+    }
+    return metadata;
   }
 
   before(async (error) => {
@@ -81,26 +92,45 @@ describe('Test Suite', () => {
     haku = await Haku.at('0x5124566b479cDBA5b85Db6F605A8e48D814EAC47');
     tate = await Tate.at('0x00Bc46dC89E2425FEc12f1842c31DbaFfd09fa59');
 
-    fujiMetadata = await fillMetadata(fuji);
-    hakuMetadata = await fillMetadata(haku);
-    tateMetadata = await fillMetadata(tate);
+    // Need to increase timeout for these.
+    // fujiMetadata = await fillMetadata(fuji);
+    // hakuMetadata = await fillMetadata(haku);
+    // tateMetadata = await fillMetadata(tate);
   });
 
   describe('Deployment', async () => {
-    it('DEPLOY', async (test) => {
+    it('MINT', async () => {
+      if (DEBUG) {
+        debugger;
+      }
+      const mintFujiTransaction = await fuji.mint(owner.address, 10);
+      const { tx, receipt } = mintFujiTransaction;
+      if (DEBUG) {
+        console.log(
+          `Mint Transaction: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
+        );
+      }
+      if (DEBUG) {
+        debugger;
+      }
+      // const balanceOfTransaction = await fuji.balanceOf(owner.address);
+      // const [balance] = balanceOfTransaction.words;
+      // owner.balance = utils.hexToNumber(balanceOfTransaction);
+      // expect(owner.balance).to.equal(balance);
+    });
+  });
+
+  describe('Testing', async () => {
+    it('SWAP', async () => {
       if (DEBUG) {
         debugger;
       }
     });
 
-    it('MINT', async () => {});
-
-    it('SWAP', async () => {});
-  });
-
-  describe('Testing', async () => {
     it('DEBUG', async () => {
-      console.log('DEBUG');
+      if (DEBUG) {
+        debugger;
+      }
     });
   });
 });
