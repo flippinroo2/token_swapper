@@ -23,8 +23,11 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 // Security
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
+// Custom Tokens
+import './Template.sol'; // Template
+
 // This is Token A
-contract Fuji is IERC20 {
+contract Fuji is Template {
   using Address for address;
   // using Arrays for uint256[];
   using SafeMath for uint256;
@@ -86,7 +89,7 @@ contract Fuji is IERC20 {
     string memory name_,
     string memory symbol_,
     uint256 totalSupply_
-  ) payable {
+  ) payable Template(name_, symbol_) {
     if (DEBUG) {
       console.log('Contract creator: %s', msg.sender);
       console.log(
