@@ -29,8 +29,10 @@ contract Wrapper {
   using SafeMath for uint256;
   using Strings for string;
 
-  address public admin;
-  address public _contractAddress;
+  address public _admin;
+  address public contractAddress;
+  address public _address1;
+  address public _address2;
 
   address[] public tokenAddresses;
   // ERC20[] tokens;
@@ -46,9 +48,11 @@ contract Wrapper {
   Haku public _haku = new Haku('Haku', 'HAKU', 1050);
   Tate public _tate = new Tate('Tate', 'TATE', 1000);
 
-  constructor() {
-    admin = msg.sender;
-    _contractAddress = address(this);
+  constructor(address address1_, address address2_) {
+    _admin = msg.sender;
+    contractAddress = address(this);
+    _address1 = address1_;
+    _address2 = address2_;
 
     // fuji = new Fuji('Fuji', 'FUJI', 1100);
     // tokens.push(fuji);
@@ -66,21 +70,21 @@ contract Wrapper {
     // tokenAddresses[2] = address(_tate);
     tokenAddresses.push(address(_tate));
 
-    _fujiTateSwapper = new Swap(admin, _fuji, admin, _tate);
-    _hakuTateSwapper = new Swap(admin, _haku, admin, _tate);
+    _fujiTateSwapper = new Swap(_address1, _fuji, _address2, _tate);
+    _hakuTateSwapper = new Swap(_address2, _haku, _address1, _tate);
 
     // Example constructor for when trying to send Eth
     // Swap swapper = (new Swapper).value(msg.value)(admin, _haku, admin, _tate);
   }
 
-  function swap(address token_, uint256 amount) external {
-    console.log('swap(address token_ %s, uint256 amount %s)');
-    _fujiTateSwapper._swap(amount, amount);
+  function swap(uint256 amount) external {
+    console.log('swap(uint256 amount %s)', amount);
+    _fujiTateSwapper._swap(amount);
   }
 
-  function unswap(address token_, uint256 amount) external {
-    console.log('unswap(address token_ %s, uint amount %s)');
-    _hakuTateSwapper._swap(amount, amount);
+  function unswap(uint256 amount) external {
+    console.log('unswap(uint amount %s)', amount);
+    _hakuTateSwapper._swap(amount);
   }
 
   function testFunction() external {

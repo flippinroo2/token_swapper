@@ -47,7 +47,7 @@ contract Swap {
     _token2 = token2_;
   }
 
-  function _swap(uint256 amount1_, uint256 amount2_) public {
+  function _swap(uint256 amount) public {
     // We need to approve this contract to spend both other coins tokens.
     require(
       msg.sender == _address1 || msg.sender == _address2,
@@ -61,8 +61,8 @@ contract Swap {
       _token2.allowance(_address2, address(this)) >= amount2_,
       'Token 2 allowance is too low.'
     );
-    _safeTransferFrom(_token1, _address1, _address2, amount1_);
-    _safeTransferFrom(_token2, _address2, _address1, amount2_);
+    _safeTransferFrom(_token1, _address1, _address2, amount);
+    _safeTransferFrom(_token2, _address2, _address1, amount);
   }
 
   function _safeTransferFrom(
