@@ -1,4 +1,4 @@
-const DEBUG = false;
+const DEBUG = true;
 
 const { use, expect } = require('chai');
 use(require('chai-as-promised')).should();
@@ -26,62 +26,179 @@ const hardhatWeb3 = hre.web3;
 
 const { eth, utils } = web3;
 
+const timeout = 300000;
+
 const Fuji = artifacts.require('Fuji');
 const Haku = artifacts.require('Haku');
 const Tate = artifacts.require('Tate');
 
 describe('Test Suite', function () {
-  let owner = { balance: 0 },
-    sender = { balance: 0 },
-    receiver = { balance: 0 },
-    user = { balance: 0 };
+  this.timeout(timeout);
+
+  let owner = { fuji: {}, haku: {}, tate: {} },
+    sender = { fuji: {}, haku: {}, tate: {} },
+    receiver = { fuji: {}, haku: {}, tate: {} },
+    user = { fuji: {}, haku: {}, tate: {} };
   let fuji,
     fujiMetadata = {};
 
   before(async () => {
     fuji = await Fuji.at('0x5c1A66D05D33E4b08Ed63eE46a99011fBbF2eCE1');
-
     owner.address = await fuji.owner();
-
-    // fujiMetadata.address = fuji.address;
-    // fujiMetadata.owner = owner.address;
-    // fujiMetadata.name = await fuji.name();
-    // fujiMetadata.symbol = await fuji.symbol();
-    // fujiMetadata.decimals = utils.hexToNumber(await fuji.decimals());
-    // fujiMetadata.totalSupply = utils.hexToNumber(await fuji.totalSupply());
+    haku = await Haku.at('0x5124566b479cDBA5b85Db6F605A8e48D814EAC47');
+    sender.address = await haku.owner();
+    tate = await Tate.at('0x00Bc46dC89E2425FEc12f1842c31DbaFfd09fa59');
+    receiver.address = await tate.owner();
   });
 
-  describe('Deployment', async () => {
-    it('DEPLOY', () => {
-      const { address } = fuji;
-      // assert.equal(owner.address, accounts[0]);
-      assert.notEqual(address, 0x0);
-      assert.notEqual(address, '');
-      assert.notEqual(address, null);
-      assert.notEqual(address, undefined);
-    });
-
-    it('MINT', async () => {
-      const mintTransaction = await fuji.mint(owner.address, 10);
-      const { tx, receipt } = mintTransaction;
+  describe('MINT', async () => {
+    it('Mint FUJI', async () => {
+      let tx, receipt;
+      if (DEBUG) {
+        // debugger;
+      }
+      const mintFujiTransaction1 = await fuji.mint(owner.address, 10);
+      tx = mintFujiTransaction1.tx;
+      receipt = mintFujiTransaction1.receipt;
       if (DEBUG) {
         console.log(
-          `Mint Transaction: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
+          `Mint Fuji Transaction 1: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
         );
       }
-      const balanceOfTransaction = await fuji.balanceOf(owner.address);
-      const [balance] = balanceOfTransaction.words;
-      owner.balance = utils.hexToNumber(balanceOfTransaction);
-      expect(owner.balance).to.equal(balance);
+
+      const mintFujiTransaction2 = await fuji.mint(sender.address, 10);
+      tx = mintFujiTransaction2.tx;
+      receipt = mintFujiTransaction2.receipt;
+      if (DEBUG) {
+        console.log(
+          `Mint Fuji Transaction 2: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
+        );
+      }
+
+      const mintFujiTransaction3 = await fuji.mint(receiver.address, 10);
+      tx = mintFujiTransaction3.tx;
+      receipt = mintFujiTransaction3.receipt;
+      if (DEBUG) {
+        console.log(
+          `Mint Fuji Transaction 3: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
+        );
+      }
+    });
+
+    it('Mint HAKU', async () => {
+      let tx, receipt;
+      if (DEBUG) {
+        // debugger;
+      }
+      const mintHakuTransaction1 = await haku.mint(owner.address, 10);
+      tx = mintHakuTransaction1.tx;
+      receipt = mintHakuTransaction1.receipt;
+      if (DEBUG) {
+        console.log(
+          `Mint Haku Transaction1: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
+        );
+      }
+
+      const mintHakuTransaction2 = await haku.mint(sender.address, 10);
+      tx = mintHakuTransaction2.tx;
+      receipt = mintHakuTransaction2.receipt;
+      if (DEBUG) {
+        console.log(
+          `Mint Haku Transaction2: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
+        );
+      }
+
+      const mintHakuTransaction3 = await haku.mint(receiver.address, 10);
+      tx = mintHakuTransaction3.tx;
+      receipt = mintHakuTransaction3.receipt;
+      if (DEBUG) {
+        console.log(
+          `Mint Haku Transaction3: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
+        );
+      }
+    });
+
+    it('Mint TATE', async () => {
+      let tx, receipt;
+      if (DEBUG) {
+        // debugger;
+      }
+      const mintTateTransaction1 = await tate.mint(owner.address, 10);
+      tx = mintTateTransaction1.tx;
+      receipt = mintTateTransaction1.receipt;
+      if (DEBUG) {
+        console.log(
+          `Mint Tate Transaction1: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
+        );
+      }
+
+      const mintTateTransaction2 = await tate.mint(sender.address, 10);
+      tx = mintTateTransaction2.tx;
+      receipt = mintTateTransaction2.receipt;
+      if (DEBUG) {
+        console.log(
+          `Mint Tate Transaction2: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
+        );
+      }
+
+      const mintTateTransaction3 = await tate.mint(receiver.address, 10);
+      tx = mintTateTransaction3.tx;
+      receipt = mintTateTransaction3.receipt;
+      if (DEBUG) {
+        console.log(
+          `Mint Tate Transaction3: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
+        );
+      }
+    });
+  });
+
+  describe('BALANCES', async () => {
+    it('Owner Balances', async () => {
+      if (DEBUG) {
+        debugger;
+      }
+      const fujiBalanceOfTransaction = await fuji.balanceOf(owner.address);
+      const hakuBalanceOfTransaction = await haku.balanceOf(owner.address);
+      const tateBalanceOfTransaction = await tate.balanceOf(owner.address);
+
+      const [fujiBalance] = fujiBalanceOfTransaction.words;
+      owner.fuji.balance = utils.hexToNumber(fujiBalanceOfTransaction);
+
+      const [hakuBalance] = hakuBalanceOfTransaction.words;
+      owner.haku.balance = utils.hexToNumber(hakuBalanceOfTransaction);
+
+      const [tateBalance] = tateBalanceOfTransaction.words;
+      owner.tate.balance = utils.hexToNumber(tateBalanceOfTransaction);
+      if (DEBUG) {
+        debugger;
+      }
+    });
+
+    it('Sender Balances', async () => {
+      if (DEBUG) {
+        // debugger;
+      }
+      const fujiBalanceOfTransaction = await fuji.balanceOf(sender.address);
+      const hakuBalanceOfTransaction = await haku.balanceOf(sender.address);
+      const tateBalanceOfTransaction = await tate.balanceOf(sender.address);
+    });
+
+    it('Receiver Balances', async () => {
+      if (DEBUG) {
+        // debugger;
+      }
+      const fujiBalanceOfTransaction = await fuji.balanceOf(receiver.address);
+      const hakuBalanceOfTransaction = await haku.balanceOf(receiver.address);
+      const tateBalanceOfTransaction = await tate.balanceOf(receiver.address);
     });
   });
 
   describe('Testing', async () => {
     it('DEBUG', async () => {
-      const testTransaction = await fuji.testFunction();
       if (DEBUG) {
-        debugger;
+        // debugger;
       }
+      const testTransaction = await fuji.testFunction();
     });
   });
 });
