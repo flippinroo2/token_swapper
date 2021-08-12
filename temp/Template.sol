@@ -5,9 +5,11 @@ pragma solidity ^0.8.0;
 import 'hardhat/console.sol';
 
 // Token
+// import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
 // Math
+// import '@openzeppelin/contracts/utils/math/SafeCast.sol';
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
 // Libraries
@@ -15,8 +17,10 @@ import '@openzeppelin/contracts/utils/Address.sol';
 import '@openzeppelin/contracts/utils/Arrays.sol';
 import '@openzeppelin/contracts/utils/Strings.sol';
 
+// This is Token A
 contract Template is IERC20 {
   using Address for address;
+  // using Arrays for uint256[];
   using SafeMath for uint256;
   using Strings for string;
 
@@ -36,6 +40,8 @@ contract Template is IERC20 {
   mapping(address => mapping(address => uint256)) private _allowances;
 
   event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
+  // event Approval(address indexed owner, address indexed spender, uint256 value);
+  // event Transfer(address indexed from, address indexed to, uint256 value);
   event Fallback(address indexed sender, uint256 value);
 
   modifier security {
@@ -44,6 +50,10 @@ contract Template is IERC20 {
   }
 
   modifier safe(address account) {
+    // assert.notEqual(address, 0x0);
+    // assert.notEqual(address, '');
+    // assert.notEqual(address, null);
+    // assert.notEqual(address, undefined);
     require(account != address(0), 'Cannot transact with the zero address');
     _;
   }
@@ -65,6 +75,10 @@ contract Template is IERC20 {
     _;
     _status = _NOT_ENTERED;
   }
+
+  // Template public fuji = new Template('Fuji', 'FUJI', 1100);
+  // Template public haku = new Template('Haku', 'HAKU', 1050);
+  // Template public tate = new Template('Tate', 'TATE', 1000);
 
   constructor(
     string memory name_,
@@ -111,6 +125,12 @@ contract Template is IERC20 {
         return true;
   }
 
+// function allowance(address owner, address spender) external view returns (uint256){
+//   require(owner != address(0), "ERC20: approve from the zero address");
+//   require(spender != address(0), "ERC20: approve to the zero address");
+//   _allowances[owner][spender] = amount;
+//   emit Approval(owner, spender, amount);
+// }
 function approve(address spender, uint256 amount) external override returns (bool){
   _approve(msg.sender, spender, amount);
   return true;
@@ -144,6 +164,19 @@ function _transfer(address sender, address recipient, uint256 amount) internal {
   {
     return _allowances[owner][spender];
   }
+
+  // function approve(address spender, uint256 amount)
+  //   public
+  //   override
+  //   returns (bool)
+  // {
+  //   address owner = msg.sender;
+  //   require(owner != address(0), "ERC20: approve from the zero address");
+  //   require(spender != address(0), "ERC20: approve to the zero address");
+  //   _allowances[owner][spender] = amount;
+  //   emit Approval(owner, spender, amount);
+  //   return true;
+  // }
 
   function transferFrom(
     address spender,
@@ -179,6 +212,13 @@ function _transfer(address sender, address recipient, uint256 amount) internal {
     safe(account)
     restricted(amount)
   {
+    if (DEBUG) {
+      console.log(
+        'mint(address account: %s, uint256 amount: %s)',
+        account,
+        amount
+      );
+    }
     _balances[account] += amount;
     emit Transfer(address(0), account, amount);
   }
@@ -191,6 +231,13 @@ function _transfer(address sender, address recipient, uint256 amount) internal {
     address _previousAdmin = _admin;
     _admin = admin;
     emit AdminChanged(_previousAdmin, _admin);
+  }
+
+  function testFunction() public view {
+    if (DEBUG) {
+      console.log('_admin: %s', _admin);
+      // console.log('_owner: %s', _owner);
+    }
   }
 
   receive() external payable {
