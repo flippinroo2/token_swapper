@@ -73,7 +73,7 @@ contract Fuji is ReentrancyGuard, Ownable, ERC20 {
    * @param token_ address of token to swap
    * @param amount amount of token to swap/receive
    */
-  function swap(address token_, uint256 amount) external {
+  function swap(address token_, uint256 amount) external view {
     console.log('swap(address token_ %s, uint256 amount %s)', token_, amount);
   }
 
@@ -83,16 +83,16 @@ contract Fuji is ReentrancyGuard, Ownable, ERC20 {
    * @param token_ address of token to receive
    * @param amount amount of token to swap/receive
    */
-  function unswap(address token_, uint256 amount) external {
+  function unswap(address token_, uint256 amount) external view {
     console.log('unswap(address token_ %s, uint256 amount %s)', token_, amount);
   }
 
-  function setAdmin(address admin) internal security {
+  function setAdmin(address admin) internal {
     _admin = admin;
     // _setOwner(admin);
   }
 
-  function testFunction() external {
+  function testFunction() external view {
     console.log('_admin: %s', _admin);
     // console.log('_owner: %s', _owner);
   }

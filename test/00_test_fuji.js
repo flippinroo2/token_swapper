@@ -48,7 +48,7 @@ contract('Fuji', (accounts) => {
     // const fujiNew = await Fuji.new('Fuji', 'FUJI');
     // const fujiDeployed = await Fuji.deployed();
 
-    fuji = await Fuji.at('0x0eA5fa02b89e2c10c5e1b5CF5A254965007e9DC0');
+    fuji = await Fuji.at('0x188AC596a66fd69bB74D5b223FBe02471479D62F');
 
     owner.address = await fuji.owner();
 
