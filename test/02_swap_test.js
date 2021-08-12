@@ -71,7 +71,7 @@ describe('Wrapper', function () {
     receiver.address = accounts[2];
     user.address = accounts[3];
 
-    wrapper = await Wrapper.at('0x7167866f98742577BB5B98d54a451035a8880012');
+    wrapper = await Wrapper.at('0x80c66c22a8B535B457dD729525F62b1Be18f8485');
   });
 
   describe('ACCESS', async () => {
@@ -104,14 +104,15 @@ describe('Wrapper', function () {
       // const hakuTateSwapperAddress = await wrapper._hakuTateSwapper();
       // const hakuTateSwapper = await Swap.at(hakuTateSwapperAddress);
 
+      const fujiAdmin = await fuji.getAdmin();
       const fujiTotalSupplyTransaction1 = await fuji.totalSupply();
 
       if (DEBUG) {
         debugger;
       }
 
-      const swapTransaction1 = await wrapper.swap(5, 25);
-      const unSwapTransaction1 = await wrapper.unswap(10, 5);
+      const swapTransaction1 = await wrapper.swap(25);
+      const unSwapTransaction1 = await wrapper.unswap(10);
       if (DEBUG) {
         debugger;
       }

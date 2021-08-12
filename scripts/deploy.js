@@ -5,7 +5,7 @@ async function main() {
   const { getContractFactory, getSigners } = ethers;
   const { eth, utils } = web3;
 
-  let deployer = { balance: 0 },
+  let owner = { balance: 0 },
     sender = { balance: 0 },
     receiver = { balance: 0 },
     user = { balance: 0 };
@@ -13,20 +13,20 @@ async function main() {
   const signers = await getSigners();
   const [signer] = signers;
 
-  deployer.address = signer.address;
+  owner.address = signer.address;
   sender.address = signers[1].address;
   receiver.address = signers[2].address;
   user.address = signers[3].address;
 
-  // console.log('Account balance:', (await deployer.getBalance()).toString());
+  // console.log('Account balance:', (await owner.getBalance()).toString());
 
   const Fuji = await getContractFactory('Fuji');
   const fuji = await Fuji.deploy('Fuji', 'FUJI', 1100);
   console.log('Hardhat - Fuji address: %s', fuji.address);
 
-  // const mintTransaction = await fuji.mint(deployer.address, 10);
-  // const balanceOfTransaction = await fuji.balanceOf(deployer.address);
-  // deployer.balance = utils.hexToNumber(balanceOfTransaction);
+  // const mintTransaction = await fuji.mint(owner.address, 10);
+  // const balanceOfTransaction = await fuji.balanceOf(owner.address);
+  // owner.balance = utils.hexToNumber(balanceOfTransaction);
 
   const Haku = await getContractFactory('Haku');
   const haku = await Haku.deploy('Haku', 'HAKU', 1050);
@@ -39,13 +39,13 @@ async function main() {
   const Swap = await getContractFactory('Swap');
 
   // const fujiTateSwap = await Swap.deploy(
-  //   deployer.address,
+  //   owner.address,
   //   fuji,
   //   user.address,
   //   tate,
   // );
   // const hakuTateSwap = await Swap.deploy(
-  //   deployer.address,
+  //   owner.address,
   //   haku,
   //   user.address,
   //   tate,
@@ -54,7 +54,7 @@ async function main() {
   // console.log('Hardhat - hakuTateSwap address: %s', hakuTateSwap.address);
 
   const Wrapper = await getContractFactory('Wrapper');
-  const wrapper = await Wrapper.deploy();
+  const wrapper = await Wrapper.deploy(owner.address, user.address);
   console.log('Hardhat - Wrapper address: %s', wrapper.address);
 
   if (DEBUG) {

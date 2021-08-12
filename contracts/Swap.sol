@@ -54,11 +54,11 @@ contract Swap {
       'Not an authorized address.'
     );
     require(
-      _token1.allowance(_address1, address(this)) >= amount1_,
+      _token1.allowance(_address1, address(this)) >= amount,
       'Token 1 allowance is too low.'
     );
     require(
-      _token2.allowance(_address2, address(this)) >= amount2_,
+      _token2.allowance(_address2, address(this)) >= amount,
       'Token 2 allowance is too low.'
     );
     _safeTransferFrom(_token1, _address1, _address2, amount);
