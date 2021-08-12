@@ -52,7 +52,12 @@ contract Fuji is ERC20, Ownable, ReentrancyGuard {
     setAdmin(msg.sender);
   }
 
-  function mint(address account, uint256 amount) external {
+  modifier security {
+    require(msg.sender == _admin);
+    _;
+  }
+
+  function mint(address account, uint256 amount) external security {
     console.log(
       'mint(address account: %s, uint256 amount: %s)',
       account,
@@ -81,7 +86,7 @@ contract Fuji is ERC20, Ownable, ReentrancyGuard {
     console.log('unswap(address token_ %s, uint256 amount %s)', token_, amount);
   }
 
-  function setAdmin(address admin) internal {
+  function setAdmin(address admin) internal security {
     _admin = admin;
     // _setOwner(admin);
   }
