@@ -141,7 +141,7 @@ describe('Wrapper', function () {
         fujiTotalSupply,
       );
 
-      const fujiApprovalTransaction1 = await fuji.allowance(
+      const fujiAllowanceTransaction1 = await fuji.allowance(
         admin.address,
         sender.address,
       );
