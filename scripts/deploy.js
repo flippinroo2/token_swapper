@@ -36,15 +36,28 @@ async function main() {
   const tate = await Tate.deploy('Tate', 'TATE', 1100);
   console.log('Hardhat - Tate address: %s', tate.address);
 
-  const Wrapper = await getContractFactory('Wrapper');
-  const wrapper = await Wrapper.deploy();
-  console.log('Hardhat - Wrapper address: %s', wrapper.address);
-
+  const Swap = await getContractFactory('Swap');
   if (DEBUG) {
     debugger;
   }
+  // const fujiTateSwap = await Swap.deploy(
+  //   deployer.address,
+  //   fuji,
+  //   user.address,
+  //   tate,
+  // );
+  // const hakuTateSwap = await Swap.deploy(
+  //   deployer.address,
+  //   haku,
+  //   user.address,
+  //   tate,
+  // );
+  // console.log('Hardhat - fujiTateSwap address: %s', fujiTateSwap.address);
+  // console.log('Hardhat - hakuTateSwap address: %s', hakuTateSwap.address);
 
-  const testTransaction = await wrapper.testFunction();
+  const Wrapper = await getContractFactory('Wrapper');
+  const wrapper = await Wrapper.deploy();
+  console.log('Hardhat - Wrapper address: %s', wrapper.address);
 
   if (DEBUG) {
     debugger;

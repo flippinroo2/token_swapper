@@ -2,6 +2,9 @@ const Fuji = artifacts.require('Fuji');
 const Haku = artifacts.require('Haku');
 const Tate = artifacts.require('Tate');
 
+const Swap = artifacts.require('Swap');
+const Wrapper = artifacts.require('Wrapper');
+
 module.exports = async function (
   deployer,
   network,
@@ -15,4 +18,13 @@ module.exports = async function (
 
   await deployer.deploy(Tate, 'Tate', 'TATE', 1000);
   const tate = await Tate.deployed();
+
+  await deployer.deploy(Swap, owner, fuji, user, tate);
+  const fujiTateSwap = await Swap.deployed();
+
+  await deployer.deploy(Swap, owner, haku, user, tate);
+  const fujiTateSwap = await Swap.deployed();
+
+  await deployer.deploy(Wrapper);
+  const wrapper = await Wrapper.deployed();
 };

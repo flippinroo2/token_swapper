@@ -54,7 +54,7 @@ function logTransaction({ tx, receipt }) {
 async function fillMetadata(token) {
   const metadata = {
     address: token.address,
-    owner: await token.owner(),
+    owner: await token.getAdmin(),
     name: await token.name(),
     symbol: await token.symbol(),
     decimals: utils.hexToNumber(await token.decimals()),
@@ -91,9 +91,9 @@ describe('Test Suite', function () {
 
   describe('ACCESS', async () => {
     it('Check Owners', async () => {
-      expect(await fuji.owner()).to.equal(owner.address);
-      expect(await haku.owner()).to.equal(owner.address);
-      expect(await tate.owner()).to.equal(owner.address);
+      expect(await fuji.getAdmin()).to.equal(owner.address);
+      expect(await haku.getAdmin()).to.equal(owner.address);
+      expect(await tate.getAdmin()).to.equal(owner.address);
     });
   });
 
@@ -346,17 +346,17 @@ describe('Test Suite', function () {
       receiver.haku.balance = await getBalance(haku, receiver);
       receiver.tate.balance = await getBalance(tate, receiver);
 
-      expect(owner.fuji.balance).to.equal(previousBalances.owner.fuji - 7);
+      expect(owner.fuji.balance).to.equal(previousBalances.owner.fuji - 7); // This fails when the original balance is 0.
       expect(receiver.fuji.balance).to.equal(
         previousBalances.receiver.fuji + 7,
       );
 
-      expect(owner.haku.balance).to.equal(previousBalances.owner.haku - 7);
+      expect(owner.haku.balance).to.equal(previousBalances.owner.haku - 7); // This fails when the original balance is 0.
       expect(receiver.haku.balance).to.equal(
         previousBalances.receiver.haku + 7,
       );
 
-      expect(owner.tate.balance).to.equal(previousBalances.owner.tate - 7);
+      expect(owner.tate.balance).to.equal(previousBalances.owner.tate - 7); // This fails when the original balance is 0.
       expect(receiver.tate.balance).to.equal(
         previousBalances.receiver.tate + 7,
       );
