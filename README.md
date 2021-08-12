@@ -31,3 +31,6 @@ If having trouble connecting to remix ensure these two things:
 
 1. Ensure the package.json includes the correct path to the project.
 2. Try connecting with "http://" instead of "https://"
+
+## PSEUDOCODE
+
