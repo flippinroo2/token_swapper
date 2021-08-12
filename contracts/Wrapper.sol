@@ -28,7 +28,6 @@ import './Tate.sol'; // Token C
 
 contract Wrapper {
   using Address for address;
-  using Arrays for ERC20[];
   using SafeMath for uint256;
   using Strings for string;
 
@@ -38,7 +37,6 @@ contract Wrapper {
   address public _address2;
 
   address[] public tokenAddresses;
-  // ERC20[] tokens;
 
   Swap3 public _fujiTateSwapper;
   Swap3 public _hakuTateSwapper;
@@ -75,24 +73,28 @@ contract Wrapper {
     // tokenAddresses[2] = address(_tate);
     tokenAddresses.push(tateAddress);
 
-    _fujiTateSwapper = new Swap3(_address1, _fuji, _address2, _tate);
-    _hakuTateSwapper = new Swap3(_address1, _haku, _address2, _tate);
-    // _fujiTateSwapper = new Swap(
-    //   _address1,
-    //   fujiArgs[0],
-    //   fujiArgs[1],
-    //   _address2,
-    //   tateArgs[0],
-    //   tateArgs[1]
-    // );
-    // _hakuTateSwapper = new Swap(
-    //   _address2,
-    //   hakuArgs[0],
-    //   hakuArgs[1],
-    //   _address1,
-    //   tateArgs[0],
-    //   tateArgs[1]
-    // );
+    _fujiTateSwapper1 = new Swap(
+      _address1,
+      fujiArgs[0],
+      fujiArgs[1],
+      _address2,
+      tateArgs[0],
+      tateArgs[1]
+    );
+    _hakuTateSwapper1 = new Swap(
+      _address2,
+      hakuArgs[0],
+      hakuArgs[1],
+      _address1,
+      tateArgs[0],
+      tateArgs[1]
+    );
+
+    _fujiTateSwapper2 = new Swap2(_address1, fujiAddress, _address2, tateAddress);
+    _hakuTateSwapper2 = new Swap2(_address1, hakuAddress, _address2, tateAddress);
+
+    _fujiTateSwapper3 = new Swap3(_address1, _fuji, _address2, _tate);
+    _hakuTateSwapper3 = new Swap3(_address1, _haku, _address2, _tate);
 
     // Example constructor for when trying to send Eth
     // Swap swapper = (new Swapper).value(msg.value)(admin, _haku, admin, _tate);
