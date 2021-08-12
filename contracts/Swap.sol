@@ -84,8 +84,8 @@ contract Swap {
     //   'Token 2 allowance is too low.'
     // );
 
-    _safeTransferFrom(token1, _address1, _address2, amount);
-    _safeTransferFrom(token2, _address2, _address1, amount);
+    _safeTransferFrom(_token1, _address1, _address2, amount);
+    _safeTransferFrom(_token2, _address2, _address1, amount);
   }
 
   function _safeTransferFrom(

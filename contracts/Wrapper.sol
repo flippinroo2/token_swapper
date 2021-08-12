@@ -40,16 +40,16 @@ contract Wrapper {
   address[] public tokenAddresses;
   // ERC20[] tokens;
 
-  Swap public _fujiTateSwapper;
-  Swap public _hakuTateSwapper;
+  Swap3 public _fujiTateSwapper;
+  Swap3 public _hakuTateSwapper;
 
   string[] fujiArgs = ['Fuji', 'FUJI'];
   string[] hakuArgs = ['Haku', 'HAKU'];
   string[] tateArgs = ['Tate', 'TATE'];
 
-  Fuji public _fuji = new Fuji('Fuji', 'FUJI', 1100);
-  Haku public _haku = new Haku('Haku', 'HAKU', 1050);
-  Tate public _tate = new Tate('Tate', 'TATE', 1000);
+  Template public _fuji = new Fuji('Fuji', 'FUJI', 1100);
+  Template public _haku = new Haku('Haku', 'HAKU', 1050);
+  Template public _tate = new Tate('Tate', 'TATE', 1000);
 
   constructor(address address1_, address address2_) {
     _admin = msg.sender;

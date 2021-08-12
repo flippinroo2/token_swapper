@@ -71,12 +71,12 @@ contract Swap3 {
     //   'Token 2 allowance is too low.'
     // );
 
-    _safeTransferFrom(_token1Address, _address1, _address2, amount);
-    _safeTransferFrom(_token2Address, _address2, _address1, amount);
+    // _safeTransferFrom(_token1Address, _address1, _address2, amount);
+    // _safeTransferFrom(_token2Address, _address2, _address1, amount);
   }
 
   function _safeTransferFrom(
-    address token,
+    Template token,
     address sender,
     address receiver,
     uint256 amount
