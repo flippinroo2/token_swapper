@@ -119,24 +119,27 @@ contract Fuji is IERC20 {
     return _balances[account];
   }
 
-  function transfer(address recipient, uint256 amount)
-    public
-    override
-    returns (bool)
-  {
-    address sender = msg.sender;
-    require(sender != address(0), "ERC20: transfer from the zero address");
-    require(recipient != address(0), "ERC20: transfer to the zero address");
-
-    uint256 senderBalance = _balances[sender];
-    require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
-    unchecked {
-      _balances[sender] = senderBalance - amount;
-    }
-    _balances[recipient] += amount;
-
-    emit Transfer(sender, recipient, amount);
+  function transfer(address recipient, uint256 amount) public returns (bool){
+        _transfer(_msgSender(), recipient, amount);
+        return true;
   }
+
+// function allowance(address owner, address spender) external view returns (uint256);
+// function approve(address spender, uint256 amount) external returns (bool){ require(owner != address(0), "ERC20: approve from the zero address"); require(spender != address(0), "ERC20: approve to the zero address"); _allowances[owner][spender] = amount; emit Approval(owner, spender, amount);}
+
+function _transfer(address sender, address recipient, uint256 amount) internal {
+
+        require(sender != address(0), "ERC20: transfer from the zero address");
+        require(recipient != address(0), "ERC20: transfer to the zero address");
+        uint256 senderBalance = _balances[sender];
+        require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
+        unchecked {
+            _balances[sender] = senderBalance - amount;
+        }
+        _balances[recipient] += amount;
+
+        emit Transfer(sender, recipient, amount);}
+
 
   function allowance(address owner, address spender)
     external
