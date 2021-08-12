@@ -67,6 +67,10 @@ contract Fuji is ReentrancyGuard, Ownable, ERC20 {
     _mint(account, amount);
   }
 
+  function allBalances() external view {
+    // return _balances;
+  }
+
   /**
    * Convert an amount of input token_ to an equivalent amount of the output token
    *
