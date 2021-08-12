@@ -104,6 +104,8 @@ describe('Wrapper', function () {
       // const hakuTateSwapperAddress = await wrapper._hakuTateSwapper();
       // const hakuTateSwapper = await Swap.at(hakuTateSwapperAddress);
 
+      const fujiTotalSupplyTransaction1 = await fuji.totalSupply();
+
       if (DEBUG) {
         debugger;
       }
