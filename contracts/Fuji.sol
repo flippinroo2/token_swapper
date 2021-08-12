@@ -119,14 +119,28 @@ contract Fuji is IERC20 {
     return _balances[account];
   }
 
-  function transfer(address recipient, uint256 amount) public returns (bool){
-        _transfer(_msgSender(), recipient, amount);
+  function transfer(address recipient, uint256 amount) public override returns (bool){
+        _transfer(msg.sender, recipient, amount);
         return true;
   }
 
-// function allowance(address owner, address spender) external view returns (uint256);
-// function approve(address spender, uint256 amount) external returns (bool){ require(owner != address(0), "ERC20: approve from the zero address"); require(spender != address(0), "ERC20: approve to the zero address"); _allowances[owner][spender] = amount; emit Approval(owner, spender, amount);}
+// function allowance(address owner, address spender) external view returns (uint256){
+//   require(owner != address(0), "ERC20: approve from the zero address");
+//   require(spender != address(0), "ERC20: approve to the zero address");
+//   _allowances[owner][spender] = amount;
+//   emit Approval(owner, spender, amount);
+// }
+function approve(address spender, uint256 amount) external override returns (bool){
+  _approve(msg.sender, spender, amount);
+  return true;
+}
 
+function _approve(address owner, address spender, uint256 amount) internal {
+  require(owner != address(0), "ERC20: approve from the zero address");
+  require(spender != address(0), "ERC20: approve to the zero address");
+  _allowances[owner][spender] = amount;
+  emit Approval(owner, spender, amount);
+}
 function _transfer(address sender, address recipient, uint256 amount) internal {
 
         require(sender != address(0), "ERC20: transfer from the zero address");
@@ -150,31 +164,31 @@ function _transfer(address sender, address recipient, uint256 amount) internal {
     return _allowances[owner][spender];
   }
 
-  function approve(address spender, uint256 amount)
-    public
-    override
-    returns (bool)
-  {
-    address owner = msg.sender;
-    require(owner != address(0), "ERC20: approve from the zero address");
-    require(spender != address(0), "ERC20: approve to the zero address");
-    _allowances[owner][spender] = amount;
-    emit Approval(owner, spender, amount);
-    return true;
-  }
+  // function approve(address spender, uint256 amount)
+  //   public
+  //   override
+  //   returns (bool)
+  // {
+  //   address owner = msg.sender;
+  //   require(owner != address(0), "ERC20: approve from the zero address");
+  //   require(spender != address(0), "ERC20: approve to the zero address");
+  //   _allowances[owner][spender] = amount;
+  //   emit Approval(owner, spender, amount);
+  //   return true;
+  // }
 
   function transferFrom(
     address spender,
     address recipient,
     uint256 amount
   ) external override returns (bool) {
-    transfer(spender, recipient, amount);
+    _transfer(spender, recipient, amount);
 
   address sender = msg.sender;
     uint256 currentAllowance = _allowances[spender][sender];
     require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
     unchecked {
-        approve(spender, sender, currentAllowance - amount);
+        _approve(spender, sender, currentAllowance - amount);
     }
     return true;
   }
