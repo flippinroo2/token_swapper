@@ -34,3 +34,4 @@ If having trouble connecting to remix ensure these two things:
 
 ## PSEUDOCODE
 
+1.
