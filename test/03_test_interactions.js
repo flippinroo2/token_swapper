@@ -26,10 +26,9 @@ const hardhatWeb3 = hre.web3;
 
 const { eth, utils } = web3;
 
-const Storage = artifacts.require('Storage');
 const Fuji = artifacts.require('Fuji');
 const Haku = artifacts.require('Haku');
-const Tate = artifacts.require('Tate');
+// const Tate = artifacts.require('Tate');
 
 describe('Test Suite', () => {
   const { eth, utils } = web3;
@@ -68,13 +67,6 @@ describe('Test Suite', () => {
       decimals: utils.hexToNumber(await token.decimals()),
       totalSupply: utils.hexToNumber(await token.totalSupply()),
     };
-    // const metadata = {};
-    // metadata.address = token.address;
-    // metadata.owner = await token.owner();
-    // metadata.name = await token.name();
-    // metadata.symbol = await token.symbol();
-    // metadata.decimals = utils.hexToNumber(await token.decimals());
-    // metadata.totalSupply = utils.hexToNumber(await token.totalSupply());
     if (DEBUG) {
       // debugger;
     }
@@ -90,7 +82,7 @@ describe('Test Suite', () => {
 
     fuji = await Fuji.at('0x5c1A66D05D33E4b08Ed63eE46a99011fBbF2eCE1');
     haku = await Haku.at('0x5124566b479cDBA5b85Db6F605A8e48D814EAC47');
-    tate = await Tate.at('0x00Bc46dC89E2425FEc12f1842c31DbaFfd09fa59');
+    // tate = await Tate.at('0x00Bc46dC89E2425FEc12f1842c31DbaFfd09fa59');
 
     // Need to increase timeout for these.
     // fujiMetadata = await fillMetadata(fuji);
