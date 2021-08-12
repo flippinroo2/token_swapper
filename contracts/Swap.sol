@@ -23,7 +23,7 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 // Security
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
-contract Swap is IERC20 {
+contract Swap {
   using Address for address;
   // using Arrays for uint256[];
   using SafeMath for uint256;
