@@ -24,37 +24,52 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 contract Swap is IERC20 {
-  ERC20 public _tokenA;
-  address public _addressA;
+  using Address for address;
+  // using Arrays for uint256[];
+  using SafeMath for uint256;
+  using Strings for string;
 
-  ERC20 public _tokenB;
-  address public _addressB;
+  // Most likely make these private.
+  address public _address1;
+  ERC20 public _token1;
+  address public _address2;
+  ERC20 public _token2;
+  uint256 public _amount;
 
-  constructor(address tokenA_, address tokenB_) {
+  constructor(
+    address address1_,
+    ERC20 token1_,
+    address address2_,
+    ERC20 token2_,
+    uint256 amount_
+  ) {
     console.log(
-      'constructor(address _tokenA %s, address _tokenB %s)',
-      _tokenA,
-      _tokenB
+      'constructor(address _token1 %s, address _token2 %s)',
+      _token1,
+      _token2
     );
-    _tokenA = tokenA_;
-    _tokenB = tokenB_;
+    _address1 = address1_;
+    _token1 = token1_;
+    _address2 = address2_;
+    _token2 = token2_;
+    _amount = amount_;
+    swap();
   }
 
-  function swap(uint256 _amount1, uint256 _amount2) public {
-    require(msg.sender == owner1 || msg.sender == owner2, 'Not authoerized');
-    require(
-      token1.allowance(owner1, address(this)) >= _amount1,
-      'Token 1 allowance too low'
-    );
-    _safeTransferFrom(token1, owner1, token2, owner2);
-    _safeTransferFrom(token1, owner1, token2, owner2);
+  function swap() internal {
+    // require(msg.sender == owner1 || msg.sender == owner2, 'Not authorized.');
+    // require(
+    //   token1.allowance(owner1, address(this)) >= _amount1,
+    //   'Token 1 allowance too low'
+    // );
+    _safeTransferFrom(_address1, _token1, _address2, _token2, _amount);
   }
 
   function _safeTransferFrom(
-    ERC20 tokenA,
     address sender,
-    ERC20 tokenB,
+    ERC20 token1,
     address receiver,
+    ERC20 token2,
     uint256 amount
   ) private {
     bool sent = token.transferFrom(sender, receiver, amount);
