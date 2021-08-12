@@ -34,48 +34,51 @@ contract Swap is IERC20 {
   ERC20 public _token1;
   address public _address2;
   ERC20 public _token2;
-  uint256 public _amount;
 
   constructor(
     address address1_,
     ERC20 token1_,
     address address2_,
-    ERC20 token2_,
-    uint256 amount_
+    ERC20 token2_
   ) {
     console.log(
-      'constructor(address _token1 %s, address _token2 %s)',
-      _token1,
-      _token2
+      'constructor(address address1_ %s, ERC20 token1_ %s, address address2_ %s, ERC20 token2_ %s)',
+      address1_,
+      token1_,
+      address2_,
+      token2_
     );
     _address1 = address1_;
     _token1 = token1_;
     _address2 = address2_;
     _token2 = token2_;
-    _amount = amount_;
-    swap();
   }
 
-  function swap() internal {
-    // require(msg.sender == owner1 || msg.sender == owner2, 'Not authorized.');
-    // require(
-    //   token1.allowance(owner1, address(this)) >= _amount1,
-    //   'Token 1 allowance too low'
-    // );
-    _safeTransferFrom(_address1, _token1, _address2, _token2, _amount);
+  function swap(uint256 amount1_, uint256 amount2_) public {
+    // We need to approve this contract to spend both other coins tokens.
+    require(
+      msg.sender == _address1 || msg.sender == _address2,
+      'Not an authorized address.'
+    );
+    require(
+      _token1.allowance(_address1, address(this)) >= amount1_,
+      'Token 1 allowance is too low.'
+    );
+    require(
+      _token2.allowance(_address2, address(this)) >= amount2_,
+      'Token 2 allowance is too low.'
+    );
+    _safeTransferFrom(_token1, _address1, _address2, amount1_);
+    _safeTransferFrom(_token2, _address2, _address1, amount2_);
   }
 
   function _safeTransferFrom(
+    ERC20 token,
     address sender,
-    ERC20 token1,
     address receiver,
-    ERC20 token2,
     uint256 amount
   ) private {
     bool sent = token.transferFrom(sender, receiver, amount);
-    require(sent, 'Token transfer failied');
+    require(sent, 'Token transfer failed.');
   }
-
-  // We need to approve this contract to spend both other coins tokens.
-  function testFunction() external view {}
 }

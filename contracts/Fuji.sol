@@ -27,27 +27,26 @@ import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 contract Fuji is IERC20 {
   using Address for address;
   // using Arrays for uint256[];
-  using SafeMath for uint16;
   using SafeMath for uint256;
   using Strings for string;
 
   address private _admin;
   string private _name;
   string private _symbol;
-  uint16 private _totalSupply;
-  uint16 private _totalMinted;
+  uint256 private _totalSupply;
+  uint256 private _totalMinted;
   uint8 public constant TOKEN_DECIMALS = 18;
   uint8 private constant _NOT_ENTERED = 1;
   uint8 private constant _ENTERED = 2;
   uint8 private _status;
 
-  mapping(address => uint16) private _balances;
-  mapping(address => mapping(address => uint16)) private _allowances;
+  mapping(address => uint256) private _balances;
+  mapping(address => mapping(address => uint256)) private _allowances;
 
   event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
-  event Approval(address indexed owner, address indexed spender, uint16 value);
-  event Transfer(address indexed from, address indexed to, uint16 value);
-  event Fallback(address indexed sender, uint16 value);
+  // event Approval(address indexed owner, address indexed spender, uint256 value);
+  // event Transfer(address indexed from, address indexed to, uint256 value);
+  event Fallback(address indexed sender, uint256 value);
 
   modifier security {
     require(msg.sender == _admin, 'Must be contract admin');
@@ -63,7 +62,7 @@ contract Fuji is IERC20 {
     _;
   }
 
-  modifier restricted(uint16 number) {
+  modifier restricted(uint256 number) {
     require(number != 0, 'Number cannot be zero');
     require(number > 0, 'Must be a positive number.');
     require(number <= _totalSupply, 'Must be less than total supply.');
@@ -84,7 +83,7 @@ contract Fuji is IERC20 {
   constructor(
     string memory name_,
     string memory symbol_,
-    uint16 totalSupply_
+    uint256 totalSupply_
   ) payable {
     console.log('Contract creator: %s', msg.sender);
     console.log(
@@ -94,36 +93,50 @@ contract Fuji is IERC20 {
     );
     setAdmin(msg.sender);
     setTotalSupply(totalSupply_);
-    mint(totalSupply_);
+    mint(getAdmin(), totalSupply_);
   }
 
-  function totalSupply() external view returns (uint16) {
+  function totalSupply() external view override returns (uint256) {
     return _totalSupply;
   }
 
-  function setTotalSupply(uint16 totalSupply_) internal {
+  function setTotalSupply(uint256 totalSupply_) internal {
     // require() // Ensure positive #
-    // Can uint16 have an overflow? If not, explain that next to variable declaration.
+    // Can uint256 have an overflow? If not, explain that next to variable declaration.
     _totalSupply = totalSupply_;
   }
 
-  function balanceOf(address account) external view returns (uint16) {}
+  function balanceOf(address account)
+    external
+    view
+    override
+    returns (uint256)
+  {}
 
-  function transfer(address recipient, uint16 amount) external returns (bool) {}
+  function transfer(address recipient, uint256 amount)
+    external
+    override
+    returns (bool)
+  {}
 
   function allowance(address owner, address spender)
     external
     view
-    returns (uint16)
+    override
+    returns (uint256)
   {}
 
-  function approve(address spender, uint16 amount) external returns (bool) {}
+  function approve(address spender, uint256 amount)
+    external
+    override
+    returns (bool)
+  {}
 
   function transferFrom(
     address spender,
     address recipient,
-    uint16 amount
-  ) external returns (bool) {}
+    uint256 amount
+  ) external override returns (bool) {}
 
   function name() external view returns (string memory) {
     return _name;
@@ -140,8 +153,8 @@ contract Fuji is IERC20 {
   function mint(address account, uint256 amount)
     public
     security
-    safe
-    restricted
+    safe(account)
+    restricted(amount)
   {
     console.log(
       'mint(address account: %s, uint256 amount: %s)',
@@ -158,7 +171,7 @@ contract Fuji is IERC20 {
    * @param token_ address of token to swap
    * @param amount amount of token to swap/receive
    */
-  function swap(address token_, uint16 amount) public view {
+  function swap(address token_, uint256 amount) public view {
     console.log('swap(address token_ %s, uint256 amount %s)', token_, amount);
   }
 
@@ -168,7 +181,7 @@ contract Fuji is IERC20 {
    * @param token_ address of token to receive
    * @param amount amount of token to swap/receive
    */
-  function unswap(address token_, uint16 amount) public view {
+  function unswap(address token_, uint256 amount) public view {
     console.log('unswap(address token_ %s, uint256 amount %s)', token_, amount);
   }
 
