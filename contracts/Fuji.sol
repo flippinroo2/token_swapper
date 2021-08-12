@@ -1,3 +1,4 @@
+//SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
 // Hardhat - Console Log
@@ -53,7 +54,7 @@ contract Fuji is ReentrancyGuard, Ownable, ERC20 {
   }
 
   modifier security {
-    require(msg.sender == _admin);
+    require(msg.sender == _admin, 'Must be contract admin');
     _;
   }
 
