@@ -60,7 +60,7 @@ describe('Wrapper', function () {
     receiver = { fuji: {}, haku: {}, tate: {} },
     user = { fuji: {}, haku: {}, tate: {} };
 
-  let wrapper;
+  let wrapper, fuji, haku, tate;
 
   before(async () => {
     const accounts = await getAccounts();
@@ -70,6 +70,10 @@ describe('Wrapper', function () {
     user.address = accounts[3];
 
     wrapper = await Wrapper.at('0x6569102735Af5933fff61eEB593D1453211131FB');
+    debugger;
+    fuji = await Token.at(await wrapper._fuji());
+    haku = await Token.at(await wrapper._haku());
+    tate = await Token.at(await wrapper._tate());
   });
 
   describe('ACCESS', async () => {
