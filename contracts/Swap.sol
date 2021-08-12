@@ -15,6 +15,12 @@ import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 import '@openzeppelin/contracts/utils/Address.sol';
 import '@openzeppelin/contracts/utils/Strings.sol';
 
+// Custom Tokens
+import './Template.sol'; // Template
+import './Fuji.sol'; // Token A
+import './Haku.sol'; // Token B
+import './Tate.sol'; // Token C
+
 contract Swap {
   using Address for address;
   using SafeMath for uint256;
@@ -27,6 +33,8 @@ contract Swap {
   address public _token1Address;
   address public _address2;
   address public _token2Address;
+
+  Template public token;
 
   constructor(
     address address1_,
@@ -53,14 +61,17 @@ contract Swap {
       msg.sender == _address1 || msg.sender == _address2,
       'Not an authorized address.'
     );
-    require(
-      _token1Address.allowance(_address1, address(this)) >= amount,
-      'Token 1 allowance is too low.'
-    );
-    require(
-      _token2Address.allowance(_address2, address(this)) >= amount,
-      'Token 2 allowance is too low.'
-    );
+    // require(
+    //   _token1Address.allowance(_address1, address(this)) >= amount,
+    //   'Token 1 allowance is too low.'
+    // );
+    // require(
+    //   _token2Address.allowance(_address2, address(this)) >= amount,
+    //   'Token 2 allowance is too low.'
+    // );
+
+    token = new Template()
+
     _safeTransferFrom(_token1Address, _address1, _address2, amount);
     _safeTransferFrom(_token2Address, _address2, _address1, amount);
   }

@@ -19,6 +19,7 @@ import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
 // Custom Tokens
 import './Swap.sol'; // Swap Utility Token
+import './Template.sol'; // Template
 import './Fuji.sol'; // Token A
 import './Haku.sol'; // Token B
 import './Tate.sol'; // Token C
@@ -40,13 +41,13 @@ contract Wrapper {
   Swap public _fujiTateSwapper;
   Swap public _hakuTateSwapper;
 
-  // Fuji public fuji;
-  // Haku public haku;
-  // Tate public tate;
+  Template public fuji = new Template('Fuji', 'FUJI', 1100);
+  Template public haku = new Template('Haku', 'HAKU', 1050);
+  Template public tate = new Template('Tate', 'TATE', 1000);
 
-  Fuji public _fuji = new Fuji('Fuji', 'FUJI', 1100);
-  Haku public _haku = new Haku('Haku', 'HAKU', 1050);
-  Tate public _tate = new Tate('Tate', 'TATE', 1000);
+  // Fuji public _fuji = new Fuji('Fuji', 'FUJI', 1100);
+  // Haku public _haku = new Haku('Haku', 'HAKU', 1050);
+  // Tate public _tate = new Tate('Tate', 'TATE', 1000);
 
   constructor(address address1_, address address2_) {
     _admin = msg.sender;
@@ -76,8 +77,8 @@ contract Wrapper {
     // tokenAddresses[2] = address(_tate);
     tokenAddresses.push(tateAddress);
 
-    _fujiTateSwapper = new Swap(_address1, _fuji, _address2, _tate);
-    _hakuTateSwapper = new Swap(_address2, _haku, _address1, _tate);
+    _fujiTateSwapper = new Swap(_address1, fujiAddress, _address2, tateAddress);
+    _hakuTateSwapper = new Swap(_address2, hakuAddress, _address1, tateAddress);
 
     // Example constructor for when trying to send Eth
     // Swap swapper = (new Swapper).value(msg.value)(admin, _haku, admin, _tate);
