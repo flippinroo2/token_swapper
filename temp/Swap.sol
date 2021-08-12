@@ -30,33 +30,29 @@ contract Swap {
 
   // Most likely make these private.
   address public _address1;
-  string public _token1Name;
-  string public _token1Symbol;
-
+  address public _token1Address;
   address public _address2;
-  string public _token2Name;
-  string public _token2Symbol;
+  address public _token2Address;
 
-  Template public token1;
-  Template public token2;
+  Template public token;
 
   constructor(
     address address1_,
-    string memory token1Name_,
-    string memory token1Symbol_,
+    address token1Address_,
     address address2_,
-    string memory token2Name_,
-    string memory token2Symbol_
+    address token2Address_
   ) {
+    if (DEBUG) {
+      console.log(
+        'constructor(address address1_ %s, IERC20 token1Address_, address address2_ %s, IERC20 token2Address_)',
+        address1_,
+        address2_
+      );
+    }
     _address1 = address1_;
-    _token1Name = token1Name_;
-    _token1Symbol = token1Symbol_;
+    _token1Address = token1Address_;
     _address2 = address2_;
-    _token2Name = token2Name_;
-    _token2Symbol = token2Symbol_;
-
-    token1 = new Template(_token1Name, _token1Symbol);
-    token2 = new Template(_token2Name, _token2Symbol);
+    _token2Address = token2Address_;
   }
 
   function _swap(uint256 amount) public {
@@ -66,16 +62,18 @@ contract Swap {
       'Not an authorized address.'
     );
     // require(
-    //   token1.allowance(_address1, address(this)) >= amount,
+    //   _token1Address.allowance(_address1, address(this)) >= amount,
     //   'Token 1 allowance is too low.'
     // );
     // require(
-    //   token2.allowance(_address2, address(this)) >= amount,
+    //   _token2Address.allowance(_address2, address(this)) >= amount,
     //   'Token 2 allowance is too low.'
     // );
 
-    _safeTransferFrom(token1, _address1, _address2, amount);
-    _safeTransferFrom(token2, _address2, _address1, amount);
+    token = new Template()
+
+    _safeTransferFrom(_token1Address, _address1, _address2, amount);
+    _safeTransferFrom(_token2Address, _address2, _address1, amount);
   }
 
   function _safeTransferFrom(

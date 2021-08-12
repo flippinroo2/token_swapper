@@ -82,10 +82,13 @@ contract Template is IERC20 {
     _status = _NOT_ENTERED;
   }
 
+  // Template public fuji = new Template('Fuji', 'FUJI', 1100);
+  // Template public haku = new Template('Haku', 'HAKU', 1050);
+  // Template public tate = new Template('Tate', 'TATE', 1000);
+
   constructor(
     string memory name_,
-    string memory symbol_,
-    uint256 totalSupply_
+    string memory symbol_
   ) payable {
     if (DEBUG) {
       console.log('Contract creator: %s', msg.sender);
@@ -96,8 +99,8 @@ contract Template is IERC20 {
       );
     }
     setAdmin(msg.sender);
-    setTotalSupply(totalSupply_);
-    mint(getAdmin(), totalSupply_);
+    // setTotalSupply(totalSupply_);
+    // mint(getAdmin(), totalSupply_);
   }
 
   function totalSupply() external view override returns (uint256) {

@@ -41,9 +41,9 @@ contract Wrapper {
   Swap public _fujiTateSwapper;
   Swap public _hakuTateSwapper;
 
-  Template public fuji = new Template('Fuji', 'FUJI', 1100);
-  Template public haku = new Template('Haku', 'HAKU', 1050);
-  Template public tate = new Template('Tate', 'TATE', 1000);
+  Template public _fuji = new Template('Fuji', 'FUJI', 1100);
+  Template public _haku = new Template('Haku', 'HAKU', 1050);
+  Template public _tate = new Template('Tate', 'TATE', 1000);
 
   // Fuji public _fuji = new Fuji('Fuji', 'FUJI', 1100);
   // Haku public _haku = new Haku('Haku', 'HAKU', 1050);
