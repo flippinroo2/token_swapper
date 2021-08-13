@@ -17,48 +17,48 @@ import '@openzeppelin/contracts/utils/Strings.sol';
 import './Template.sol'; // Template
 
 contract Fuji is Template {
-  using Address for address;
+    using Address for address;
     using Arrays for uint256[];
-  using SafeMath for uint256;
-  using Strings for string;
+    using SafeMath for uint256;
+    using Strings for string;
 
-  bool private constant DEBUG = false;
+    bool private constant DEBUG = false;
 
-  address private _admin;
-  string private _name;
-  string private _symbol;
-  uint256 private _totalSupply;
-  uint256 private _totalMinted;
+    address private _admin;
+    string private _name;
+    string private _symbol;
+    uint256 private _totalSupply;
+    uint256 private _totalMinted;
 
     // Events
     // event Approval(address indexed owner, address indexed spender, uint256 value);
     // event Transfer(address indexed from, address indexed to, uint256 value);
-  mapping(address => uint256) private _balances;
-  mapping(address => mapping(address => uint256)) private _allowances;
+    mapping(address => uint256) private _balances;
+    mapping(address => mapping(address => uint256)) private _allowances;
 
-  event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
-  event Fallback(address indexed sender, uint256 value);
+    event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
+    event Fallback(address indexed sender, uint256 value);
 
-  constructor(
-    string memory name_,
-    string memory symbol_,
-    uint256 totalSupply_
-  ) payable Template(name_, symbol_) {
-    if (DEBUG) {
-      console.log('Contract creator: %s', msg.sender);
-      console.log(
-        'constructor(string memory name_: %s, string memory symbol_: %s)',
-        name_,
-        symbol_
-      );
+    constructor(
+        string memory name_,
+        string memory symbol_,
+        uint256 totalSupply_
+    ) payable Template(name_, symbol_) {
+        if (DEBUG) {
+            console.log('Contract creator: %s', msg.sender);
+            console.log(
+                'constructor(string memory name_: %s, string memory symbol_: %s)',
+                name_,
+                symbol_
+            );
+        }
+        setAdmin(msg.sender);
+        setTotalSupply(totalSupply_);
+        mint(getAdmin(), totalSupply_);
     }
-    setAdmin(msg.sender);
-    setTotalSupply(totalSupply_);
-    mint(getAdmin(), totalSupply_);
-  }
 
     function totalSupply() external view override returns (uint256) {
-      return _totalSupply;
+    return _totalSupply;
     }
 
     function setTotalSupply(uint256 totalSupply_) internal {
@@ -67,34 +67,33 @@ contract Fuji is Template {
     }
 
     function balanceOf(address account)
-      external
-      view
-      override
-      returns (uint256)
+    external
+    view
+    override
+    returns (uint256)
     {
-      return _balances[account];
+    return _balances[account];
     }
 
     function transfer(address recipient, uint256 amount) public override returns (bool){
-          _transfer(msg.sender, recipient, amount);
-          return true;
+        _transfer(msg.sender, recipient, amount);
+        return true;
     }
 
-
-  // function allowance(address owner, address spender) external view returns (uint256){
-  //   require(owner != address(0), "ERC20: approve from the zero address");
-  //   require(spender != address(0), "ERC20: approve to the zero address");
-  //   _allowances[owner][spender] = amount;
-  //   emit Approval(owner, spender, amount);
-  // }
+    // function allowance(address owner, address spender) external view returns (uint256){
+    //   require(owner != address(0), "ERC20: approve from the zero address");
+    //   require(spender != address(0), "ERC20: approve to the zero address");
+    //   _allowances[owner][spender] = amount;
+    //   emit Approval(owner, spender, amount);
+    // }
 
     function allowance(address owner, address spender)
-      external
-      view
-      override
-      returns (uint256)
+    external
+    view
+    override
+    returns (uint256)
     {
-      return _allowances[owner][spender];
+    return _allowances[owner][spender];
     }
 
     // function approve(address spender, uint256 amount)
@@ -110,48 +109,44 @@ contract Fuji is Template {
     //   return true;
     // }
 
-  function approve(address spender, uint256 amount) external override returns (bool){
-    _approve(msg.sender, spender, amount);
-    return true;
-  }
-
-  function _approve(address owner, address spender, uint256 amount) internal {
-    require(owner != address(0), "ERC20: approve from the zero address");
-    require(spender != address(0), "ERC20: approve to the zero address");
-    _allowances[owner][spender] = amount;
-    emit Approval(owner, spender, amount);
-  }
-
-  function _transfer(address sender, address recipient, uint256 amount) internal {
-
-          require(sender != address(0), "ERC20: transfer from the zero address");
-          require(recipient != address(0), "ERC20: transfer to the zero address");
-          uint256 senderBalance = _balances[sender];
-          require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
-          unchecked {
-              _balances[sender] = senderBalance - amount;
-          }
-          _balances[recipient] += amount;
-
-          emit Transfer(sender, recipient, amount);}
-
-
-    function transferFrom(
-      address spender,
-      address recipient,
-      uint256 amount
-    ) external override returns (bool) {
-      _transfer(spender, recipient, amount);
-
-    address sender = msg.sender;
-      uint256 currentAllowance = _allowances[spender][sender];
-      require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
-      unchecked {
-          _approve(spender, sender, currentAllowance - amount);
-      }
-      return true;
+    function approve(address spender, uint256 amount) external override returns (bool){
+        _approve(msg.sender, spender, amount);
+        return true;
     }
 
+    function _approve(address owner, address spender, uint256 amount) internal {
+        require(owner != address(0), "ERC20: approve from the zero address");
+        require(spender != address(0), "ERC20: approve to the zero address");
+        _allowances[owner][spender] = amount;
+        emit Approval(owner, spender, amount);
+    }
+
+    function _transfer(address sender, address recipient, uint256 amount) internal {
+        require(sender != address(0), "ERC20: transfer from the zero address");
+        require(recipient != address(0), "ERC20: transfer to the zero address");
+        uint256 senderBalance = _balances[sender];
+        require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
+        unchecked {
+            _balances[sender] = senderBalance - amount;
+        }
+        _balances[recipient] += amount;
+        emit Transfer(sender, recipient, amount);
+    }
+
+    function transferFrom(
+    address spender,
+    address recipient,
+    uint256 amount
+    ) external override returns (bool) {
+        _transfer(spender, recipient, amount);
+        address sender = msg.sender;
+        uint256 currentAllowance = _allowances[spender][sender];
+        require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
+        unchecked {
+            _approve(spender, sender, currentAllowance - amount);
+        }
+        return true;
+    }
 
     function name() external view returns (string memory) {
         return _name;
@@ -166,23 +161,32 @@ contract Fuji is Template {
     }
 
     function mint(address account, uint256 amount)
-      public
-      security
-      safe(account)
-      restricted(amount)
+    public
+    security
+    safe(account)
+    restricted(amount)
     {
-      if (DEBUG) {
+    if (DEBUG) {
         console.log(
-          'mint(address account: %s, uint256 amount: %s)',
-          account,
-          amount
+        'mint(address account: %s, uint256 amount: %s)',
+        account,
+        amount
         );
-      }
-      _balances[account] += amount;
-      emit Transfer(address(0), account, amount);
+    }
+    _balances[account] += amount;
+    emit Transfer(address(0), account, amount);
     }
 
-  receive() external payable {
-    emit Fallback(msg.sender, msg.value);
-  }
+    function setAdmin(address admin) internal {
+        _admin = admin;
+        // _setOwner(admin);
+    }
+
+    function testFunction() external view {
+        console.log('_admin: %s', _admin);
+        // console.log('_owner: %s', _owner);
+    }
+    receive() external payable {
+        emit Fallback(msg.sender, msg.value);
+    }
 }

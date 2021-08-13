@@ -85,13 +85,4 @@ contract Fuji is ReentrancyGuard, Ownable, ERC20 {
     console.log('unswap(address token_ %s, uint256 amount %s)', token_, amount);
   }
 
-  function setAdmin(address admin) internal {
-    _admin = admin;
-    // _setOwner(admin);
-  }
-
-  function testFunction() external view {
-    console.log('_admin: %s', _admin);
-    // console.log('_owner: %s', _owner);
-  }
 }
