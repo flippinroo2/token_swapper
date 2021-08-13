@@ -24,9 +24,7 @@ contract Fuji is Template {
 
     bool private constant DEBUG = false;
 
-    address private _admin;
-    string private _name;
-    string private _symbol;
+    // address private _admin;
     uint256 private _totalSupply;
     uint256 private _totalMinted;
 
@@ -52,7 +50,7 @@ contract Fuji is Template {
                 symbol_
             );
         }
-        setAdmin(msg.sender);
+        // setAdmin(msg.sender);
         setTotalSupply(totalSupply_);
         mint(getAdmin(), totalSupply_);
     }
@@ -152,14 +150,6 @@ contract Fuji is Template {
         return true;
     }
 
-    function name() external view returns (string memory) {
-        return _name;
-    }
-
-    function symbol() external view returns (string memory) {
-        return _symbol;
-    }
-
     function decimals() external pure returns (uint8) {
         return TOKEN_DECIMALS;
     }
@@ -181,10 +171,10 @@ contract Fuji is Template {
     emit Transfer(address(0), account, amount);
     }
 
-    function setAdmin(address admin) internal {
-        _admin = admin;
-        // _setOwner(admin);
-    }
+    // function setAdmin(address admin) internal {
+    //     _admin = admin;
+    //     // _setOwner(admin);
+    // }
 
     function testFunction() external view {
         console.log('_admin: %s', _admin);

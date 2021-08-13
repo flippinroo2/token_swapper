@@ -38,6 +38,8 @@ abstract contract Template is IERC20 {
     uint8 private _status;
 
     address private _admin;
+    string public _name;
+    string public _symbol;
 
     // Events
     event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
@@ -89,6 +91,8 @@ abstract contract Template is IERC20 {
             );
         }
         setAdmin(msg.sender);
+        _name = name_;
+        _symbol = symbol_;
     }
 
     function getAdmin() public view returns (address) {
@@ -114,6 +118,13 @@ abstract contract Template is IERC20 {
 
 
 
+    // function name() external view returns (string memory) {
+    //     return _name;
+    // }
+
+    // function symbol() external view returns (string memory) {
+    //     return _symbol;
+    // }
 
 
 
