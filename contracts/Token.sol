@@ -85,9 +85,11 @@ contract Token is Template {
     return _balances[account];
     }
 
-    function allBalances() external view {
-        return _balances;
-    }
+    // function allBalances() external view returns (uint256[]) {
+    //     Need to create a loop to go through mapping and save all the items into an array in order to return it from a function.
+    //     address[] memory temp = new address[]
+    //     return _balances;
+    // }
 
     function transfer(address recipient, uint256 amount) public override returns (bool){
         _transfer(msg.sender, recipient, amount);

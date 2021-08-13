@@ -34,7 +34,8 @@ async function main() {
   const balanceOfTransaction = await fuji.balanceOf(owner.address);
   owner.balance = utils.hexToNumber(balanceOfTransaction);
 
-  const Swap = await getContractFactory('Swap');
+  // const Swap = await getContractFactory('../artifacts/contracts/Swap.sol:Swap');
+  const Swap = await getContractFactory('contracts/Wrapper.sol:Swap');
 
   // const fujiTateSwap = await Swap.deploy(
   //   owner.address,
