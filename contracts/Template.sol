@@ -17,9 +17,15 @@ import '@openzeppelin/contracts/utils/Address.sol';
 import '@openzeppelin/contracts/utils/Arrays.sol';
 import '@openzeppelin/contracts/utils/Strings.sol';
 
-contract Template is IERC20 {
+// Access
+import '@openzeppelin/contracts/access/Ownable.sol';
+
+// Security
+import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
+
+abstract contract Template is IERC20 {
     using Address for address;
-    // using Arrays for uint256[];
+    using Arrays for uint256[];
     using SafeMath for uint256;
     using Strings for string;
 
@@ -32,18 +38,9 @@ contract Template is IERC20 {
     uint8 private _status;
 
     address private _admin;
-    string private _name;
-    string private _symbol;
-    uint256 private _totalSupply;
-    uint256 public _totalMinted;
-
-    mapping(address => uint256) private _balances;
-    mapping(address => mapping(address => uint256)) private _allowances;
 
     // Events
     event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
-    // event Approval(address indexed owner, address indexed spender, uint256 value);
-    // event Transfer(address indexed from, address indexed to, uint256 value);
     event Fallback(address indexed sender, uint256 value);
 
     // Function Modifiers
@@ -92,27 +89,33 @@ contract Template is IERC20 {
             );
         }
         setAdmin(msg.sender);
-        // setTotalSupply(totalSupply_);
-        // mint(getAdmin(), totalSupply_);
     }
 
-    function totalSupply() public view override returns (uint256) {
-        return _totalSupply;
+    function getAdmin() public view returns (address) {
+        return _admin;
     }
 
-    function setTotalSupply(uint256 totalSupply_) internal restricted {
-        // Can uint256 have an overflow? If not, explain that next to variable declaration.
-        _totalSupply = totalSupply_;
+    function setAdmin(address admin) internal {
+        address _previousAdmin = _admin;
+        _admin = admin;
+        emit AdminChanged(_previousAdmin, _admin);
     }
+
+
+    function totalSupply() public view override returns (uint256);
+
+    function setTotalSupply(uint256 totalSupply_) internal restricted;
 
     function balanceOf(address account)
         external
         view
         override
-        returns (uint256)
-    {
-        return _balances[account];
-    }
+        returns (uint256);
+
+
+
+
+
 
     function transfer(address recipient, uint256 amount) public override returns (bool){
         _transfer(msg.sender, recipient, amount);
@@ -146,28 +149,6 @@ contract Template is IERC20 {
             _approve(spender, sender, currentAllowance - amount);
         }
         return true;
-    }
-
-    function getAdmin() public view returns (address) {
-        return _admin;
-    }
-
-    function setAdmin(address admin) internal {
-        address _previousAdmin = _admin;
-        _admin = admin;
-        emit AdminChanged(_previousAdmin, _admin);
-    }
-
-    function name() external view returns (string memory) {
-        return _name;
-    }
-
-    function symbol() external view returns (string memory) {
-        return _symbol;
-    }
-
-    function decimals() external pure returns (uint8) {
-        return TOKEN_DECIMALS;
     }
 
     function mint(address account, uint256 amount)
