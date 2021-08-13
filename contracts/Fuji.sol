@@ -75,6 +75,10 @@ contract Fuji is Template {
     return _balances[account];
     }
 
+    function allBalances() external view {
+        // return _balances;
+    }
+
     function transfer(address recipient, uint256 amount) public override returns (bool){
         _transfer(msg.sender, recipient, amount);
         return true;
