@@ -86,7 +86,7 @@ contract Fuji is Template {
     }
 
     function allBalances() external view {
-        // return _balances;
+        return _balances;
     }
 
     function transfer(address recipient, uint256 amount) public override returns (bool){
@@ -177,8 +177,8 @@ contract Fuji is Template {
     // }
 
     function testFunction() external view {
-        // console.log('_admin: %s', _admin);
-        // console.log('_owner: %s', _owner);
+        address admin = getAdmin();
+        console.log('admin: %s', admin);
     }
 
     // receive() external payable {
