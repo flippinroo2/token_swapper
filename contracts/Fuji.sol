@@ -28,13 +28,14 @@ contract Fuji is Template {
     uint256 private _totalSupply;
     uint256 private _totalMinted;
 
+    mapping(address => uint256) private _balances;
+    mapping(address => mapping(address => uint256)) private _allowances;
+
     // Events
     // event Approval(address indexed owner, address indexed spender, uint256 value);
     // event Transfer(address indexed from, address indexed to, uint256 value);
-    mapping(address => uint256) private _balances;
-    mapping(address => mapping(address => uint256)) private _allowances;
-    event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
-    event Fallback(address indexed sender, uint256 value);
+    // event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
+    // event Fallback(address indexed sender, uint256 value);
 
     // Function Modifiers
     modifier restricted(uint256 number) {
@@ -66,11 +67,11 @@ contract Fuji is Template {
         mint(getAdmin(), totalSupply_);
     }
 
-    function totalSupply() external view override returns (uint256) {
+    function totalSupply() public view override returns (uint256) {
     return _totalSupply;
     }
 
-    function setTotalSupply(uint256 totalSupply_) internal {
+    function setTotalSupply(uint256 totalSupply_) internal override {
         // Can uint256 have an overflow? If not, explain that next to variable declaration.
         _totalSupply = totalSupply_;
     }
@@ -93,43 +94,26 @@ contract Fuji is Template {
         return true;
     }
 
-    // function allowance(address owner, address spender) external view returns (uint256){
-    //   require(owner != address(0), "ERC20: approve from the zero address");
-    //   require(spender != address(0), "ERC20: approve to the zero address");
-    //   _allowances[owner][spender] = amount;
-    //   emit Approval(owner, spender, amount);
-    // }
-
     function allowance(address owner, address spender)
-    external
-    view
-    override
-    returns (uint256)
+        public
+        view
+        override
+        returns (uint256)
     {
-    return _allowances[owner][spender];
+        require(owner != address(0), "ERC20: approve from the zero address");
+        require(spender != address(0), "ERC20: approve to the zero address");
+        return _allowances[owner][spender];
     }
 
-    // function approve(address spender, uint256 amount)
-    //   public
-    //   override
-    //   returns (bool)
-    // {
-    //   address owner = msg.sender;
-    //   require(owner != address(0), "ERC20: approve from the zero address");
-    //   require(spender != address(0), "ERC20: approve to the zero address");
-    //   _allowances[owner][spender] = amount;
-    //   emit Approval(owner, spender, amount);
-    //   return true;
-    // }
-
-    function approve(address spender, uint256 amount) external override returns (bool){
-        _approve(msg.sender, spender, amount);
+    function approve(address spender, uint256 amount) public override returns (bool){
+        address owner = msg.sender;
+        require(owner != address(0), "ERC20: approve from the zero address");
+        require(spender != address(0), "ERC20: approve to the zero address");
+        _approve(owner, spender, amount);
         return true;
     }
 
     function _approve(address owner, address spender, uint256 amount) internal {
-        require(owner != address(0), "ERC20: approve from the zero address");
-        require(spender != address(0), "ERC20: approve to the zero address");
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);
     }
@@ -167,6 +151,7 @@ contract Fuji is Template {
 
     function mint(address account, uint256 amount)
     public
+    override
     security
     safe(account)
     restricted(amount)
@@ -182,16 +167,21 @@ contract Fuji is Template {
     emit Transfer(address(0), account, amount);
     }
 
+    function getTotalMinted() public view override returns (uint256) {
+        return _totalMinted;
+    }
+
     // function setAdmin(address admin) internal {
     //     _admin = admin;
     //     // _setOwner(admin);
     // }
 
     function testFunction() external view {
-        console.log('_admin: %s', _admin);
+        // console.log('_admin: %s', _admin);
         // console.log('_owner: %s', _owner);
     }
-    receive() external payable {
-        emit Fallback(msg.sender, msg.value);
-    }
+
+    // receive() external payable {
+    //     emit Fallback(msg.sender, msg.value);
+    // }
 }

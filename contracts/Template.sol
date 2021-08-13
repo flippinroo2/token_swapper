@@ -94,18 +94,16 @@ abstract contract Template is IERC20 {
         emit AdminChanged(_previousAdmin, _admin);
     }
 
+    function totalSupply() public view override virtual returns (uint256);
 
-    function totalSupply() public view override returns (uint256);
-
-    function setTotalSupply(uint256 totalSupply_) internal;
+    function setTotalSupply(uint256 totalSupply_) internal virtual;
 
     function balanceOf(address account)
         external
         view
+        virtual
         override
         returns (uint256);
-
-
 
     // function name() external view returns (string memory) {
     //     return _name;
@@ -115,81 +113,26 @@ abstract contract Template is IERC20 {
     //     return _symbol;
     // }
 
-
-
-    function transfer(address recipient, uint256 amount) public override returns (bool){
-        _transfer(msg.sender, recipient, amount);
-        return true;
-    }
+    function transfer(address recipient, uint256 amount) public virtual override returns (bool);
 
     function allowance(address owner, address spender)
         public
         view
+        virtual
         override
-        returns (uint256)
-    {
-        return _allowances[owner][spender];
-    }
+        returns (uint256);
 
-    function approve(address spender, uint256 amount) public override returns (bool){
-        _approve(msg.sender, spender, amount);
-        return true;
-    }
+    function approve(address spender, uint256 amount) public virtual override returns (bool);
 
     function transferFrom(
         address spender,
         address recipient,
         uint256 amount
-    ) external override returns (bool) {
-        _transfer(spender, recipient, amount);
-        address sender = msg.sender;
-        uint256 currentAllowance = _allowances[spender][sender];
-        require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
-        unchecked {
-            _approve(spender, sender, currentAllowance - amount);
-        }
-        return true;
-    }
+    ) external virtual override returns (bool);
 
-    function mint(address account, uint256 amount)
-        public
-        security
-        safe(account)
-        restricted(amount)
-    {
-        if (DEBUG) {
-            console.log(
-                'mint(address account: %s, uint256 amount: %s)',
-                account,
-                amount
-            );
-        }
-        _balances[account] += amount;
-        emit Transfer(address(0), account, amount);
-    }
+    function mint(address account, uint256 amount) public virtual;
 
-    function getTotalMinted() public view returns (uint256) {
-        return _totalMinted;
-    }
-
-    function _transfer(address sender, address recipient, uint256 amount) internal {
-        require(sender != address(0), "ERC20: transfer from the zero address");
-        require(recipient != address(0), "ERC20: transfer to the zero address");
-        uint256 senderBalance = _balances[sender];
-        require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
-        unchecked {
-            _balances[sender] = senderBalance - amount;
-        }
-        _balances[recipient] += amount;
-        emit Transfer(sender, recipient, amount);
-    }
-
-    function _approve(address owner, address spender, uint256 amount) internal {
-        require(owner != address(0), "ERC20: approve from the zero address");
-        require(spender != address(0), "ERC20: approve to the zero address");
-        _allowances[owner][spender] = amount;
-        emit Approval(owner, spender, amount);
-    }
+    function getTotalMinted() public view virtual returns (uint256);
 
     // New syntax for fallback functions.
     receive() external payable {
