@@ -26,9 +26,9 @@ const hardhatWeb3 = hre.web3;
 
 const { eth, utils } = web3;
 
-const Fuji = artifacts.require('Fuji');
+const Token = artifacts.require('Token');
 
-contract('Fuji', (accounts) => {
+contract('Token', (accounts) => {
   let owner = { balance: 0 },
     sender = { balance: 0, address: accounts[1] },
     receiver = { balance: 0, address: accounts[2] },
@@ -47,7 +47,9 @@ contract('Fuji', (accounts) => {
     // const fujiNew = await Fuji.new('Fuji', 'FUJI');
     // const fujiDeployed = await Fuji.deployed();
 
-    fuji = await Fuji.at('0x5c1A66D05D33E4b08Ed63eE46a99011fBbF2eCE1');
+    fuji = await Token.at('0x5c1A66D05D33E4b08Ed63eE46a99011fBbF2eCE1');
+    haku = await Token.at('TEST');
+    tate = await Token.at('TEST');
 
     owner.address = await fuji.owner();
 

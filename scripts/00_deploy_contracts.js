@@ -20,23 +20,21 @@ async function main() {
 
   // console.log('Account balance:', (await owner.getBalance()).toString());
 
-  // const Fuji = await getContractFactory('Fuji');
-  // const fuji = await Fuji.deploy('Fuji', 'FUJI', 1100);
-  // console.log('Hardhat - Fuji address: %s', fuji.address);
+  const Token = await getContractFactory('Token');
 
-  // const mintTransaction = await fuji.mint(owner.address, 10);
-  // const balanceOfTransaction = await fuji.balanceOf(owner.address);
-  // owner.balance = utils.hexToNumber(balanceOfTransaction);
+  const fuji = await Token.deploy('Fuji', 'FUJI', 1100);
+  const haku = await Token.deploy('Haku', 'HAKU', 1050);
+  const tate = await Token.deploy('Tate', 'TATE', 1100);
 
-  // const Haku = await getContractFactory('Haku');
-  // const haku = await Haku.deploy('Haku', 'HAKU', 1050);
-  // console.log('Hardhat - Haku address: %s', haku.address);
+  console.log('Hardhat - Fuji address: %s', fuji.address);
+  console.log('Hardhat - Haku address: %s', haku.address);
+  console.log('Hardhat - Tate address: %s', tate.address);
 
-  // const Tate = await getContractFactory('Tate');
-  // const tate = await Tate.deploy('Tate', 'TATE', 1100);
-  // console.log('Hardhat - Tate address: %s', tate.address);
+  const mintTransaction = await fuji.mint(owner.address, 10);
+  const balanceOfTransaction = await fuji.balanceOf(owner.address);
+  owner.balance = utils.hexToNumber(balanceOfTransaction);
 
-  // const Swap = await getContractFactory('Swap');
+  const Swap = await getContractFactory('Swap');
 
   // const fujiTateSwap = await Swap.deploy(
   //   owner.address,
@@ -44,13 +42,14 @@ async function main() {
   //   user.address,
   //   tate,
   // );
+  // console.log('Hardhat - fujiTateSwap address: %s', fujiTateSwap.address);
+
   // const hakuTateSwap = await Swap.deploy(
   //   owner.address,
   //   haku,
   //   user.address,
   //   tate,
   // );
-  // console.log('Hardhat - fujiTateSwap address: %s', fujiTateSwap.address);
   // console.log('Hardhat - hakuTateSwap address: %s', hakuTateSwap.address);
 
   const Wrapper = await getContractFactory('Wrapper');
