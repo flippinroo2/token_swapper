@@ -16,7 +16,7 @@ import '@openzeppelin/contracts/utils/Strings.sol';
 // Custom Tokens
 import './Template.sol'; // Template
 
-contract Fuji is Template {
+contract Token is Template {
     using Address for address;
     using Arrays for uint256[];
     using SafeMath for uint256;
