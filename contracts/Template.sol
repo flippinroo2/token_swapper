@@ -60,17 +60,6 @@ abstract contract Template is IERC20 {
         _;
     }
 
-    modifier restricted(uint256 number) {
-        require(number != 0, 'Number cannot be zero');
-        require(number > 0, 'Must be a positive number.');
-        require(number <= _totalSupply, 'Must be less than total supply.');
-        require(
-            (_totalMinted + number) <= _totalSupply,
-            'This would cause the total minted coins to be more than the total supply.'
-        );
-        _;
-    }
-
     modifier reentrancyProtection() {
         require(_status != _ENTERED, 'Reentrant call');
         _status = _ENTERED;
@@ -108,7 +97,7 @@ abstract contract Template is IERC20 {
 
     function totalSupply() public view override returns (uint256);
 
-    function setTotalSupply(uint256 totalSupply_) internal restricted;
+    function setTotalSupply(uint256 totalSupply_) internal;
 
     function balanceOf(address account)
         external

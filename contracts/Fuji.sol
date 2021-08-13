@@ -33,9 +33,20 @@ contract Fuji is Template {
     // event Transfer(address indexed from, address indexed to, uint256 value);
     mapping(address => uint256) private _balances;
     mapping(address => mapping(address => uint256)) private _allowances;
-
     event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
     event Fallback(address indexed sender, uint256 value);
+
+    // Function Modifiers
+    modifier restricted(uint256 number) {
+        require(number != 0, 'Number cannot be zero');
+        require(number > 0, 'Must be a positive number.');
+        require(number <= _totalSupply, 'Must be less than total supply.');
+        require(
+            (_totalMinted + number) <= _totalSupply,
+            'This would cause the total minted coins to be more than the total supply.'
+        );
+        _;
+    }
 
     constructor(
         string memory name_,
