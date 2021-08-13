@@ -14,6 +14,7 @@ import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
 // Custom Tokens
 import './Template.sol'; // Template Contract
+import './Token.sol'; // Token Contract
 
 contract Swap {
     using Address for address;
