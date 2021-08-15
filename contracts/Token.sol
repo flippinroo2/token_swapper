@@ -97,6 +97,7 @@ contract Token is Template {
         );
     }
     _balances[account] += amount;
+    totalMinted += amount;
     emit Transfer(address(0), account, amount);
     }
 
