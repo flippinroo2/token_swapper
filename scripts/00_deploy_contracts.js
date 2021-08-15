@@ -5,7 +5,8 @@ async function main() {
   const { getContractFactory, getSigners } = ethers;
   const { eth, utils } = web3;
 
-  let owner = { balance: 0 },
+  let admin = { balance: 0 },
+    owner = { balance: 0 },
     sender = { balance: 0 },
     receiver = { balance: 0 },
     user = { balance: 0 };
@@ -21,21 +22,43 @@ async function main() {
   // console.log('Account balance:', (await owner.getBalance()).toString());
 
   const Token = await getContractFactory('Token');
+  const Factory = await getContractFactory('TokenFactory');
+  const tokenFactory = await Factory.deploy();
 
-  const fuji = await Token.deploy('Fuji', 'FUJI', 1100);
-  const haku = await Token.deploy('Haku', 'HAKU', 1050);
-  const tate = await Token.deploy('Tate', 'TATE', 1100);
+  const createFujiTransaction = await tokenFactory.createToken(
+    'Fuji',
+    'FUJI',
+    18,
+    100,
+  );
+  debugger;
+  const fujiReceipt = createFujiTransaction.receipt;
+  const fujiLogs = fujiReceipt[0];
+  const fujiArgs = fujiLogs.args;
+  const fujiAddress = fujiArgs.tokenAddress;
+  const fuji = await Token.at(fujiAddress);
+  debugger;
+
+  const createHakuTransaction = await tokenFactory.createToken(
+    'Haku',
+    'HAKU',
+    18,
+    100,
+  );
+
+  const createTateTransaction = await tokenFactory.createToken(
+    'Tate',
+    'TATE',
+    18,
+    100,
+  );
 
   console.log('Hardhat - Fuji address: %s', fuji.address);
   console.log('Hardhat - Haku address: %s', haku.address);
   console.log('Hardhat - Tate address: %s', tate.address);
 
-  const mintTransaction = await fuji.mint(owner.address, 10);
-  const balanceOfTransaction = await fuji.balanceOf(owner.address);
-  owner.balance = utils.hexToNumber(balanceOfTransaction);
-
   // const Swap = await getContractFactory('../artifacts/contracts/Swap.sol:Swap');
-  const Swap = await getContractFactory('contracts/Wrapper.sol:Swap');
+  // const Swap = await getContractFactory('contracts/Wrapper.sol:Swap');
 
   // const fujiTateSwap = await Swap.deploy(
   //   owner.address,
