@@ -57,13 +57,18 @@ function getEvent({ tx, receipt }) {
 
 function logTransaction({ tx, receipt }) {
   const { blockNumber, from, gasUsed, to } = receipt;
-  if (DEBUG) {
-    console.log(
-      `Transaction: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
-    );
-  }
+  console.log(
+    `Transaction: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
+  );
 }
 
+function readTransaction(transaction) {
+  if (DEBUG) {
+    logTransaction(transaction);
+  }
+  const event = getEvent(transaction);
+  return event;
+}
 async function fillMetadata(token) {
   const metadata = {
     address: token.address,
@@ -115,34 +120,38 @@ contract('TokenFactory', (accounts) => {
     tokenFactory = await Factory.deployed();
 
     const createFujiTransaction = await tokenFactory.createToken(
-      'TEST',
-      'TEST',
+      'Fuji',
+      'FUJI',
       18,
       100,
     );
-    // const transactionEvent = getEvent(createTokenTransaction);
-    const fuji = await Token.at(
-      getNewTokenData(getEvent(createFujiTransaction)),
+    // const transactionEvent = readTransaction(createTokenTransaction);
+    fuji = await Token.at(
+      getNewTokenData(readTransaction(createFujiTransaction)),
     );
 
     debugger;
     const createHakuTransaction = await tokenFactory.createToken(
-      'TEST',
-      'TEST',
+      'Haku',
+      'HAKU',
       18,
       100,
     );
-    const transactionEvent = getEvent(createHakuTransaction);
-    const fuji = await Token.at(getNewTokenData(transactionEvent));
+    // const transactionEvent = readTransaction(createHakuTransaction);
+    haku = await Token.at(
+      getNewTokenData(readTransaction(createHakuTransaction)),
+    );
 
     const createTateTransaction = await tokenFactory.createToken(
-      'TEST',
-      'TEST',
+      'Tate',
+      'TATE',
       18,
       100,
     );
-    const transactionEvent = getEvent(createTateTransaction);
-    const fuji = await Token.at(getNewTokenData(transactionEvent));
+    // const transactionEvent = readTransaction(createTateTransaction);
+    tate = await Token.at(
+      getNewTokenData(readTransaction(createTateTransaction)),
+    );
 
     fujiMetadata = await fillMetadata(fuji);
 
