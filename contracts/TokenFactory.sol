@@ -38,10 +38,16 @@ contract TokenFactory {
     }
 
     function createToken(string memory name, string memory symbol, uint8 decimals, uint256 totalSupply) public returns (Token) {
+        console.log('name: %s\nsymbol: %s', name, symbol);
+        console.log('decimals');
+        console.log(decimals);
+        console.log('totalSupply');
+        console.log(totalSupply);
         tokenData memory metadata = tokenData(name, symbol, decimals, totalSupply); // Check the difference between "storage" and "memory".
         Token token = new Token(name, symbol, decimals, totalSupply);
         // See how to get the address from the call above and then use the other version of the "TokenCreated" event.
         address tokenAddress = address(token);
+        // console.log('tokenAddress: %s', tokenAddress);
         emit TokenCreated(tokenAddress, name, symbol, decimals, totalSupply);
         return token;
     }
