@@ -86,9 +86,9 @@ contract Wrapper {
     string[] hakuArgs = ['Haku', 'HAKU'];
     string[] tateArgs = ['Tate', 'TATE'];
 
-    Template private _fuji = new Token(fujiArgs[0], fujiArgs[1], 1100);
-    Template private _haku = new Token(hakuArgs[0], hakuArgs[1], 1050);
-    Template private _tate = new Token(tateArgs[0], tateArgs[1], 1000);
+    Template private _fuji = new Token(fujiArgs[0], fujiArgs[1], 18, 1100);
+    Template private _haku = new Token(hakuArgs[0], hakuArgs[1], 18, 1050);
+    Template private _tate = new Token(tateArgs[0], tateArgs[1], 18, 1000);
 
     constructor(address address1_, address address2_) {
         _admin = msg.sender;

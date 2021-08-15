@@ -32,11 +32,14 @@ abstract contract Template is IERC20 {
     bool private constant DEBUG = false;
 
     // The variables are oredered this way for memory efficiency.
+    uint8 public constant TOKEN_DECIMALS = 18;
     uint8 private constant _NOT_ENTERED = 1;
     uint8 private constant _ENTERED = 2;
     uint8 private _status;
 
     address private _admin;
+    string public _name;
+    string public _symbol;
 
     // Events
     event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
@@ -64,12 +67,25 @@ abstract contract Template is IERC20 {
         _status = _NOT_ENTERED;
     }
 
-    constructor() {
+    constructor(
+        string memory name_,
+        string memory symbol_
+    ) payable {
         if (DEBUG) {
-            console.log('constructor()');
             console.log('Contract creator: %s', msg.sender);
+            console.log(
+                'constructor(string memory name_: %s, string memory symbol_: %s)',
+                name_,
+                symbol_
+            );
         }
         setAdmin(msg.sender);
+        _name = name_;
+        _symbol = symbol_;
+    }
+
+    function getAdmin() public view returns (address) {
+        return _admin;
     }
 
     function setAdmin(address admin) internal {
@@ -78,11 +94,7 @@ abstract contract Template is IERC20 {
         emit AdminChanged(_previousAdmin, _admin);
     }
 
-    function getAdmin() public view returns (address) {
-        return _admin;
-    }
-
-    function totalSupply() external view override virtual returns (uint256);
+    function totalSupply() public view override virtual returns (uint256);
 
     function setTotalSupply(uint256 totalSupply_) internal virtual;
 
@@ -92,6 +104,14 @@ abstract contract Template is IERC20 {
         virtual
         override
         returns (uint256);
+
+    // function name() external view returns (string memory) {
+    //     return _name;
+    // }
+
+    // function symbol() external view returns (string memory) {
+    //     return _symbol;
+    // }
 
     function transfer(address recipient, uint256 amount) public virtual override returns (bool);
 

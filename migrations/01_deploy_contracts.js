@@ -1,24 +1,19 @@
-// const Fuji = artifacts.require('Fuji');
-// const Haku = artifacts.require('Haku');
-// const Tate = artifacts.require('Tate');
-const Token = artifacts.require('Token');
-
-// const Swap = artifacts.require('Swap');
+const ReceiverAddress = '0x7D4c5963bD77f761e5eEF54263592b9D616F6448';
 const Wrapper = artifacts.require('Wrapper');
+// const Swap = artifacts.require('Swap');
+// const Template = artifacts.require('Template');
+const Token = artifacts.require('Token');
+const TokenFactory = artifacts.require('TokenFactory');
 
 module.exports = async function (
   deployer,
   network,
   [owner, sender, receiver, user],
 ) {
-  // await deployer.deploy(Token, 'Fuji', 'FUJI', 1100);
-  // const fuji = await Token.deployed();
+  const { chain, emitter, logger, networks, provider } = deployer;
 
-  // await deployer.deploy(Token, 'Haku', 'HAKU', 1050);
-  // const haku = await Token.deployed();
-
-  // await deployer.deploy(Token, 'Tate', 'TATE', 1000);
-  // const tate = await Token.deployed();
+  await deployer.deploy(Wrapper, ReceiverAddress, sender);
+  const wrapper = await Wrapper.deployed();
 
   // await deployer.deploy(Swap, owner, fuji, user, tate);
   // const fujiTateSwap = await Swap.deployed();
@@ -27,10 +22,29 @@ module.exports = async function (
   // const hakuTateSwap = await Swap.deployed();
 
   // debugger;
-  await deployer.deploy(
-    Wrapper,
-    '0x7D4c5963bD77f761e5eEF54263592b9D616F6448',
-    sender,
-  );
-  const wrapper = await Wrapper.deployed();
+
+  const factory = await deployer.deploy(TokenFactory);
+
+  const fuji = await deployer.deploy(Token, 'Fuji', 'FUJI', 18, 1100);
+  const haku = await deployer.deploy(Token, 'Haku', 'HAKU', 18, 1050);
+  const tate = await deployer.deploy(Token, 'Tate', 'TATE', 18, 1000); // The deployed contract uses the address of the last item here.
+
+  // const fuji = await Token.at('');
+  // const haku = await Token.at('');
+  // const tate = await Token.at('');
+
+  // const fujiNew = await Token.new('Fuji', 'FUJI', 1100);
+  // const hakuNew = await Token.new('Haku', 'HAKU', 1050);
+  // const tateNew = await Token.new('Tate', 'TATE', 1000);
+
+  const addresses = {
+    wrapper: wrapper.address,
+    tokenFactory: factory.address,
+    fuji: fuji.address,
+    haku: haku.address,
+    tate: tate.address,
+  };
+
+  console.log('Addresses:');
+  console.dir(addresses);
 };

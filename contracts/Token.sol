@@ -25,8 +25,11 @@ contract Token is Template {
     bool private constant DEBUG = false;
 
     // address private _admin;
-    uint256 private _totalSupply;
-    uint256 private _totalMinted;
+    string public _name;
+    string public _symbol;
+    uint8 public _tokenDecimals;
+    uint256 public override totalSupply;
+    uint256 public totalMinted;
 
     mapping(address => uint256) private _balances;
     mapping(address => mapping(address => uint256)) private _allowances;
@@ -41,39 +44,27 @@ contract Token is Template {
     modifier restricted(uint256 number) {
         require(number != 0, 'Number cannot be zero');
         require(number > 0, 'Must be a positive number.');
-        require(number <= _totalSupply, 'Must be less than total supply.');
+        require(number <= totalSupply, 'Must be less than total supply.');
         require(
-            (_totalMinted + number) <= _totalSupply,
+            (totalMinted + number) <= totalSupply,
             'This would cause the total minted coins to be more than the total supply.'
         );
         _;
     }
 
-    constructor(
-        string memory name_,
-        string memory symbol_,
-        uint256 totalSupply_
-    ) payable Template(name_, symbol_) {
+    constructor(string memory name_, string memory symbol_, uint8 decimals_, uint256 totalSupply_) payable Template() {
         if (DEBUG) {
             console.log('Contract creator: %s', msg.sender);
-            console.log(
-                'constructor(string memory name_: %s, string memory symbol_: %s)',
-                name_,
-                symbol_
-            );
+            console.log('constructor(string name_ %s, string symbol_ %s, uint8 decimals_ %s, uint256 totalSupply_ %s)', name_, symbol_); // Cannot convert ", decimals_, totalSupply_" into strings without a prewritten funciton. (https://ethereum.stackexchange.com/questions/10932/how-to-convert-string-to-int)
         }
-        // setAdmin(msg.sender);
-        setTotalSupply(totalSupply_);
-        mint(getAdmin(), totalSupply_);
-    }
-
-    function totalSupply() public view override returns (uint256) {
-    return _totalSupply;
+        // setAdmin(msg.sender); // Already implemented in the "Template" contract.
+        setTotalSupply(totalSupply_); // Moving these functions to the createToken() function.
+        mint(getAdmin(), totalSupply_); // Moving these functions to the createToken() function.
     }
 
     function setTotalSupply(uint256 totalSupply_) internal override {
         // Can uint256 have an overflow? If not, explain that next to variable declaration.
-        _totalSupply = totalSupply_;
+        totalSupply = totalSupply_;
     }
 
     function balanceOf(address account)
@@ -86,10 +77,32 @@ contract Token is Template {
     }
 
     // function allBalances() external view returns (uint256[]) {
-    //     Need to create a loop to go through mapping and save all the items into an array in order to return it from a function.
+    //     // Need to create a loop to go through mapping and save all the items into an array in order to return it from a function.
     //     address[] memory temp = new address[]
     //     return _balances;
     // }
+
+    function mint(address account, uint256 amount)
+    public
+    override
+    security
+    safe(account)
+    restricted(amount)
+    {
+    if (DEBUG) {
+        console.log(
+        'mint(address account: %s, uint256 amount: %s)',
+        account,
+        amount
+        );
+    }
+    _balances[account] += amount;
+    emit Transfer(address(0), account, amount);
+    }
+
+    function getTotalMinted() public view override returns (uint256) {
+        return totalMinted;
+    }
 
     function transfer(address recipient, uint256 amount) public override returns (bool){
         _transfer(msg.sender, recipient, amount);
@@ -146,37 +159,6 @@ contract Token is Template {
         }
         return true;
     }
-
-    function decimals() external pure returns (uint8) {
-        return TOKEN_DECIMALS;
-    }
-
-    function mint(address account, uint256 amount)
-    public
-    override
-    security
-    safe(account)
-    restricted(amount)
-    {
-    if (DEBUG) {
-        console.log(
-        'mint(address account: %s, uint256 amount: %s)',
-        account,
-        amount
-        );
-    }
-    _balances[account] += amount;
-    emit Transfer(address(0), account, amount);
-    }
-
-    function getTotalMinted() public view override returns (uint256) {
-        return _totalMinted;
-    }
-
-    // function setAdmin(address admin) internal {
-    //     _admin = admin;
-    //     // _setOwner(admin);
-    // }
 
     function testFunction() external view {
         address admin = getAdmin();
