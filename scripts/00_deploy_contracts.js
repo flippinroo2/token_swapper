@@ -1,5 +1,53 @@
 const DEBUG = true;
 
+function getNewTokenData({
+  tokenAddress,
+  name,
+  symbol,
+  decimals,
+  totalSupply,
+}) {
+  // const arraylength = event.length;
+  // for (let i; i <= arraylength; i++) {
+  //   console.log(`counter = ${i}`);
+  //   console.log(event[i]);
+  // }
+  return tokenAddress;
+}
+
+function logTransaction({ blockNumber, from, gasUsed, to }) {
+  console.log(
+    `Transaction: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
+  );
+}
+
+function parseTransactionData({
+  blockHash,
+  blockNumber,
+  confirmations,
+  events,
+  from,
+  gasUsed,
+  logs,
+  status,
+  to,
+  transactionHash,
+  transactionIndex,
+  type,
+}) {
+  if (DEBUG) {
+    logTransaction(transaction);
+  }
+  let eventObject = {};
+  events.forEach(() => {
+    debugger;
+    // Loop through each event and return just the ones that have the ".event" attribute. The ones that do we will want to grab the ".args" attribute from that. ALSO, look and see what account the ".address" attribute coorelates to.
+    // See if "forEach()" has a way to return data and save this whole thing to variable.
+  });
+  let transactionData = {};
+  return transactionData;
+}
+
 async function main() {
   const { artifacts, config, ethers, network, waffle, web3 } = hre;
   const { getContractFactory, getSigners } = ethers;
@@ -31,12 +79,10 @@ async function main() {
     18,
     100,
   );
-  debugger;
-  const fujiReceipt = createFujiTransaction.receipt;
-  const fujiLogs = fujiReceipt[0];
-  const fujiArgs = fujiLogs.args;
-  const fujiAddress = fujiArgs.tokenAddress;
-  const fuji = await Token.at(fujiAddress);
+  const fujiAddress = getNewTokenData(
+    readTransaction(await createFujiTransaction.wait()),
+  );
+  fuji = await Token.at(fujiAddress);
   debugger;
 
   const createHakuTransaction = await tokenFactory.createToken(
