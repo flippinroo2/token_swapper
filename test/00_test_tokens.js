@@ -70,17 +70,20 @@ function readTransaction(transaction) {
   return event;
 }
 async function fillMetadata(token) {
+  debugger;
+  const owner = await token.getAdmin();
+  const name = await token._name();
+  const symbol = await token._symbol();
+  const decimals = await token._tokenDecimals();
+  const totalSupply = await token.totalSupply();
+  debugger;
   const metadata = {
-    address: token.address,
     owner: await token.getAdmin(),
     name: await token._name(),
     symbol: await token._symbol(),
     // decimals: utils.hexToNumber(await token._tokenDecimals()),
     // totalSupply: utils.hexToNumber(await token.totalSupply()),
   };
-  // debugger;
-  // decimals = await token._tokenDecimals();
-  // totalSupply = await token.totalSupply();
   return metadata;
 }
 
@@ -89,6 +92,7 @@ contract('TokenFactory', (accounts) => {
   console.log('Accounts:');
   console.dir(accounts);
   let accountData = {
+    admin: { balance: 0 },
     owner: { balance: 0, address: accounts[0] },
     sender: { balance: 0, address: accounts[1] },
     receiver: { balance: 0, address: accounts[2] },
@@ -113,11 +117,8 @@ contract('TokenFactory', (accounts) => {
     // const fujiNew = await Fuji.new('Fuji', 'FUJI');
     // const fujiDeployed = await Fuji.deployed();
 
-    // fujiContract = await Token.at(fujiAddress);
-    // hakuContract = await Token.at(hakuAddress);
-    // tateContract = await Token.at(tateAddress);
-
     tokenFactory = await Factory.deployed();
+    accountData.admin.address = tokenFactory.address;
 
     const createFujiTransaction = await tokenFactory.createToken(
       'Fuji',
@@ -125,22 +126,25 @@ contract('TokenFactory', (accounts) => {
       18,
       100,
     );
-    // const transactionEvent = readTransaction(createTokenTransaction);
-    fuji = await Token.at(
-      getNewTokenData(readTransaction(createFujiTransaction)),
-    );
 
+    fujiMetadata.address = getNewTokenData(
+      readTransaction(createFujiTransaction),
+    );
+    fuji = await Token.at(fujiMetadata.address);
+    await fillMetadata(fuji);
     debugger;
+
     const createHakuTransaction = await tokenFactory.createToken(
       'Haku',
       'HAKU',
       18,
       100,
     );
-    // const transactionEvent = readTransaction(createHakuTransaction);
-    haku = await Token.at(
-      getNewTokenData(readTransaction(createHakuTransaction)),
+    hakuMetadata.address = getNewTokenData(
+      readTransaction(createHakuTransaction),
     );
+    haku = await Token.at(hakuMetadata.address);
+    // await fillMetadata(haku);
 
     const createTateTransaction = await tokenFactory.createToken(
       'Tate',
@@ -148,22 +152,24 @@ contract('TokenFactory', (accounts) => {
       18,
       100,
     );
-    // const transactionEvent = readTransaction(createTateTransaction);
-    tate = await Token.at(
-      getNewTokenData(readTransaction(createTateTransaction)),
+    tateMetadata.address = getNewTokenData(
+      readTransaction(createTateTransaction),
     );
+    tate = await Token.at(tateMetadata.address);
+    // await fillMetadata(tate);
 
-    fujiMetadata = await fillMetadata(fuji);
-
-    const transaction1 = await fuji.getAdmin(); // Returns the address for TokenFactory.
+    // debugger;
     const transaction2 = await fuji.totalSupply();
     const transaction3 = await fuji.getTotalMinted();
-    debugger;
-    // const transaction4 = await fuji.balanceOf();
-    // const transaction5 = await fuji.allowance();
+    const transaction4 = await fuji.balanceOf(accountData.admin.address);
+    const transaction5 = await fuji.allowance(
+      accountData.admin.address,
+      accountData.sender.address,
+    );
     // const transaction6 = await fuji.mint();
-    // const transaction7 = await fuji.transfer();
-    // debugger;
+    const transaction7 = await fuji.transfer(accountData.receiver.address, 5);
+    const transaction8 = await fuji.balanceOf(accountData.receiver.address);
+    debugger;
 
     // hakuMetadata = await fillMetadata(hakuContract);
     // tateMetadata = await fillMetadata(tateContract);
