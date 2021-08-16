@@ -1,23 +1,8 @@
-const DEBUG = true;
+const DEBUG = false;
 
-function getNewTokenData({
-  tokenAddress,
-  name,
-  symbol,
-  decimals,
-  totalSupply,
-}) {
-  // const arraylength = event.length;
-  // for (let i; i <= arraylength; i++) {
-  //   console.log(`counter = ${i}`);
-  //   console.log(event[i]);
-  // }
-  return tokenAddress;
-}
-
-function logTransaction({ blockNumber, from, gasUsed, to }) {
+function logTransaction(transactionHash, blockNumber, from, gasUsed, to) {
   console.log(
-    `Transaction: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
+    `Transaction: ${transactionHash}\nFrom: ${from}\nTo: ${to}\nBlock #: ${blockNumber}\nGas: ${gasUsed}`,
   );
 }
 
@@ -36,16 +21,49 @@ function parseTransactionData({
   type,
 }) {
   if (DEBUG) {
-    logTransaction(transaction);
+    logTransaction(transactionHash, blockNumber, from, gasUsed, to);
   }
   let eventObject = {};
-  events.forEach(() => {
-    debugger;
-    // Loop through each event and return just the ones that have the ".event" attribute. The ones that do we will want to grab the ".args" attribute from that. ALSO, look and see what account the ".address" attribute coorelates to.
-    // See if "forEach()" has a way to return data and save this whole thing to variable.
+  events.forEach((element, index, array) => {
+    // console.log('element:');
+    // console.dir(element);
+    // console.log(`index ${index}`);
+    if (index === 0) {
+    }
+    const eventProperty = element.hasOwnProperty('event');
+    const argsProperty = element.hasOwnProperty('args');
+    // const eventString = `event${index}`;
+    if (eventProperty) {
+      let eventArguments = {};
+      if (argsProperty) {
+        eventArguments.address = element.args[0];
+        eventArguments.name = element.args[1].hash;
+        eventArguments.symbol = element.args[2].hash;
+        eventArguments.decimals = element.args[3];
+        eventArguments.totalSupply = element.args[4].toNumber();
+      }
+      eventObject[element.event] = {
+        signature: element.eventSignature,
+        arguments: eventArguments,
+      };
+    }
+    if (index === array.length - 1) {
+      eventObject.data = element.data;
+    }
   });
-  let transactionData = {};
-  return transactionData;
+  return {
+    from,
+    to,
+    transactionIndex,
+    transactionHash,
+    gasUsed: gasUsed.toNumber(),
+    type,
+    status,
+    blockNumber,
+    blockHash,
+    confirmations,
+    events: eventObject,
+  };
 }
 
 async function main() {
@@ -69,9 +87,11 @@ async function main() {
 
   // console.log('Account balance:', (await owner.getBalance()).toString());
 
-  const Token = await getContractFactory('Token');
+  const Token = await getContractFactory('Token'); // Might not need this.
+
   const Factory = await getContractFactory('TokenFactory');
   const tokenFactory = await Factory.deploy();
+  admin.address = tokenFactory.address;
 
   const createFujiTransaction = await tokenFactory.createToken(
     'Fuji',
@@ -79,17 +99,27 @@ async function main() {
     18,
     100,
   );
-  const fujiAddress = getNewTokenData(
-    readTransaction(await createFujiTransaction.wait()),
+  const fujiTransactionData = parseTransactionData(
+    await createFujiTransaction.wait(),
   );
-  fuji = await Token.at(fujiAddress);
-  debugger;
+  fuji = await Token.attach(
+    fujiTransactionData.events.TokenCreated.arguments.address,
+  );
+  // const fuji2 = await Token.connect(
+  //   fujiTransactionData.events.TokenCreated.arguments.address,
+  // );
 
   const createHakuTransaction = await tokenFactory.createToken(
     'Haku',
     'HAKU',
     18,
     100,
+  );
+  const hakuTransactionData = parseTransactionData(
+    await createHakuTransaction.wait(),
+  );
+  haku = await Token.attach(
+    hakuTransactionData.events.TokenCreated.arguments.address,
   );
 
   const createTateTransaction = await tokenFactory.createToken(
@@ -98,36 +128,25 @@ async function main() {
     18,
     100,
   );
-
-  console.log('Hardhat - Fuji address: %s', fuji.address);
-  console.log('Hardhat - Haku address: %s', haku.address);
-  console.log('Hardhat - Tate address: %s', tate.address);
+  const tateTransactionData = parseTransactionData(
+    await createTateTransaction.wait(),
+  );
+  tate = await Token.attach(
+    tateTransactionData.events.TokenCreated.arguments.address,
+  );
 
   // const Swap = await getContractFactory('../artifacts/contracts/Swap.sol:Swap');
   // const Swap = await getContractFactory('contracts/Wrapper.sol:Swap');
 
-  // const fujiTateSwap = await Swap.deploy(
-  //   owner.address,
-  //   fuji,
-  //   user.address,
-  //   tate,
-  // );
-  // console.log('Hardhat - fujiTateSwap address: %s', fujiTateSwap.address);
-
-  // const hakuTateSwap = await Swap.deploy(
-  //   owner.address,
-  //   haku,
-  //   user.address,
-  //   tate,
-  // );
-  // console.log('Hardhat - hakuTateSwap address: %s', hakuTateSwap.address);
-
   const Wrapper = await getContractFactory('Wrapper');
   const wrapper = await Wrapper.deploy(owner.address, user.address);
-  console.log('Hardhat - Wrapper address: %s', wrapper.address);
+
+  console.log(
+    `Admin Address: ${admin.address}\nOwner Address: ${owner.address}\nSender Address:${sender.address}\nReceiver Address: ${receiver.address}\nUser Address: ${user.address}\nToken Factory Address: ${tokenFactory.address}\nFuji Address: ${fuji.address}\nHaku Address: ${haku.address}\nTate Address: ${tate.address}\nWrapper Address: ${wrapper.address}`,
+  );
 
   if (DEBUG) {
-    // debugger;
+    debugger;
   }
 }
 

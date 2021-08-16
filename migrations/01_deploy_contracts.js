@@ -12,17 +12,6 @@ module.exports = async function (
 ) {
   const { chain, emitter, logger, networks, provider } = deployer;
 
-  await deployer.deploy(Wrapper, ReceiverAddress, sender);
-  const wrapper = await Wrapper.deployed();
-
-  // await deployer.deploy(Swap, owner, fuji, user, tate);
-  // const fujiTateSwap = await Swap.deployed();
-
-  // await deployer.deploy(Swap, owner, haku, user, tate);
-  // const hakuTateSwap = await Swap.deployed();
-
-  // debugger;
-
   const factory = await deployer.deploy(TokenFactory);
 
   const fuji = await deployer.deploy(Token, 'Fuji', 'FUJI', 18, 1100);
@@ -44,6 +33,15 @@ module.exports = async function (
     haku: haku.address,
     tate: tate.address,
   };
+
+  await deployer.deploy(Wrapper, ReceiverAddress, sender);
+  const wrapper = await Wrapper.deployed();
+
+  // await deployer.deploy(Swap, owner, fuji, user, tate);
+  // const fujiTateSwap = await Swap.deployed();
+
+  // await deployer.deploy(Swap, owner, haku, user, tate);
+  // const hakuTateSwap = await Swap.deployed();
 
   console.log('Addresses:');
   console.dir(addresses);

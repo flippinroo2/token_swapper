@@ -70,20 +70,16 @@ function readTransaction(transaction) {
   return event;
 }
 async function fillMetadata(token) {
-  debugger;
-  const owner = await token.getAdmin();
-  const name = await token._name();
-  const symbol = await token._symbol();
   const decimals = await token._tokenDecimals();
   const totalSupply = await token.totalSupply();
-  debugger;
   const metadata = {
     owner: await token.getAdmin(),
     name: await token._name(),
     symbol: await token._symbol(),
-    // decimals: utils.hexToNumber(await token._tokenDecimals()),
-    // totalSupply: utils.hexToNumber(await token.totalSupply()),
+    decimals: decimals.words,
+    totalSupply: totalSupply.words,
   };
+  debugger;
   return metadata;
 }
 
