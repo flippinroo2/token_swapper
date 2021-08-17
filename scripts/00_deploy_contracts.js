@@ -150,21 +150,45 @@ async function main() {
   if (DEBUG) {
     // debugger;
     const totalSupplyTransaction = await fuji.totalSupply();
-    const totalSupply = totalSupplyTransaction.toNumber();
+    const fujiTotalSupply = totalSupplyTransaction.toNumber();
 
     const balanceOfTransaction1 = await fuji.balanceOf(fuji.address);
-    const balance1 = balanceOfTransaction1.toNumber();
+    const fujiBalance = balanceOfTransaction1.toNumber();
 
     const balanceOfTransaction2 = await fuji.balanceOf(admin.address);
-    const balance2 = balanceOfTransaction2.toNumber();
+    admin.balance = balanceOfTransaction2.toNumber();
 
-    const approvalTransaction = await fuji.approve(admin.address, totalSupply);
-    const approval = approvalTransaction.value.toNumber();
+    const approvalTransaction = await fuji.approve(
+      admin.address,
+      fujiTotalSupply,
+    );
+    const adminApproveFuji = approvalTransaction.value.toNumber();
 
+    const allowanceTransaction = await fuji.allowance(
+      fuji.address,
+      admin.address,
+    );
     debugger;
-    // const approvalFromTransaction = await fuji.approveFrom();
+    admin.fujiAllowance = allowanceTransaction.toNumber();
+
+    const approvalFromTransaction = await fuji.approveFrom(
+      admin.address,
+      owner.address,
+      fujiTotalSupply,
+    );
+    debugger;
+    admin.fujiAllowance = allowanceTransaction.toNumber();
     // const transferTransaction = await fuji.transfer();
-    // const transferFromTransaction = await fuji.transfer();
+    const transferFromTransaction = await fuji.transferFrom(
+      admin.address,
+      receiver.address,
+      50,
+    );
+    // const transferFromTransaction = await fuji.transferFrom(
+    //   owner.address,
+    //   receiver.address,
+    //   50,
+    // );
 
     const balanceOfTransaction3 = await fuji.balanceOf(fuji.address);
     const balance3 = balanceOfTransaction3.toNumber();
