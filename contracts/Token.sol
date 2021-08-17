@@ -134,6 +134,19 @@ contract Token is Template {
         emit Approval(owner, spender, amount);
     }
 
+    function approveFrom(
+    address owner,
+    address spender,
+    uint256 amount) external override returns (bool) {
+        _approve(owner, spender, amount);
+        uint256 currentAllowance = _allowances[owner][spender];
+        require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
+        unchecked {
+            _approve(owner, spender, currentAllowance - amount);
+        }
+        return true;
+    }
+
     function _transfer(address sender, address recipient, uint256 amount) internal {
         require(sender != address(0), "ERC20: transfer from the zero address");
         require(recipient != address(0), "ERC20: transfer to the zero address");
@@ -147,16 +160,15 @@ contract Token is Template {
     }
 
     function transferFrom(
-    address spender,
+    address sender,
     address recipient,
     uint256 amount
     ) external override returns (bool) {
-        _transfer(spender, recipient, amount);
-        address sender = msg.sender;
-        uint256 currentAllowance = _allowances[spender][sender];
+        _transfer(sender, recipient, amount);
+        uint256 currentAllowance = _allowances[spender][msg.sender];
         require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
         unchecked {
-            _approve(spender, sender, currentAllowance - amount);
+            _approve(spender, msg.sender, currentAllowance - amount);
         }
         return true;
     }
