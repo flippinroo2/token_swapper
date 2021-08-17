@@ -16,7 +16,9 @@ contract TokenFactory {
     bool private constant DEBUG = false;
 
     address private _admin;
-	string[] private _tokenNames;
+
+    address[] public _tokenAddresses;
+	string[] public _tokenNames;
 
     mapping(address => uint256) private _tokens;
 
@@ -47,9 +49,19 @@ contract TokenFactory {
         Token token = new Token(name, symbol, decimals, totalSupply);
         // See how to get the address from the call above and then use the other version of the "TokenCreated" event.
         address tokenAddress = address(token);
+        _tokenAddresses.push(tokenAddress);
+        _tokenNames.push(name);
         // console.log('tokenAddress: %s', tokenAddress);
         emit TokenCreated(tokenAddress, name, symbol, decimals, totalSupply);
         return token;
+    }
+
+    function getAddresses() external view returns (address[] memory) {
+        return _tokenAddresses;
+    }
+
+    function getAddressCount() external view returns (uint256) {
+        return _tokenAddresses.length;
     }
 
     function testFunction() external view {
