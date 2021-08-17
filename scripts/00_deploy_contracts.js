@@ -1,51 +1,23 @@
 const DEBUG = true;
 
-async function refreshAllowances(token) {
-  const tokenAllowanceTransaction = await token.allowance(
-    owner.address,
-    token.address,
+function logAccounts() {
+  console.log('\n\nBALANCES:');
+  console.log(
+    `fujiMetadata: ${fujiMetadata.balance}\thakuMetadata: ${hakuMetadata.balance}\towner: ${owner.balance}\treceiver: ${receiver.balance}\tsender: ${sender.balance}\ttateMetadata: ${tateMetadata.balance}\tuser: ${user.balance}`,
   );
-  const tokenAllowance = tokenAllowanceTransaction.toNumber();
-
-  const adminAllowanceTransaction = await token.allowance(
-    owner.address,
-    admin.address,
+  console.log('\nALLOWANCES:');
+  console.log(
+    `fujiMetadata: ${fujiMetadata.ownerAllowance}\thakuMetadata: ${hakuMetadata.ownerAllowance}\towner: ${owner.ownerAllowance}\treceiver: ${receiver.ownerAllowance}\tsender: ${sender.ownerAllowance}\ttateMetadata: ${tateMetadata.ownerAllowance}\tuser: ${user.ownerAllowance}`,
   );
-  admin.ownerAllowance = adminAllowanceTransaction.toNumber();
-
-  const ownerAllowanceTransaction = await token.allowance(
-    admin.address,
-    owner.address,
-  );
-  owner.ownerAllowance = ownerAllowanceTransaction.toNumber();
-
-  const senderAllowanceTransaction = await token.allowance(
-    owner.address,
-    sender.address,
-  );
-  sender.ownerAllowance = senderAllowanceTransaction.toNumber();
-
-  const receiverAllowanceTransaction = await token.allowance(
-    owner.address,
-    receiver.address,
-  );
-  receiver.ownerAllowance = receiverAllowanceTransaction.toNumber();
-
-  const userAllowanceTransaction = await token.allowance(
-    owner.address,
-    user.address,
-  );
-  user.ownerAllowance = userAllowanceTransaction.toNumber();
-
-  return tokenAllowance;
 }
 
-async function refreshBalances(token) {
+async function refreshBalances(token, metadata) {
+  const propertyString = `${token.name}Metadata`;
   const tokenBalanceTransaction = await token.balanceOf(token.address);
-  const tokenBalance = tokenBalanceTransaction.toNumber();
+  metadata.balance = tokenBalanceTransaction.toNumber();
 
-  const adminBalanceTransaction = await token.balanceOf(admin.address);
-  admin.balance = adminBalanceTransaction.toNumber();
+  const adminBalanceTransaction = await token.balanceOf(metadata.admin.address);
+  metadata.admin.balance = adminBalanceTransaction.toNumber();
 
   const ownerBalanceTransaction = await token.balanceOf(owner.address);
   owner.balance = ownerBalanceTransaction.toNumber();
@@ -59,7 +31,53 @@ async function refreshBalances(token) {
   const userBalanceTransaction = await token.balanceOf(user.address);
   user.balance = userBalanceTransaction.toNumber();
 
-  return tokenBalance;
+  if (DEBUG) {
+    logAccounts();
+  }
+}
+
+async function refreshAllowances(token, metadata, account) {
+  const propertyString = `${account.name}Allowance`;
+
+  const tokenAllowanceTransaction = await token.allowance(
+    owner.address,
+    token.address,
+  );
+  metadata[propertyString] = tokenAllowanceTransaction.toNumber();
+
+  const adminAllowanceTransaction = await token.allowance(
+    owner.address,
+    metadata.admin.address,
+  );
+  metadata.admin[propertyString] = adminAllowanceTransaction.toNumber();
+
+  const ownerAllowanceTransaction = await token.allowance(
+    metadata.admin.address,
+    owner.address,
+  );
+  owner[propertyString] = ownerAllowanceTransaction.toNumber();
+
+  const senderAllowanceTransaction = await token.allowance(
+    owner.address,
+    sender.address,
+  );
+  sender[propertyString] = senderAllowanceTransaction.toNumber();
+
+  const receiverAllowanceTransaction = await token.allowance(
+    owner.address,
+    receiver.address,
+  );
+  receiver[propertyString] = receiverAllowanceTransaction.toNumber();
+
+  const userAllowanceTransaction = await token.allowance(
+    owner.address,
+    user.address,
+  );
+  user[propertyString] = userAllowanceTransaction.toNumber();
+
+  await refreshBalances(token, metadata);
+
+  return tokenAllowance;
 }
 
 function logTransaction(transactionHash, blockNumber, from, gasUsed, to) {
@@ -128,11 +146,13 @@ function parseTransactionData({
   };
 }
 
-let admin = { balance: 0 },
-  owner = { balance: 0 },
-  sender = { balance: 0 },
-  receiver = { balance: 0 },
-  user = { balance: 0 };
+let fujiMetadata = { admin: {}, balance: 0, name: 'fuji' },
+  hakuMetadata = { admin: {}, balance: 0, name: 'haku' },
+  owner = { balance: 0, name: 'owner', ownerAllowance: 0 },
+  sender = { balance: 0, name: 'sender', ownerAllowance: 0 },
+  receiver = { balance: 0, name: 'receiver', ownerAllowance: 0 },
+  tateMetadata = { admin: {}, balance: 0, name: 'tate' },
+  user = { balance: 0, name: 'user', ownerAllowance: 0 };
 
 async function main() {
   const { artifacts, config, ethers, network, waffle, web3 } = hre;
@@ -171,7 +191,7 @@ async function main() {
   //   fujiTransactionData.events.TokenCreated.arguments.address,
   // );
 
-  admin.address = await fuji.getAdmin();
+  fujiMetadata.admin.address = await fuji.getAdmin();
 
   const createHakuTransaction = await tokenFactory.createToken(
     'Haku',
@@ -206,40 +226,35 @@ async function main() {
   const wrapper = await Wrapper.deploy(owner.address, user.address);
 
   console.log(
-    `Admin Address: ${admin.address}\nOwner Address: ${owner.address}\nSender Address:${sender.address}\nReceiver Address: ${receiver.address}\nUser Address: ${user.address}\nToken Factory Address: ${tokenFactory.address}\nFuji Address: ${fuji.address}\nHaku Address: ${haku.address}\nTate Address: ${tate.address}\nWrapper Address: ${wrapper.address}`,
+    `Owner Address: ${owner.address}\nSender Address:${sender.address}\nReceiver Address: ${receiver.address}\nUser Address: ${user.address}\nToken Factory Address: ${tokenFactory.address}\nFuji Address: ${fuji.address}\nHaku Address: ${haku.address}\nTate Address: ${tate.address}\nWrapper Address: ${wrapper.address}`,
   );
 
-  if (DEBUG) {
-    // debugger;
-    const totalSupplyTransaction = await fuji.totalSupply();
-    const fujiTotalSupply = totalSupplyTransaction.toNumber();
+  const totalSupplyTransaction = await fuji.totalSupply();
+  const fujiTotalSupply = totalSupplyTransaction.toNumber();
 
-    const fujiBalance = await refreshBalances(fuji);
+  const approvalTransaction = await fuji.approve(
+    fujiMetadata.admin.address,
+    fujiTotalSupply,
+  );
+  const adminApproveFuji = approvalTransaction.value.toNumber();
 
-    const approvalTransaction = await fuji.approve(
-      admin.address,
-      fujiTotalSupply,
-    );
-    const adminApproveFuji = approvalTransaction.value.toNumber();
+  const approvalFromTransaction = await fuji.approveFrom(
+    fujiMetadata.admin.address,
+    owner.address,
+    fujiTotalSupply,
+  );
 
-    const approvalFromTransaction = await fuji.approveFrom(
-      admin.address,
-      owner.address,
-      fujiTotalSupply,
-    );
+  await refreshBalances(fuji, fujiMetadata);
 
-    const fujiOwnerAllowance = await refreshAllowances(fuji);
+  // const transferTransaction = await fuji.transfer();
+  await fuji.transferFrom(fujiMetadata.admin.address, owner.address, 100);
+  await fuji.transferFrom(fujiMetadata.admin.address, sender.address, 200);
+  await fuji.transferFrom(fujiMetadata.admin.address, receiver.address, 500);
+  await fuji.transferFrom(fujiMetadata.admin.address, user.address, 50);
 
-    // const transferTransaction = await fuji.transfer();
-    await fuji.transferFrom(admin.address, owner.address, 100);
-    await fuji.transferFrom(admin.address, sender.address, 200);
-    await fuji.transferFrom(admin.address, receiver.address, 500);
-    await fuji.transferFrom(admin.address, user.address, 50);
+  const fujiOwnerAllowance = await refreshAllowances(fuji, fujiMetadata, owner);
 
-    await refreshBalances(fuji);
-
-    debugger;
-  }
+  debugger;
 }
 
 main()
