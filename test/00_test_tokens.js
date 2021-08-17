@@ -98,12 +98,12 @@ contract('TokenFactory', (accounts) => {
   console.log('Accounts:');
   console.dir(accounts);
   let accountData = {
-    fuji: { balance: 0, admin: {}, address: fujiAddress },
-    haku: { balance: 0, admin: {}, address: hakuAddress },
+    fuji: { balance: 0, admin: {} },
+    haku: { balance: 0, admin: {} },
     owner: { balance: 0, address: accounts[0] },
     receiver: { balance: 0, address: accounts[2] },
     sender: { balance: 0, address: accounts[1] },
-    tate: { balance: 0, admin: {}, address: tateAddress },
+    tate: { balance: 0, admin: {} },
     tokenFactory: { balance: 0, admin: {} },
     user: { balance: 0, address: accounts[3] },
   };
@@ -133,7 +133,9 @@ contract('TokenFactory', (accounts) => {
     const tokenAddressesTransaction = await tokenFactory.getAddresses();
     const [fujiAddress, hakuAddress, tateAddress] = tokenAddressesTransaction;
 
-    debugger;
+    accountData.fuji.address = fujiAddress;
+    accountData.haku.address = hakuAddress;
+    accountData.tate.address = tateAddress;
 
     // Token.setProvider(web3.currentProvider);
     // const tokenTest = await Token.deployed();
@@ -178,28 +180,36 @@ contract('TokenFactory', (accounts) => {
     accountData.tate.admin.address = await tate.getAdmin();
     tateMetadata = await getMetadata(tate);
 
-    debugger;
-
     const fujiTotalSupplyTransaction = await fuji.totalSupply();
     accountData.fuji.totalSupply = fujiTotalSupplyTransaction.words[0];
     const fujiTotalMintedTransaction = await fuji.getTotalMinted();
-    accountData.fuji.balance = fujiTotalMintedTransaction.words[0];
+    accountData.fuji.totalMinted = fujiTotalMintedTransaction.words[0];
     const fujiBalanceOfAdminTransaction = await fuji.balanceOf(
       accountData.fuji.admin.address,
     );
     accountData.fuji.admin.balance = fujiBalanceOfAdminTransaction.words[0];
-    debugger;
-    const fujiTransaferTransaction1 = await fuji.transfer(
+    const fujiAdminSenderApprovalTransaction = await fuji.approve(
       accountData.tokenFactory.address,
-      50,
+      // accountData.sender.address,
+      accountData.fuji.totalSupply,
     );
-    const fujiAdminSenderApprovalTransaction = await fuji.allowance(
-      accountData.sender.address,
-      fujiTotalSupply,
+    const adminSenderApprovalTransactionData = readTransaction(
+      fujiAdminSenderApprovalTransaction,
     );
+    const [fujiAdminSenderApproval] =
+      adminSenderApprovalTransactionData.value.words;
     const fujiAdminSenderAllowanceTransaction = await fuji.allowance(
-      accountData.fuji.admin,
-      accountData.sender.address,
+      accountData.fuji.admin.address,
+      accountData.fuji.address,
+    );
+    const [fujiAdminSenderAllowance] =
+      fujiAdminSenderAllowanceTransaction.words;
+    debugger;
+    // Need fuji to be allowed to do the transfer for the 1st address.
+    const fujiTransaferFromTransaction1 = await fuji.transferFrom(
+      accountData.tokenFactory.address,
+      accountData.receiver.address,
+      50,
     );
     // const transaction6 = await fuji.mint();
     const fujiTransaferTransaction2 = await fuji.transfer(
