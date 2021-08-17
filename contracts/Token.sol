@@ -137,7 +137,7 @@ contract Token is Template {
     function approveFrom(
     address owner,
     address spender,
-    uint256 amount) external override returns (bool) {
+    uint256 amount) external returns (bool) {
         _approve(owner, spender, amount);
         uint256 currentAllowance = _allowances[owner][spender];
         require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
@@ -165,10 +165,10 @@ contract Token is Template {
     uint256 amount
     ) external override returns (bool) {
         _transfer(sender, recipient, amount);
-        uint256 currentAllowance = _allowances[spender][msg.sender];
+        uint256 currentAllowance = _allowances[sender][msg.sender];
         require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
         unchecked {
-            _approve(spender, msg.sender, currentAllowance - amount);
+            _approve(sender, msg.sender, currentAllowance - amount);
         }
         return true;
     }
