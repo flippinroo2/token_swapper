@@ -134,15 +134,16 @@ contract Token is Template {
         if (DEBUG) {
             console.log('approveFrom(address owner: %s, address spender: %s, uint256 amount)', owner, spender);
         }
-        _approve(owner, spender, amount);
         uint256 currentAllowance = _allowances[owner][spender];
         if (DEBUG) {
             console.log('currentAllowance');
             console.log(currentAllowance);
         }
-        require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
-        unchecked {
-            _approve(owner, spender, amount);
+        _approve(owner, spender, amount);
+        uint256 newAllowance = _allowances[owner][spender];
+        if (DEBUG) {
+            console.log('newAllowance');
+            console.log(newAllowance);
         }
         return true;
     }
