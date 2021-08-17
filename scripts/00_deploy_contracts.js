@@ -1,4 +1,4 @@
-const DEBUG = false;
+const DEBUG = true;
 
 function logTransaction(transactionHash, blockNumber, from, gasUsed, to) {
   console.log(
@@ -91,34 +91,36 @@ async function main() {
 
   const Factory = await getContractFactory('TokenFactory');
   const tokenFactory = await Factory.deploy();
-  admin.address = tokenFactory.address;
 
   const createFujiTransaction = await tokenFactory.createToken(
     'Fuji',
     'FUJI',
     18,
-    100,
+    1100,
   );
   const fujiTransactionData = parseTransactionData(
     await createFujiTransaction.wait(),
   );
-  fuji = await Token.attach(
+  const fuji = await Token.attach(
     fujiTransactionData.events.TokenCreated.arguments.address,
   );
+
   // const fuji2 = await Token.connect(
   //   fujiTransactionData.events.TokenCreated.arguments.address,
   // );
+
+  admin.address = await fuji.getAdmin();
 
   const createHakuTransaction = await tokenFactory.createToken(
     'Haku',
     'HAKU',
     18,
-    100,
+    1050,
   );
   const hakuTransactionData = parseTransactionData(
     await createHakuTransaction.wait(),
   );
-  haku = await Token.attach(
+  const haku = await Token.attach(
     hakuTransactionData.events.TokenCreated.arguments.address,
   );
 
@@ -126,12 +128,12 @@ async function main() {
     'Tate',
     'TATE',
     18,
-    100,
+    1000,
   );
   const tateTransactionData = parseTransactionData(
     await createTateTransaction.wait(),
   );
-  tate = await Token.attach(
+  const tate = await Token.attach(
     tateTransactionData.events.TokenCreated.arguments.address,
   );
 
@@ -146,6 +148,29 @@ async function main() {
   );
 
   if (DEBUG) {
+    // debugger;
+    const totalSupplyTransaction = await fuji.totalSupply();
+    const totalSupply = totalSupplyTransaction.toNumber();
+
+    const balanceOfTransaction1 = await fuji.balanceOf(fuji.address);
+    const balance1 = balanceOfTransaction1.toNumber();
+
+    const balanceOfTransaction2 = await fuji.balanceOf(admin.address);
+    const balance2 = balanceOfTransaction2.toNumber();
+
+    const approvalTransaction = await fuji.approve(admin.address, totalSupply);
+    const approval = approvalTransaction.value.toNumber();
+
+    debugger;
+    // const approvalFromTransaction = await fuji.approveFrom();
+    // const transferTransaction = await fuji.transfer();
+    // const transferFromTransaction = await fuji.transfer();
+
+    const balanceOfTransaction3 = await fuji.balanceOf(fuji.address);
+    const balance3 = balanceOfTransaction3.toNumber();
+
+    const balanceOfTransaction4 = await fuji.balanceOf(admin.address);
+    const balance4 = balanceOfTransaction4.toNumber();
     debugger;
   }
 }
