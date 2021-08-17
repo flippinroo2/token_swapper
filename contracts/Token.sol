@@ -119,7 +119,7 @@ contract Token is Template {
     function approve(address spender, uint256 amount) public override returns (bool){
         address owner = msg.sender;
         if (DEBUG) {
-            console.log('approve(address owner: %s, address spender: %s, uint256 amount)', owner, spender);
+            console.log('approve(address spender: %s, uint256 amount)', spender);
         }
         require(owner != address(0), "ERC20: approve from the zero address");
         require(spender != address(0), "ERC20: approve to the zero address");
