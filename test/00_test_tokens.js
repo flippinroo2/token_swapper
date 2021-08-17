@@ -184,31 +184,49 @@ contract('TokenFactory', (accounts) => {
     accountData.fuji.totalSupply = fujiTotalSupplyTransaction.words[0];
     const fujiTotalMintedTransaction = await fuji.getTotalMinted();
     accountData.fuji.totalMinted = fujiTotalMintedTransaction.words[0];
+
     const fujiBalanceOfAdminTransaction = await fuji.balanceOf(
       accountData.fuji.admin.address,
     );
     accountData.fuji.admin.balance = fujiBalanceOfAdminTransaction.words[0];
-    const fujiAdminSenderApprovalTransaction = await fuji.approve(
-      accountData.tokenFactory.address,
+
+    const fujiApprovalTransaction1 = await fuji.approve(
+      accountData.fuji.admin.address,
       // accountData.sender.address,
       accountData.fuji.totalSupply,
     );
-    const adminSenderApprovalTransactionData = readTransaction(
-      fujiAdminSenderApprovalTransaction,
+    const fujiApprovalTransaction1Data = readTransaction(
+      fujiApprovalTransaction1,
     );
-    const [fujiAdminSenderApproval] =
-      adminSenderApprovalTransactionData.value.words;
-    const fujiAdminSenderAllowanceTransaction = await fuji.allowance(
+    const [fujiApproveFujiAdmin] = fujiApprovalTransaction1Data.value.words;
+
+    const fujiApprovalFromTransaction1 = await fuji.approveFrom(
       accountData.fuji.admin.address,
       accountData.fuji.address,
+      accountData.fuji.totalSupply,
     );
-    const [fujiAdminSenderAllowance] =
-      fujiAdminSenderAllowanceTransaction.words;
+    const fujiApprovalFromTransaction1Data = readTransaction(
+      fujiApprovalFromTransaction1,
+    );
+    const [fujiApproveAdminFuji] = fujiApprovalFromTransaction1Data.value.words;
+
+    const fujiAllowanceFujiAdminTransaction = await fuji.allowance(
+      accountData.fuji.address,
+      accountData.fuji.admin.address,
+    );
+    const [fujiAllowanceFujiAdmin] = fujiAllowanceFujiAdminTransaction.words;
+
+    const fujiAllowanceAdminFujiTransaction = await fuji.allowance(
+      accountData.fuji.address,
+      accountData.fuji.admin.address,
+    );
+    const [fujiAllowanceAdminFuji] = fujiAllowanceAdminFujiTransaction.words;
+
     debugger;
     // Need fuji to be allowed to do the transfer for the 1st address.
     const fujiTransaferFromTransaction1 = await fuji.transferFrom(
-      accountData.tokenFactory.address,
-      accountData.receiver.address,
+      accountData.fuji.address,
+      accountData.fuji.admin.address,
       50,
     );
     // const transaction6 = await fuji.mint();
@@ -216,7 +234,18 @@ contract('TokenFactory', (accounts) => {
       accountData.receiver.address,
       5,
     );
-    const transaction8 = await fuji.balanceOf(accountData.receiver.address);
+
+    debugger;
+
+    const allowancesMapping = await fuji._allowances();
+    const balancesMapping = await fuji._balances();
+
+    debugger;
+
+    const fujiBalanceOfReceiverTransaction = await fuji.balanceOf(
+      accountData.receiver.address,
+    );
+    accountData.receiver.balance = fujiBalanceOfReceiverTransaction.words[0];
     debugger;
 
     // hakuMetadata = await getMetadata(hakuContract);

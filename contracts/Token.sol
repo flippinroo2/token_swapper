@@ -31,8 +31,8 @@ contract Token is Template {
     uint256 public override totalSupply;
     uint256 public totalMinted;
 
-    mapping(address => uint256) private _balances;
-    mapping(address => mapping(address => uint256)) private _allowances;
+    mapping(address => uint256) public _balances;
+    mapping(address => mapping(address => uint256)) public _allowances;
 
     // Events
     // event Approval(address indexed owner, address indexed spender, uint256 value);
@@ -105,11 +105,6 @@ contract Token is Template {
         return totalMinted;
     }
 
-    function transfer(address recipient, uint256 amount) public override returns (bool){
-        _transfer(msg.sender, recipient, amount);
-        return true;
-    }
-
     function allowance(address owner, address spender)
         public
         view
@@ -123,6 +118,9 @@ contract Token is Template {
 
     function approve(address spender, uint256 amount) public override returns (bool){
         address owner = msg.sender;
+        if (DEBUG) {
+            console.log('approve(address owner: %s, address spender: %s, uint256 amount)', owner, spender);
+        }
         require(owner != address(0), "ERC20: approve from the zero address");
         require(spender != address(0), "ERC20: approve to the zero address");
         _approve(owner, spender, amount);
@@ -130,6 +128,9 @@ contract Token is Template {
     }
 
     function _approve(address owner, address spender, uint256 amount) internal {
+        if (DEBUG) {
+            console.log('_approve(address owner: %s, address spender: %s, uint256 amount)', owner, spender);
+        }
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);
     }
@@ -138,8 +139,15 @@ contract Token is Template {
     address owner,
     address spender,
     uint256 amount) external returns (bool) {
+        if (DEBUG) {
+            console.log('approveFrom(address owner: %s, address spender: %s, uint256 amount)', owner, spender);
+        }
         _approve(owner, spender, amount);
         uint256 currentAllowance = _allowances[owner][spender];
+        if (DEBUG) {
+            console.log('currentAllowance');
+            console.log(currentAllowance);
+        }
         require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
         unchecked {
             _approve(owner, spender, currentAllowance - amount);
@@ -147,7 +155,18 @@ contract Token is Template {
         return true;
     }
 
+    function transfer(address recipient, uint256 amount) public override returns (bool){
+        if (DEBUG) {
+            console.log('transfer(address recipient: %s, uint256 amount)', sender, recipient);
+        }
+        _transfer(msg.sender, recipient, amount);
+        return true;
+    }
+
     function _transfer(address sender, address recipient, uint256 amount) internal {
+        if (DEBUG) {
+            console.log('_transfer(address sender: %s, address recipient: %s, uint256 amount)', sender, recipient);
+        }
         require(sender != address(0), "ERC20: transfer from the zero address");
         require(recipient != address(0), "ERC20: transfer to the zero address");
         uint256 senderBalance = _balances[sender];
@@ -164,6 +183,9 @@ contract Token is Template {
     address recipient,
     uint256 amount
     ) external override returns (bool) {
+        if (DEBUG) {
+            console.log('transferFrom(address sender: %s, address recipient: %s, uint256 amount)', sender, recipient);
+        }
         _transfer(sender, recipient, amount);
         uint256 currentAllowance = _allowances[sender][msg.sender];
         require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
