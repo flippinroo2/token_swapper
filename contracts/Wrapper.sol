@@ -78,32 +78,32 @@ contract Wrapper {
     address private _address1;
     address private _address2;
 
-    Swap private _fujiTateSwapper;
-    Swap private _hakuTateSwapper;
+    // Swap private _fujiTateSwapper;
+    // Swap private _hakuTateSwapper;
 
     // Was testing a different method for instantiating the Swap contract.
-    string[] fujiArgs = ['Fuji', 'FUJI'];
-    string[] hakuArgs = ['Haku', 'HAKU'];
-    string[] tateArgs = ['Tate', 'TATE'];
+    // string[] fujiArgs = ['Fuji', 'FUJI'];
+    // string[] hakuArgs = ['Haku', 'HAKU'];
+    // string[] tateArgs = ['Tate', 'TATE'];
 
-    Template private _fuji = new Token(fujiArgs[0], fujiArgs[1], 18, 1100);
-    Template private _haku = new Token(hakuArgs[0], hakuArgs[1], 18, 1050);
-    Template private _tate = new Token(tateArgs[0], tateArgs[1], 18, 1000);
+    // Template private _fuji = new Token(fujiArgs[0], fujiArgs[1], 18, 1100);
+    // Template private _haku = new Token(hakuArgs[0], hakuArgs[1], 18, 1050);
+    // Template private _tate = new Token(tateArgs[0], tateArgs[1], 18, 1000);
 
     constructor(address address1_, address address2_) {
         _admin = msg.sender;
         contractAddress = address(this);
         _address1 = address1_;
         _address2 = address2_;
-        _fujiTateSwapper = new Swap(_address1, _fuji, _address2, _tate);
-        _hakuTateSwapper = new Swap(_address1, _haku, _address2, _tate);
+        // _fujiTateSwapper = new Swap(_address1, _fuji, _address2, _tate);
+        // _hakuTateSwapper = new Swap(_address1, _haku, _address2, _tate);
     }
 
-    function swap(uint256 amount) public view {
-        _fujiTateSwapper._swap(amount);
-    }
+    // function swap(uint256 amount) public view {
+    //     _fujiTateSwapper._swap(amount);
+    // }
 
-    function unswap(uint256 amount) public view {
-        _hakuTateSwapper._swap(amount);
-    }
+    // function unswap(uint256 amount) public view {
+    //     _hakuTateSwapper._swap(amount);
+    // }
 }
