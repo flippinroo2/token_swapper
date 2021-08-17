@@ -142,7 +142,7 @@ contract Token is Template {
         }
         require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
         unchecked {
-            _approve(owner, spender, currentAllowance - amount);
+            _approve(owner, spender, amount);
         }
         return true;
     }
