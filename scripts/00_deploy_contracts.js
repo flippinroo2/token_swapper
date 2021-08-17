@@ -1,5 +1,67 @@
 const DEBUG = true;
 
+async function refreshAllowances(token) {
+  const tokenAllowanceTransaction = await token.allowance(
+    owner.address,
+    token.address,
+  );
+  const tokenAllowance = tokenAllowanceTransaction.toNumber();
+
+  const adminAllowanceTransaction = await token.allowance(
+    owner.address,
+    admin.address,
+  );
+  admin.ownerAllowance = adminAllowanceTransaction.toNumber();
+
+  const ownerAllowanceTransaction = await token.allowance(
+    admin.address,
+    owner.address,
+  );
+  owner.ownerAllowance = ownerAllowanceTransaction.toNumber();
+
+  const senderAllowanceTransaction = await token.allowance(
+    owner.address,
+    sender.address,
+  );
+  sender.ownerAllowance = senderAllowanceTransaction.toNumber();
+
+  const receiverAllowanceTransaction = await token.allowance(
+    owner.address,
+    receiver.address,
+  );
+  receiver.ownerAllowance = receiverAllowanceTransaction.toNumber();
+
+  const userAllowanceTransaction = await token.allowance(
+    owner.address,
+    user.address,
+  );
+  user.ownerAllowance = userAllowanceTransaction.toNumber();
+
+  return tokenAllowance;
+}
+
+async function refreshBalances(token) {
+  const tokenBalanceTransaction = await token.balanceOf(token.address);
+  const tokenBalance = tokenBalanceTransaction.toNumber();
+
+  const adminBalanceTransaction = await token.balanceOf(admin.address);
+  admin.balance = adminBalanceTransaction.toNumber();
+
+  const ownerBalanceTransaction = await token.balanceOf(owner.address);
+  owner.balance = ownerBalanceTransaction.toNumber();
+
+  const senderBalanceTransaction = await token.balanceOf(sender.address);
+  sender.balance = senderBalanceTransaction.toNumber();
+
+  const receiverBalanceTransaction = await token.balanceOf(receiver.address);
+  receiver.balance = receiverBalanceTransaction.toNumber();
+
+  const userBalanceTransaction = await token.balanceOf(user.address);
+  user.balance = userBalanceTransaction.toNumber();
+
+  return tokenBalance;
+}
+
 function logTransaction(transactionHash, blockNumber, from, gasUsed, to) {
   console.log(
     `Transaction: ${transactionHash}\nFrom: ${from}\nTo: ${to}\nBlock #: ${blockNumber}\nGas: ${gasUsed}`,
@@ -66,16 +128,16 @@ function parseTransactionData({
   };
 }
 
+let admin = { balance: 0 },
+  owner = { balance: 0 },
+  sender = { balance: 0 },
+  receiver = { balance: 0 },
+  user = { balance: 0 };
+
 async function main() {
   const { artifacts, config, ethers, network, waffle, web3 } = hre;
   const { getContractFactory, getSigners } = ethers;
   const { eth, utils } = web3;
-
-  let admin = { balance: 0 },
-    owner = { balance: 0 },
-    sender = { balance: 0 },
-    receiver = { balance: 0 },
-    user = { balance: 0 };
 
   const signers = await getSigners();
   const [signer] = signers;
@@ -152,11 +214,7 @@ async function main() {
     const totalSupplyTransaction = await fuji.totalSupply();
     const fujiTotalSupply = totalSupplyTransaction.toNumber();
 
-    const balanceOfTransaction1 = await fuji.balanceOf(fuji.address);
-    const fujiBalance = balanceOfTransaction1.toNumber();
-
-    const balanceOfTransaction2 = await fuji.balanceOf(admin.address);
-    admin.balance = balanceOfTransaction2.toNumber();
+    const fujiBalance = await refreshBalances(fuji);
 
     const approvalTransaction = await fuji.approve(
       admin.address,
@@ -164,37 +222,22 @@ async function main() {
     );
     const adminApproveFuji = approvalTransaction.value.toNumber();
 
-    const allowanceTransaction = await fuji.allowance(
-      fuji.address,
-      admin.address,
-    );
-    debugger;
-    admin.fujiAllowance = allowanceTransaction.toNumber();
-
     const approvalFromTransaction = await fuji.approveFrom(
       admin.address,
       owner.address,
       fujiTotalSupply,
     );
-    debugger;
-    admin.fujiAllowance = allowanceTransaction.toNumber();
+
+    const fujiOwnerAllowance = await refreshAllowances(fuji);
+
     // const transferTransaction = await fuji.transfer();
-    const transferFromTransaction = await fuji.transferFrom(
-      admin.address,
-      receiver.address,
-      50,
-    );
-    // const transferFromTransaction = await fuji.transferFrom(
-    //   owner.address,
-    //   receiver.address,
-    //   50,
-    // );
+    await fuji.transferFrom(admin.address, owner.address, 100);
+    await fuji.transferFrom(admin.address, sender.address, 200);
+    await fuji.transferFrom(admin.address, receiver.address, 500);
+    await fuji.transferFrom(admin.address, user.address, 50);
 
-    const balanceOfTransaction3 = await fuji.balanceOf(fuji.address);
-    const balance3 = balanceOfTransaction3.toNumber();
+    await refreshBalances(fuji);
 
-    const balanceOfTransaction4 = await fuji.balanceOf(admin.address);
-    const balance4 = balanceOfTransaction4.toNumber();
     debugger;
   }
 }
