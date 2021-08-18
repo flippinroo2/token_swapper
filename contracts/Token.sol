@@ -28,7 +28,8 @@ contract Token is Template {
     string public _name;
     string public _symbol;
     uint8 public _tokenDecimals;
-    uint256 public override totalSupply;
+    // uint256 public override totalSupply;
+    uint256 public totalSupply;
     uint256 public totalMinted;
 
     mapping(address => uint256) public _balances;
@@ -58,6 +59,9 @@ contract Token is Template {
             console.log('constructor(string name_ %s, string symbol_ %s, uint8 decimals_, uint256 totalSupply_)', name_, symbol_); // Cannot convert ", decimals_, totalSupply_" into strings without a prewritten funciton. (https://ethereum.stackexchange.com/questions/10932/how-to-convert-string-to-int)
         }
         // setAdmin(msg.sender); // Already implemented in the "Template" contract.
+        _name = name_;
+        _symbol = symbol_;
+        _tokenDecimals = decimals_;
         setTotalSupply(totalSupply_); // Moving these functions to the createToken() function.
         mint(getAdmin(), totalSupply_); // Moving these functions to the createToken() function.
     }
