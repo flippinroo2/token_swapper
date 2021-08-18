@@ -58,27 +58,27 @@ contract Swap {
     emit SwapCreated(user1_, token1_, user2_, token2_);
   }
 
-  function getToken1Address() external view returns (Token) {
+  function getToken1Address() external view returns (address) {
     return address(_token1);
   }
 
-  function getToken2Address() external view returns (Token) {
+  function getToken2Address() external view returns (address) {
     return address(_token2);
   }
 
-  function getToken1Allowance() external view returns (Token) {
+  function getToken1Allowance() external view returns (uint256) {
     return _token1Allowance;
   }
 
-  function getToken2Allowance() external view returns (Token) {
+  function getToken2Allowance() external view returns (uint256) {
     return _token2Allowance;
   }
 
-  function setToken1Allowance(address user) public view returns (Token) {
+  function setToken1Allowance(address user) public {
     _token1Allowance = _token1.allowance(user, address(this));
   }
 
-  function setToken2Allowance(address user) public view returns (Token) {
+  function setToken2Allowance(address user) public {
     _token2Allowance = _token2.allowance(user, address(this));
   }
 
