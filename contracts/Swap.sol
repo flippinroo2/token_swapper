@@ -20,8 +20,8 @@ contract Swap {
   using SafeMath for uint256;
   using Strings for string;
 
-  address public _address1;
-  address public _address2;
+  address public _user1;
+  address public _user2;
 
   Token public _token1;
   Token public _token2;
@@ -40,32 +40,39 @@ contract Swap {
       address1_,
       address2_
     );
-    _address1 = address1_;
+    _user1 = address1_;
     _token1 = token1_;
-    _address2 = address2_;
+    _user2 = address2_;
     _token2 = token2_;
     emit SwapCreated(address1_, token1_, address2_, token2_);
   }
 
+    function getToken1() external view {
+
+    }
+function getToken2() external view {
+
+    }
+
   function _swap(uint256 amount) public view {
     require(
-      msg.sender == _address1 || msg.sender == _address2,
+      msg.sender == _user1 || msg.sender == _user2,
       'Not an authorized address.'
     );
     require(
-      _token1.allowance(_address1, address(this)) >= amount,
+      _token1.allowance(_user1, address(this)) >= amount,
       'Token 1 allowance is too low.'
     );
     require(
-      _token2.allowance(_address2, address(this)) >= amount,
+      _token2.allowance(_user2, address(this)) >= amount,
       'Token 2 allowance is too low.'
     );
-    _safeTransferFrom(_token1Address, _address1, _address2, amount);
-    _safeTransferFrom(_token2Address, _address2, _address1, amount);
+    _safeTransferFrom(_token1Address, _user1, _user2, amount);
+    _safeTransferFrom(_token2Address, _user2, _user1, amount);
   }
 
   function _safeTransferFrom(
-    Template token,
+    Token token,
     address sender,
     address receiver,
     uint256 amount
