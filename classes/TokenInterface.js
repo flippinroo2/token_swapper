@@ -49,13 +49,12 @@ module.exports = class TokenInterface {
   }
 
   async transfer(arg1, arg2, arg3) {
-    debugger;
     if (arg3 === undefined) {
-      await this.token.transfer();
-      return;
+      const transfer = await this.token.transfer(arg1, arg2);
+      return Boolean(transfer.value.toNumber());
     }
-    await this.token.transferFrom();
-    debugger;
+    const transferFrom = await this.token.transferFrom(arg1, arg2, arg3);
+    return Boolean(transferFrom.value.toNumber());
   }
 
   parseTransactionData({

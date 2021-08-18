@@ -234,7 +234,7 @@ async function main() {
   const fujiInterface = new TokenInterface(fuji);
   const testMetadata = await fujiInterface.getMetadata();
 
-  await fujiInterface.approve(
+  const approval = await fujiInterface.approve(
     testMetadata.admin.address,
     owner.address,
     testMetadata.totalSupply,
@@ -243,8 +243,11 @@ async function main() {
     owner.address,
     testMetadata.admin.address,
   );
-  debugger;
-  await fujiInterface.transfer(testMetadata.admin.address, owner.address, 50);
+  const transfer = await fujiInterface.transfer(
+    testMetadata.admin.address,
+    owner.address,
+    50,
+  );
   debugger;
 
   // const fuji2 = await Token.connect(
