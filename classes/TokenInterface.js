@@ -2,45 +2,59 @@ const Transaction = require('./Transaction.js');
 
 module.exports = class TokenInterface {
   address;
-  #admin;
-  balance = 0;
+  #_admin;
+  fujiBalance = 0;
   debug = false;
-  totalSupply;
-  totalMinted;
+  #_name;
+  #_symbol;
+  #_totalSupply;
+  #_totalMinted;
 
   constructor(token) {
     this.token = token;
     this.address = token.address;
-    this.#admin = token.getAdmin();
-    this.totalSupply = token.totalSupply();
-    this.totalMinted = token.totalMinted();
+    this.#_admin = token.getAdmin();
+    this.#_name = token._name();
+    this.#_symbol = token._symbol();
+    this.#_totalSupply = token.totalSupply();
+    this.#_totalMinted = token.totalMinted();
   }
 
   async getAdmin() {
-    const adminAddress = await this.#admin;
-    return {
-      address: adminAddress,
-      balance: 0,
+    const admin = await this.#_admin;
+    const name = this.name.toLowerCase();
+
+    const adminObject = {
+      address: admin,
     };
-  }
-  async getMetadata() {
-    const totalMinted = await this.totalMinted;
-    const totalSupply = await this.totalSupply;
-    return {
-      address: this.address,
-      admin: await this.getAdmin(),
-      totalMinted: totalMinted.toNumber(),
-      totalSupply: totalSupply.toNumber(),
-    };
+    adminObject[`${name}Balance`] = 0;
+    return adminObject;
   }
 
-  async approve(arg1, arg2, arg3) {
-    if (arg3 === undefined) {
-      const approve = await this.token.approve(arg1, arg2);
-      return approve;
-    }
-    const approveFrom = await this.token.approveFrom(arg1, arg2, arg3);
-    return approveFrom;
+  async getMetadata() {
+    const address = this.address;
+    const name = await this.#_name;
+    this.name = name;
+    this.symbol = await this.#_symbol;
+    const totalMinted = await this.#_totalMinted;
+    this.totalMinted = totalMinted.toNumber();
+    const totalSupply = await this.#_totalSupply;
+    this.totalSupply = totalSupply.toNumber();
+    const metadata = {
+      address,
+      admin: await this.getAdmin(),
+      name,
+      symbol: this.symbol,
+      totalMinted: this.totalMinted,
+      totalSupply: this.totalSupply,
+    };
+    metadata[`${name.toLowerCase()}Balance`] = await this.getBalance(address);
+    return metadata;
+  }
+
+  async getBalance(owner) {
+    const balance = await this.token.balanceOf(owner);
+    return balance.toNumber();
   }
 
   async getAllowance(owner, spender) {
@@ -48,13 +62,19 @@ module.exports = class TokenInterface {
     return allowance.toNumber();
   }
 
+  async approve(arg1, arg2, arg3) {
+    // const transaction = new Transaction(arg1, arg2, arg3, 'approve'); // Testing the "Transaction" object.
+    if (arg3 === undefined) {
+      return await this.token.approve(arg1, arg2);
+    }
+    return await this.token.approveFrom(arg1, arg2, arg3);
+  }
+
   async transfer(arg1, arg2, arg3) {
     if (arg3 === undefined) {
-      const transfer = await this.token.transfer(arg1, arg2);
-      return transfer;
+      return await this.token.transfer(arg1, arg2);
     }
-    const transferFrom = await this.token.transferFrom(arg1, arg2, arg3);
-    return transferFrom;
+    return await this.token.transferFrom(arg1, arg2, arg3);
   }
 
   parseTransactionData({
