@@ -231,8 +231,8 @@ async function main() {
   const fuji = await Token.attach(
     fujiTransactionData.events.TokenCreated.arguments.address,
   );
-  const fujiInterface = new TokenInterface(token);
-  const testMetadata = fujiInterface.getMetadata();
+  const fujiInterface = new TokenInterface(fuji);
+  const testMetadata = await fujiInterface.getMetadata();
   debugger;
 
   // const fuji2 = await Token.connect(

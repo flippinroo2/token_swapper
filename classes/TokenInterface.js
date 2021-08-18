@@ -5,6 +5,8 @@ module.exports = class TokenInterface {
   admin;
   balance = 0;
   debug = false;
+  totalSupply;
+  totalMinted;
 
   constructor(token) {
     this.token = token;
@@ -12,7 +14,6 @@ module.exports = class TokenInterface {
     this.admin = token.getAdmin();
     this.totalSupply = token.totalSupply();
     this.totalMinted = token.totalMinted();
-    this.amount = amount;
   }
 
   async getMetadata() {
