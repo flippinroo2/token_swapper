@@ -21,14 +21,18 @@ function logTransaction(transactionHash, blockNumber, from, gasUsed, to) {
 
 async function refreshBalances(token, metadata) {
   const tokenAddress = token.address;
+  const tokenName = metadata.name;
+
   const adminAddress = metadata.admin.address;
 
-  token.balance = await token.getBalance(tokenAddress);
-  metadata.admin.balance = await token.getBalance(adminAddress);
-  owner.balance = await token.getBalance(owner.address);
-  sender.balance = await token.getBalance(sender.address);
-  receiver.balance = await token.getBalance(receiver.address);
-  user.balance = await token.getBalance(user.address);
+  const propertyString = `${tokenName}Balance`;
+
+  metadata[propertyString] = await token.getBalance(tokenAddress);
+  metadata.admin[propertyString] = await token.getBalance(adminAddress);
+  owner[propertyString] = await token.getBalance(owner.address);
+  sender[propertyString] = await token.getBalance(sender.address);
+  receiver[propertyString] = await token.getBalance(receiver.address);
+  user[propertyString] = await token.getBalance(user.address);
 
   if (DEBUG) {
     logAccounts();
@@ -42,7 +46,7 @@ async function refreshAllowance(token, metadata, account) {
   const propertyString = `${account.name}Allowance`;
 
   const tokenAllowance = await token.getAllowance(tokenAddress, accountAddress);
-  token[propertyString] = tokenAllowance;
+  metadata[propertyString] = tokenAllowance;
   const adminAllowance = await token.getAllowance(adminAddress, accountAddress);
   metadata.admin[propertyString] = adminAllowance;
 }
@@ -161,7 +165,7 @@ async function approveAll(token, metadata) {
   await token.approve(user.address, sender.address, totalSupply);
   await token.approve(user.address, receiver.address, totalSupply);
 }
-async function newTokenTransactions(token, metadata) {
+async function tokenTransactions(token, metadata) {
   const { admin, totalSupply } = metadata;
 
   await refreshBalances(token, metadata);
@@ -169,8 +173,9 @@ async function newTokenTransactions(token, metadata) {
   await approveAll(token, metadata);
 
   await refreshAllowances(token, metadata);
-  // refreshAllowance(token, metadata, sender);
-  // debugger;
+
+  const transfer = await token.transfer(admin.address, receiver.address, 50);
+  const transferReceipt = await transfer.wait();
 
   /* ETHERS.js DECODE TESTING
   // IMPORTANT !!!
@@ -204,39 +209,6 @@ async function newTokenTransactions(token, metadata) {
     // const web3HexToUtf8 = web3.utils.hexToUtf8(approval.hash);
     */
 
-  const transfer = await token.transfer(admin.address, receiver.address, 50);
-  const transferReceipt = await transfer.wait();
-
-  await refreshBalances(token, metadata);
-  debugger;
-}
-async function tokenTransactions(token, metadata) {
-  metadata.admin.address = await token.getAdmin();
-
-  const totalSupplyTransaction = await token.totalSupply();
-  const totalSupply = totalSupplyTransaction.toNumber();
-
-  const approvalTransaction = await token.approve(
-    metadata.admin.address,
-    totalSupply,
-  );
-  const adminApproval = approvalTransaction.value.toNumber();
-
-  const approvalFromTransaction = await token.approveFrom(
-    metadata.admin.address,
-    owner.address,
-    totalSupply,
-  );
-  await refreshAllowances(token, metadata, owner);
-
-  await refreshBalances(token, metadata);
-
-  // const transferTransaction = await token.transfer();
-  await token.transferFrom(metadata.admin.address, owner.address, 100);
-  await token.transferFrom(metadata.admin.address, sender.address, 200);
-  await token.transferFrom(metadata.admin.address, receiver.address, 500);
-  await token.transferFrom(metadata.admin.address, user.address, 50);
-
   await refreshBalances(token, metadata);
 }
 
@@ -248,12 +220,7 @@ let fuji,
   sender = { balance: 0, name: 'sender', ownerAllowance: 0 },
   receiver = { balance: 0, name: 'receiver', ownerAllowance: 0 },
   tate,
-  // tateMetadata = {
-  //   admin: { balance: 0, ownerAllowance: 0 },
-  //   balance: 0,
-  //   name: 'tate',
-  //   ownerAllowance: 0,
-  // },
+  tateMetadata,
   user = { balance: 0, name: 'user', ownerAllowance: 0 };
 
 async function main() {
@@ -304,6 +271,8 @@ async function main() {
   const fujiTransactionData = parseTransactionData(
     await createFujiTransaction.wait(),
   );
+
+  // REWORK THE WAY TOKENS ARE CREATED BY USING THE EVENT LISTENER INSTEAD OF THIS.
   fuji = await Token.attach(
     fujiTransactionData.events.TokenCreated.arguments.address,
   ); // Using this attach method is basically the same as calling the "Contract" constructor with this address and the interface & signerOrProvider passed in.
@@ -355,13 +324,9 @@ async function main() {
     `Owner Address: ${owner.address}\nSender Address:${sender.address}\nReceiver Address: ${receiver.address}\nUser Address: ${user.address}\nToken Factory Address: ${tokenFactory.address}\nFuji Address: ${fuji.address}\nHaku Address: ${haku.address}\nTate Address: ${tate.address}\nWrapper Address: ${wrapper.address}`,
   );
 
-  await newTokenTransactions(fujiInterface, fujiMetadata);
-  await newTokenTransactions(hakuInterface, hakuMetadata);
-  await newTokenTransactions(tateInterface, tateMetadata);
-
-  // await tokenTransactions(fuji, fujiMetadata);
-  // await tokenTransactions(haku, hakuMetadata);
-  // await tokenTransactions(tate, tateMetadata);
+  await tokenTransactions(fujiInterface, fujiMetadata);
+  await tokenTransactions(hakuInterface, hakuMetadata);
+  await tokenTransactions(tateInterface, tateMetadata);
 
   debugger;
 }
