@@ -26,6 +26,12 @@ contract Swap {
   Token public _token1;
   Token public _token2;
 
+  address public _token1Address;
+  address public _token2Address;
+
+  uint256 public _token1Allowance;
+  uint256 public _token2Allowance;
+
   // Events
   event SwapCreated(
     address user1,
@@ -52,25 +58,43 @@ contract Swap {
     emit SwapCreated(user1_, token1_, user2_, token2_);
   }
 
-  function getToken1() external view returns (Token) {
-    return _token1;
+  function getToken1Address() external view returns (Token) {
+    return address(_token1);
   }
 
-  function getToken2() external view returns (Token) {
-    return _token2;
+  function getToken2Address() external view returns (Token) {
+    return address(_token2);
+  }
+
+  function getToken1Allowance() external view returns (Token) {
+    return _token1Allowance;
+  }
+
+  function getToken2Allowance() external view returns (Token) {
+    return _token2Allowance;
+  }
+
+  function setToken1Allowance(address user) public view returns (Token) {
+    _token1Allowance = _token1.allowance(user, address(this));
+  }
+
+  function setToken2Allowance(address user) public view returns (Token) {
+    _token2Allowance = _token2.allowance(user, address(this));
   }
 
   function _swap(uint256 amount) external {
+    setToken1Allowance(_user1);
+    setToken2Allowance(_user2);
     require(
       msg.sender == _user1 || msg.sender == _user2,
       'Not an authorized address.'
     );
     require(
-      _token1.allowance(_user1, address(this)) >= amount,
+      _token1Allowance >= amount,
       'Token 1 allowance is too low.'
     );
     require(
-      _token2.allowance(_user2, address(this)) >= amount,
+      _token2Allowance >= amount,
       'Token 2 allowance is too low.'
     );
     _safeTransferFrom(_token1, _user1, _user2, amount);
