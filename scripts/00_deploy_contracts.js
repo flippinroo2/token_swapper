@@ -185,7 +185,7 @@ async function newTokenTransactions(token, metadata) {
     // const web3HexToUtf8 = web3.utils.hexToUtf8(approval.hash);
     */
 
-  const adminAllowance = await token.getAllowance(
+  const senderAdminAllowance = await token.getAllowance(
     admin.address,
     sender.address,
   );
