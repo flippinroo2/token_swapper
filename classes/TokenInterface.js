@@ -22,15 +22,19 @@ module.exports = class TokenInterface {
 
   async getAdmin() {
     const admin = await this.#_admin;
-    return {
+    const name = this.name.toLowerCase();
+
+    const adminObject = {
       address: admin,
-      fujiBalance: 0,
     };
+    adminObject[`${name}Balance`] = 0;
+    return adminObject;
   }
 
   async getMetadata() {
     const address = this.address;
-    this.name = await this.#_name;
+    const name = await this.#_name;
+    this.name = name;
     this.symbol = await this.#_symbol;
     const totalMinted = await this.#_totalMinted;
     this.totalMinted = totalMinted.toNumber();
@@ -39,12 +43,12 @@ module.exports = class TokenInterface {
     const metadata = {
       address,
       admin: await this.getAdmin(),
-      name: this.name,
+      name,
       symbol: this.symbol,
       totalMinted: this.totalMinted,
       totalSupply: this.totalSupply,
     };
-    metadata[`${this.name}Balance`] = await this.getBalance(address);
+    metadata[`${name.toLowerCase()}Balance`] = await this.getBalance(address);
     return metadata;
   }
 

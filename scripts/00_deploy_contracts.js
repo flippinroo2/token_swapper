@@ -328,7 +328,9 @@ async function main() {
   await tokenTransactions(hakuInterface, hakuMetadata);
   await tokenTransactions(tateInterface, tateMetadata);
 
-  debugger;
+  if (DEBUG) {
+    debugger;
+  }
 }
 
 main()
