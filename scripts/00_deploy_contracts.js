@@ -233,6 +233,7 @@ async function main() {
   );
   const fujiInterface = new TokenInterface(fuji);
   const testMetadata = await fujiInterface.getMetadata();
+
   debugger;
 
   // const fuji2 = await Token.connect(
