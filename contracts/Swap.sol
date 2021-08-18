@@ -12,7 +12,8 @@ import '@openzeppelin/contracts/utils/Address.sol';
 import '@openzeppelin/contracts/utils/Strings.sol';
 
 // Custom Tokens
-import './Template.sol'; // Template Contract
+// import './Template.sol'; // Template Contract
+import './Token.sol'; // Token Contract
 
 contract Swap {
   using Address for address;
@@ -20,10 +21,10 @@ contract Swap {
   using Strings for string;
 
   address public _address1;
-  Template public _token1;
+  Token public _token1;
 
   address public _address2;
-  Template public _token2;
+  Token public _token2;
 
   constructor(
     address address1_,
