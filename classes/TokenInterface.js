@@ -2,28 +2,32 @@ const Transaction = require('./Transaction.js');
 
 module.exports = class TokenInterface {
   address;
-  admin;
+  #admin;
   balance = 0;
   debug = false;
 
   constructor(token) {
     this.token = token;
     this.address = token.address;
-    this.admin = token.getAdmin();
+    this.#admin = token.getAdmin();
     this.totalSupply = token.totalSupply();
     this.totalMinted = token.totalMinted();
     this.amount = amount;
   }
 
+  async getAdmin() {
+    const adminAddress = await this.#admin;
+    return {
+      address: adminAddress,
+      balance: 0
+    }
+  }
   async getMetadata() {
     const totalMinted = await this.totalMinted;
     const totalSupply = await this.totalSupply;
     return {
       address: this.address,
-      admin: {
-        address: await this.admin,
-        balance: 0,
-      },
+      admin: await this.getAdmin(),
       totalMinted: totalMinted.toNumber(),
       totalSupply: totalSupply.toNumber(),
     };
