@@ -19,11 +19,11 @@ contract Swap {
   using SafeMath for uint256;
   using Strings for string;
 
-  address private _address1;
-  Template private _token1;
+  address public _address1;
+  Template public _token1;
 
-  address private _address2;
-  Template private _token2;
+  address public _address2;
+  Template public _token2;
 
   constructor(
     address address1_,
