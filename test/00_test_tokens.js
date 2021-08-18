@@ -232,8 +232,7 @@ async function tokenTransactions(token, metadata) {
     accountData.sender.address,
     50,
   );
-  debugger;
-  const transferReceipt = await transfer.wait();
+  const transferReceipt = parseTransactionData(transfer.receipt);
 
   /* ETHERS.js DECODE TESTING
   // IMPORTANT !!!
@@ -401,9 +400,10 @@ contract('TokenFactory', (accounts) => {
 
     it('MINT', async () => {
       if (DEBUG) {
-        console.log(
-          `Mint Transaction: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
-        );
+        // console.log(
+        //   `Mint Transaction: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
+        // );
+        debugger;
       }
       // const balanceOfTransaction = await fuji.balanceOf(owner.address);
       // const [balance] = balanceOfTransaction.words;
@@ -416,7 +416,6 @@ contract('TokenFactory', (accounts) => {
     it('DEBUG', async () => {
       // const testTransaction = await fuji.testFunction();
       if (DEBUG) {
-        debugger;
       }
     });
   });
