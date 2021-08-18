@@ -1,6 +1,6 @@
 const TokenInterface = require('../classes/TokenInterface.js');
 
-const DEBUG = false;
+const DEBUG = true;
 
 const { use, expect } = require('chai');
 use(require('chai-as-promised')).should();
@@ -63,20 +63,22 @@ function logTransaction({ tx, receipt }) {
 async function refreshBalances(token, metadata) {
   const tokenAddress = token.address;
   const tokenName = metadata.name;
-
   const adminAddress = metadata.admin.address;
+  const { owner, sender, receiver, user } = accountData;
 
   const propertyString = `${tokenName.toLowerCase()}Balance`;
 
   metadata[propertyString] = await token.getBalance(tokenAddress);
   metadata.admin[propertyString] = await token.getBalance(adminAddress);
-  owner[propertyString] = await token.getBalance(owner.address);
-  sender[propertyString] = await token.getBalance(sender.address);
-  receiver[propertyString] = await token.getBalance(receiver.address);
-  user[propertyString] = await token.getBalance(user.address);
+  accountData.owner[propertyString] = await token.getBalance(owner.address);
+  accountData.sender[propertyString] = await token.getBalance(sender.address);
+  accountData.receiver[propertyString] = await token.getBalance(
+    receiver.address,
+  );
+  accountData.user[propertyString] = await token.getBalance(user.address);
 
   if (DEBUG) {
-    logAccounts();
+    // logAccounts();
   }
 }
 
@@ -93,10 +95,10 @@ async function refreshAllowance(token, metadata, account) {
 }
 
 async function refreshAllowances(token, metadata) {
-  await refreshAllowance(token, metadata, owner);
-  await refreshAllowance(token, metadata, sender);
-  await refreshAllowance(token, metadata, receiver);
-  await refreshAllowance(token, metadata, user);
+  await refreshAllowance(token, metadata, accountData.owner);
+  await refreshAllowance(token, metadata, accountData.sender);
+  await refreshAllowance(token, metadata, accountData.receiver);
+  await refreshAllowance(token, metadata, accountData.user);
 }
 
 function parseTransactionData({
@@ -117,39 +119,42 @@ function parseTransactionData({
     // logTransaction(transactionHash, blockNumber, from, gasUsed, to);
   }
   let eventObject = {};
-  events.forEach((element, index, array) => {
-    // console.log('element:');
-    // console.dir(element);
-    // console.log(`index ${index}`);
-    if (index === 0) {
-    }
-    const eventProperty = element.hasOwnProperty('event');
-    const argsProperty = element.hasOwnProperty('args');
-    // const eventString = `event${index}`;
-    if (eventProperty) {
-      let eventArguments = {};
-      if (argsProperty) {
-        eventArguments.address = element.args[0];
-        eventArguments.name = element.args[1].hash;
-        eventArguments.symbol = element.args[2].hash;
-        eventArguments.decimals = element.args[3];
-        eventArguments.totalSupply = element.args[4].toNumber();
+
+  if (events) {
+    events.forEach((element, index, array) => {
+      // console.log('element:');
+      // console.dir(element);
+      // console.log(`index ${index}`);
+      if (index === 0) {
       }
-      eventObject[element.event] = {
-        signature: element.eventSignature,
-        arguments: eventArguments,
-      };
-    }
-    if (index === array.length - 1) {
-      eventObject.data = element.data;
-    }
-  });
+      const eventProperty = element.hasOwnProperty('event');
+      const argsProperty = element.hasOwnProperty('args');
+      // const eventString = `event${index}`;
+      if (eventProperty) {
+        let eventArguments = {};
+        if (argsProperty) {
+          eventArguments.address = element.args[0];
+          eventArguments.name = element.args[1].hash;
+          eventArguments.symbol = element.args[2].hash;
+          eventArguments.decimals = element.args[3];
+          eventArguments.totalSupply = element.args[4].toNumber();
+        }
+        eventObject[element.event] = {
+          signature: element.eventSignature,
+          arguments: eventArguments,
+        };
+      }
+      if (index === array.length - 1) {
+        eventObject.data = element.data;
+      }
+    });
+  }
   return {
     from,
     to,
     transactionIndex,
     transactionHash,
-    gasUsed: gasUsed.toNumber(),
+    gasUsed,
     type,
     status,
     blockNumber,
@@ -161,47 +166,54 @@ function parseTransactionData({
 
 async function approveAll(token, metadata) {
   // Could add an "accounts" parameter so we don't have to touch state variables.
+  const tokenAddress = token.address;
+  const tokenName = metadata.name;
   const { admin, totalSupply } = metadata;
+  const adminAddress = admin.address;
+  const { owner, sender, receiver, user } = accountData;
 
-  await token.approve(token.address, admin.address, totalSupply);
-  await token.approve(token.address, owner.address, totalSupply);
-  await token.approve(token.address, sender.address, totalSupply);
-  await token.approve(token.address, receiver.address, totalSupply);
-  await token.approve(token.address, user.address, totalSupply);
+  const propertyString = `${tokenName.toLowerCase()}Balance`;
+
+  await token.approve(tokenAddress, adminAddress, totalSupply);
+  await token.approve(tokenAddress, owner.address, totalSupply);
+  await token.approve(tokenAddress, sender.address, totalSupply);
+  await token.approve(tokenAddress, receiver.address, totalSupply);
+  await token.approve(tokenAddress, user.address, totalSupply);
 
   // approve(address owner, address spender, uint256 amount)
   const approvalExample = await token.approve(
-    admin.address,
-    token.address,
+    adminAddress,
+    tokenAddress,
     totalSupply,
   ); // This returns a transaction response. (Not a receipt yet until it has confirmations.)
-  const approvalReceiptExample = await approvalExample.wait(); // The wait() function returns a transaction receipt.
+  // const approvalReceiptExample = await approvalExample.wait(); // The wait() function returns a transaction receipt.
+  const approvalReceiptExample = parseTransactionData(approvalExample.receipt);
 
-  await token.approve(admin.address, owner.address, totalSupply);
-  await token.approve(admin.address, sender.address, totalSupply);
-  await token.approve(admin.address, receiver.address, totalSupply);
-  await token.approve(admin.address, user.address, totalSupply);
+  await token.approve(adminAddress, owner.address, totalSupply);
+  await token.approve(adminAddress, sender.address, totalSupply);
+  await token.approve(adminAddress, receiver.address, totalSupply);
+  await token.approve(adminAddress, user.address, totalSupply);
 
-  await token.approve(owner.address, token.address, totalSupply);
-  await token.approve(owner.address, admin.address, totalSupply);
+  await token.approve(owner.address, tokenAddress, totalSupply);
+  await token.approve(owner.address, adminAddress, totalSupply);
   await token.approve(owner.address, sender.address, totalSupply);
   await token.approve(owner.address, receiver.address, totalSupply);
   await token.approve(owner.address, user.address, totalSupply);
 
-  await token.approve(sender.address, token.address, totalSupply);
-  await token.approve(sender.address, admin.address, totalSupply);
+  await token.approve(sender.address, tokenAddress, totalSupply);
+  await token.approve(sender.address, adminAddress, totalSupply);
   await token.approve(sender.address, owner.address, totalSupply);
   await token.approve(sender.address, receiver.address, totalSupply);
   await token.approve(sender.address, user.address, totalSupply);
 
-  await token.approve(receiver.address, token.address, totalSupply);
-  await token.approve(receiver.address, admin.address, totalSupply);
+  await token.approve(receiver.address, tokenAddress, totalSupply);
+  await token.approve(receiver.address, adminAddress, totalSupply);
   await token.approve(receiver.address, owner.address, totalSupply);
   await token.approve(receiver.address, sender.address, totalSupply);
   await token.approve(receiver.address, user.address, totalSupply);
 
-  await token.approve(user.address, token.address, totalSupply);
-  await token.approve(user.address, admin.address, totalSupply);
+  await token.approve(user.address, tokenAddress, totalSupply);
+  await token.approve(user.address, adminAddress, totalSupply);
   await token.approve(user.address, owner.address, totalSupply);
   await token.approve(user.address, sender.address, totalSupply);
   await token.approve(user.address, receiver.address, totalSupply);
@@ -215,7 +227,12 @@ async function tokenTransactions(token, metadata) {
 
   await refreshAllowances(token, metadata);
 
-  const transfer = await token.transfer(admin.address, receiver.address, 50);
+  const transfer = await token.transfer(
+    admin.address,
+    accountData.sender.address,
+    50,
+  );
+  debugger;
   const transferReceipt = await transfer.wait();
 
   /* ETHERS.js DECODE TESTING
@@ -251,6 +268,7 @@ async function tokenTransactions(token, metadata) {
     */
 
   await refreshBalances(token, metadata);
+  debugger;
 }
 
 function getEvent({ tx, receipt }) {
@@ -268,28 +286,33 @@ function readTransaction(transaction) {
   return event;
 }
 
+let accountData = {
+  fuji: { balance: 0, admin: {} },
+  haku: { balance: 0, admin: {} },
+  owner: { balance: 0 },
+  receiver: { balance: 0 },
+  sender: { balance: 0 },
+  tate: { balance: 0, admin: {} },
+  tokenFactory: { balance: 0, admin: {} },
+  user: { balance: 0 },
+};
+let tokenFactory,
+  fuji,
+  fujiMetadata = {},
+  haku,
+  hakuMetadata = {},
+  tate,
+  tateMetadata = {};
+
 // describe('TokenFactory', (accounts) => {
 contract('TokenFactory', (accounts) => {
   // this.timeout(timeout); // This doesn't work without mocha enabled.
   console.log('Accounts:');
   console.dir(accounts);
-  let accountData = {
-    fuji: { balance: 0, admin: {} },
-    haku: { balance: 0, admin: {} },
-    owner: { balance: 0, address: accounts[0] },
-    receiver: { balance: 0, address: accounts[2] },
-    sender: { balance: 0, address: accounts[1] },
-    tate: { balance: 0, admin: {} },
-    tokenFactory: { balance: 0, admin: {} },
-    user: { balance: 0, address: accounts[3] },
-  };
-  let tokenFactory;
-  let fujiContract,
-    fujiMetadata = {};
-  let hakuContract,
-    hakuMetadata = {};
-  let tateContract,
-    tateMetadata = {};
+  accountData.owner.address = accounts[0];
+  accountData.receiver.address = accounts[1];
+  accountData.sender.address = accounts[2];
+  accountData.user.address = accounts[3];
 
   before(async () => {
     // These functions below only work if hardhat has compiled the abis
@@ -330,6 +353,7 @@ contract('TokenFactory', (accounts) => {
     const fujiInterface = new TokenInterface(fuji);
     fujiMetadata = await fujiInterface.getMetadata();
 
+    await tokenTransactions(fujiInterface, fujiMetadata);
     // const createHakuTransaction = await tokenFactory.createToken(
     //   'Haku',
     //   'HAKU',
