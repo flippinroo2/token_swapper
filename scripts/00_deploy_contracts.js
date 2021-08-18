@@ -319,6 +319,8 @@ async function main() {
 
   const Wrapper = await getContractFactory('Wrapper');
   const wrapper = await Wrapper.deploy(owner.address, user.address);
+  // const otherWrapper = await wrapper.deployed();
+  // const wrapper = await Wrapper.at();
 
   console.log(
     `Owner Address: ${owner.address}\nSender Address:${sender.address}\nReceiver Address: ${receiver.address}\nUser Address: ${user.address}\nToken Factory Address: ${tokenFactory.address}\nFuji Address: ${fuji.address}\nHaku Address: ${haku.address}\nTate Address: ${tate.address}\nWrapper Address: ${wrapper.address}`,
@@ -327,6 +329,17 @@ async function main() {
   await tokenTransactions(fujiInterface, fujiMetadata);
   await tokenTransactions(hakuInterface, hakuMetadata);
   await tokenTransactions(tateInterface, tateMetadata);
+
+  const wrapperAdmin = await wrapper._admin();
+  const wrapperAddress1 = await wrapper._address1();
+  const wrapperAddress2 = await wrapper._address2();
+  if (DEBUG) {
+    debugger;
+  }
+  const createFujiSwap = await wrapper.createFujiSwap(fuji, tate);
+  const createHakuSwap = await wrapper.createHakuSwap(haku, tate);
+  const wrapperFujiTateSwapper = await wrapper._fujiTateSwapper();
+  const wrapperHakuTateSwapper = await wrapper._hakuTateSwapper();
 
   if (DEBUG) {
     debugger;

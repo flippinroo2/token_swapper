@@ -46,12 +46,14 @@ contract Wrapper {
         _address2 = address2_;
     }
 
-    function createFujiSwap(Token _fuji, Token _tate) public {
+    function createFujiSwap(Token _fuji, Token _tate) public returns (Swap) {
         _fujiTateSwapper = new Swap(_address1, _fuji, _address2, _tate);
+        return _fujiTateSwapper;
     }
 
-    function createHakuSwap(Token _haku, Token _tate) public {
+    function createHakuSwap(Token _haku, Token _tate) public returns (Swap) {
         _hakuTateSwapper = new Swap(_address1, _haku, _address2, _tate);
+        return _hakuTateSwapper;
     }
 
     function swap(uint256 amount) public view {
