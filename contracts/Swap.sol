@@ -28,10 +28,10 @@ contract Swap {
 
   // Events
   event SwapCreated(
-    address _user1,
-    Token indexed _token1,
-    address _user2,
-    Token indexed _token2
+    address user1,
+    Token indexed token1,
+    address user2,
+    Token indexed token2
   );
 
   constructor(
@@ -41,7 +41,7 @@ contract Swap {
     Token token2_
   ) {
     console.log(
-      'constructor(address user1_ %s, Template token1_, address user2_ %s, Template token2_)',
+      'constructor(address user1_ %s, Template Token, address user2_ %s, Token token2_)',
       user1_,
       user2_
     );
@@ -83,6 +83,7 @@ contract Swap {
     address receiver,
     uint256 amount
   ) internal {
+    console.log('_safeTransferFrom(Token token, address sender: %s, address receiver %s, uint256 amount)', sender, receiver);
     bool sent = token.transferFrom(sender, receiver, amount);
     require(sent, 'Token transfer failed.');
   }

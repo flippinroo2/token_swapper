@@ -286,15 +286,7 @@ async function main() {
 
   // const Swap = await getContractFactory('../artifacts/contracts/Swap.sol:Swap');
   // const Swap = await getContractFactory('contracts/Wrapper.sol:Swap');
-  // const Swap = await getContractFactory('Swap'); // Just testing for now.
-  // const test3 = await Token.deploy('Test3', 'TEST3', 18, 150);
-
-  // const swap = await Swap.deploy(
-  //   owner.address,
-  //   Token.deploy('Test1', 'TEST1', 18, 150),
-  //   user.address,
-  //   Token.deploy('Test2', 'TEST2', 18, 250),
-  // );
+  const Swap = await getContractFactory('Swap');
 
   const wrapperAdmin = await wrapper._admin();
   const wrapperAddress1 = await wrapper._address1();
@@ -317,10 +309,18 @@ async function main() {
   );
   const hakuSwap = await createHakuSwap.wait();
 
+  const wrapperFujiTateSwapperAddress = await wrapper._fujiTateSwapper();
+  const wrapperFujiTateSwapper = Swap.attach(wrapperFujiTateSwapperAddress);
+
+  const wrapperHakuTateSwapperAddress = await wrapper._hakuTateSwapper();
+  const wrapperHakuTateSwapper = Swap.attach(wrapperHakuTateSwapperAddress);
+
   debugger;
 
-  const wrapperFujiTateSwapper = await wrapper._fujiTateSwapper();
-  const wrapperHakuTateSwapper = await wrapper._hakuTateSwapper();
+  const fujiTateSwapTransaction = await wrapperFujiTateSwapper._swap(4);
+  const hakuTateSwapTransaction = await wrapperHakuTateSwapper._swap(7);
+
+  debugger;
 
   if (DEBUG) {
     debugger;
