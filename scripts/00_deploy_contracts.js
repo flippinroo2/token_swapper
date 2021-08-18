@@ -144,10 +144,12 @@ function parseTransactionData({
 }
 
 async function newTokenTransactions(token, metadata) {
+  const { admin, totalSupply } = metadata;
+
   const approval = await token.approve(
-    metadata.admin.address,
-    owner.address,
-    metadata.totalSupply,
+    admin.address,
+    sender.address,
+    totalSupply,
   ); // This returns a transaction response. (Not a receipt yet until it has confirmations.)
   const approvalReceipt = await approval.wait(); // The wait() function returns a transaction receipt.
 
@@ -162,7 +164,9 @@ async function newTokenTransactions(token, metadata) {
 
   // IMPORTANT !!!
   // const test = ethers.utils.serializeTransaction(approval);
+  // const test = ethers.utils.serializeTransaction(approvalReceipt); // This just made a new hex of the entire transaction.
   // const test = ethers.utils.parseTransaction(approval);
+  // const abiInterface = ethers.utils.Interface(ABI);
   // IMPORTANT !!!
 
   // IMPORTANT !!!
@@ -174,24 +178,22 @@ async function newTokenTransactions(token, metadata) {
   */
 
   /* Web3.js TESTING
-  // const testChecksum = web3.utils.checkAddressChecksum(approval.hash);
-  // const bytesToHexTest = web3.utils.bytesToHex(approval.hash);
-  // const ascii = web3.utils.hexToAscii(approval.hash);
-  // const utf8 = web3.utils.hexToUtf8(approval.hash);
-   */
+    // const web3CheckAddressChecksum = web3.utils.checkAddressChecksum(approval.hash);
+    // const web3BytesToHex = web3.utils.bytesToHex(approval.hash);
+    // const web3HexToAscii = web3.utils.hexToAscii(approval.hash);
+    // const web3ToAscii = web3.utils.toAscii(approval.hash);
+    // const web3HexToUtf8 = web3.utils.hexToUtf8(approval.hash);
+    */
+
+  const adminAllowance = await token.getAllowance(
+    admin.address,
+    sender.address,
+  );
 
   debugger;
-
-  const allowance = await token.getAllowance(
-    owner.address,
-    metadata.admin.address,
-  );
+  const transfer = await token.transfer(sender.address, receiver.address, 50);
+  const transferReceipt = await transfer.wait();
   debugger;
-  const transfer = await token.transfer(
-    metadata.admin.address,
-    owner.address,
-    50,
-  );
 }
 async function tokenTransactions(token, metadata) {
   metadata.admin.address = await token.getAdmin();
