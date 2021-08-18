@@ -1,3 +1,5 @@
+const TokenInterface = require('../classes/TokenInterface.js');
+
 const DEBUG = false;
 
 const { use, expect } = require('chai');
@@ -40,26 +42,15 @@ eth
 debug
 */
 
-function getNewTokenData({
-  tokenAddress,
-  name,
-  symbol,
-  decimals,
-  totalSupply,
-}) {
-  // const arraylength = event.length;
-  // for (let i; i <= arraylength; i++) {
-  //   console.log(`counter = ${i}`);
-  //   console.log(event[i]);
-  // }
-  return tokenAddress;
-}
-
-function getEvent({ tx, receipt }) {
-  const { blockNumber, from, gasUsed, logs, to } = receipt;
-  const [log] = logs;
-  const { address, args } = log;
-  return args;
+function logAccounts() {
+  console.log('\n\nBALANCES:');
+  console.log(
+    `fujiAdmin: ${fujiMetadata.admin.balance}\tfujiMetadata: ${fujiMetadata.balance}\thakuAdmin: ${hakuMetadata.admin.balance}\thakuMetadata: ${hakuMetadata.balance}\towner: ${owner.balance}\treceiver: ${receiver.balance}\tsender: ${sender.balance}\ttateAdmin: ${tateMetadata.admin.balance}\ttateMetadata: ${tateMetadata.balance}\tuser: ${user.balance}`,
+  );
+  console.log('\nALLOWANCES:');
+  console.log(
+    `fujiAdmin: ${fujiMetadata.admin.ownerAllowance}\tfujiMetadata: ${fujiMetadata.ownerAllowance}\thakuAdmin: ${hakuMetadata.admin.ownerAllowance}\thakuMetadata: ${hakuMetadata.ownerAllowance}\towner: ${owner.ownerAllowance}\treceiver: ${receiver.ownerAllowance}\tsender: ${sender.ownerAllowance}\ttateAdmin: ${tateMetadata.admin.ownerAllowance}\ttateMetadata: ${tateMetadata.ownerAllowance}\tuser: ${user.ownerAllowance}`,
+  );
 }
 
 function logTransaction({ tx, receipt }) {
@@ -69,27 +60,212 @@ function logTransaction({ tx, receipt }) {
   );
 }
 
+async function refreshBalances(token, metadata) {
+  const tokenAddress = token.address;
+  const tokenName = metadata.name;
+
+  const adminAddress = metadata.admin.address;
+
+  const propertyString = `${tokenName.toLowerCase()}Balance`;
+
+  metadata[propertyString] = await token.getBalance(tokenAddress);
+  metadata.admin[propertyString] = await token.getBalance(adminAddress);
+  owner[propertyString] = await token.getBalance(owner.address);
+  sender[propertyString] = await token.getBalance(sender.address);
+  receiver[propertyString] = await token.getBalance(receiver.address);
+  user[propertyString] = await token.getBalance(user.address);
+
+  if (DEBUG) {
+    logAccounts();
+  }
+}
+
+async function refreshAllowance(token, metadata, account) {
+  const tokenAddress = token.address;
+  const adminAddress = metadata.admin.address;
+  const accountAddress = account.address;
+  const propertyString = `${account.name}Allowance`;
+
+  const tokenAllowance = await token.getAllowance(tokenAddress, accountAddress);
+  metadata[propertyString] = tokenAllowance;
+  const adminAllowance = await token.getAllowance(adminAddress, accountAddress);
+  metadata.admin[propertyString] = adminAllowance;
+}
+
+async function refreshAllowances(token, metadata) {
+  await refreshAllowance(token, metadata, owner);
+  await refreshAllowance(token, metadata, sender);
+  await refreshAllowance(token, metadata, receiver);
+  await refreshAllowance(token, metadata, user);
+}
+
+function parseTransactionData({
+  blockHash,
+  blockNumber,
+  confirmations,
+  events,
+  from,
+  gasUsed,
+  logs,
+  status,
+  to,
+  transactionHash,
+  transactionIndex,
+  type,
+}) {
+  if (DEBUG) {
+    // logTransaction(transactionHash, blockNumber, from, gasUsed, to);
+  }
+  let eventObject = {};
+  events.forEach((element, index, array) => {
+    // console.log('element:');
+    // console.dir(element);
+    // console.log(`index ${index}`);
+    if (index === 0) {
+    }
+    const eventProperty = element.hasOwnProperty('event');
+    const argsProperty = element.hasOwnProperty('args');
+    // const eventString = `event${index}`;
+    if (eventProperty) {
+      let eventArguments = {};
+      if (argsProperty) {
+        eventArguments.address = element.args[0];
+        eventArguments.name = element.args[1].hash;
+        eventArguments.symbol = element.args[2].hash;
+        eventArguments.decimals = element.args[3];
+        eventArguments.totalSupply = element.args[4].toNumber();
+      }
+      eventObject[element.event] = {
+        signature: element.eventSignature,
+        arguments: eventArguments,
+      };
+    }
+    if (index === array.length - 1) {
+      eventObject.data = element.data;
+    }
+  });
+  return {
+    from,
+    to,
+    transactionIndex,
+    transactionHash,
+    gasUsed: gasUsed.toNumber(),
+    type,
+    status,
+    blockNumber,
+    blockHash,
+    confirmations,
+    events: eventObject,
+  };
+}
+
+async function approveAll(token, metadata) {
+  // Could add an "accounts" parameter so we don't have to touch state variables.
+  const { admin, totalSupply } = metadata;
+
+  await token.approve(token.address, admin.address, totalSupply);
+  await token.approve(token.address, owner.address, totalSupply);
+  await token.approve(token.address, sender.address, totalSupply);
+  await token.approve(token.address, receiver.address, totalSupply);
+  await token.approve(token.address, user.address, totalSupply);
+
+  // approve(address owner, address spender, uint256 amount)
+  const approvalExample = await token.approve(
+    admin.address,
+    token.address,
+    totalSupply,
+  ); // This returns a transaction response. (Not a receipt yet until it has confirmations.)
+  const approvalReceiptExample = await approvalExample.wait(); // The wait() function returns a transaction receipt.
+
+  await token.approve(admin.address, owner.address, totalSupply);
+  await token.approve(admin.address, sender.address, totalSupply);
+  await token.approve(admin.address, receiver.address, totalSupply);
+  await token.approve(admin.address, user.address, totalSupply);
+
+  await token.approve(owner.address, token.address, totalSupply);
+  await token.approve(owner.address, admin.address, totalSupply);
+  await token.approve(owner.address, sender.address, totalSupply);
+  await token.approve(owner.address, receiver.address, totalSupply);
+  await token.approve(owner.address, user.address, totalSupply);
+
+  await token.approve(sender.address, token.address, totalSupply);
+  await token.approve(sender.address, admin.address, totalSupply);
+  await token.approve(sender.address, owner.address, totalSupply);
+  await token.approve(sender.address, receiver.address, totalSupply);
+  await token.approve(sender.address, user.address, totalSupply);
+
+  await token.approve(receiver.address, token.address, totalSupply);
+  await token.approve(receiver.address, admin.address, totalSupply);
+  await token.approve(receiver.address, owner.address, totalSupply);
+  await token.approve(receiver.address, sender.address, totalSupply);
+  await token.approve(receiver.address, user.address, totalSupply);
+
+  await token.approve(user.address, token.address, totalSupply);
+  await token.approve(user.address, admin.address, totalSupply);
+  await token.approve(user.address, owner.address, totalSupply);
+  await token.approve(user.address, sender.address, totalSupply);
+  await token.approve(user.address, receiver.address, totalSupply);
+}
+async function tokenTransactions(token, metadata) {
+  const { admin, totalSupply } = metadata;
+
+  await refreshBalances(token, metadata);
+
+  await approveAll(token, metadata);
+
+  await refreshAllowances(token, metadata);
+
+  const transfer = await token.transfer(admin.address, receiver.address, 50);
+  const transferReceipt = await transfer.wait();
+
+  /* ETHERS.js DECODE TESTING
+  // IMPORTANT !!!
+  // const base58DecodeTest = ethers.utils.base58.decode(approval.hash);
+  const base64DecodeTest = ethers.utils.base64.decode(approval.hash);
+  // const RLPDecodeTest = ethers.utils.RLP.decode(base64DecodeTest);
+  // const bytes32Test = ethers.utils.parseBytes32String(approval.hash); // Not 32 bytes long
+  // const utf8Test = ethers.utils.toUtf8String(approval.hash);
+  // IMPORTANT !!!
+
+  // IMPORTANT !!!
+  // const test = ethers.utils.serializeTransaction(approval);
+  // const test = ethers.utils.serializeTransaction(approvalReceipt); // This just made a new hex of the entire transaction.
+  // const test = ethers.utils.parseTransaction(approval);
+  // const abiInterface = ethers.utils.Interface(ABI);
+  // IMPORTANT !!!
+
+  // IMPORTANT !!!
+  // These functions below turn strings into hashes, not vise versa!!!
+  // const idTest = ethers.utils.id(approval.data);
+  // const keccak256Test = ethers.utils.keccak256(approval.data);
+  // const sha256Test = ethers.utils.sha256(approval.data);
+  // IMPORTANT !!!
+  */
+
+  /* Web3.js TESTING
+    // const web3CheckAddressChecksum = web3.utils.checkAddressChecksum(approval.hash);
+    // const web3BytesToHex = web3.utils.bytesToHex(approval.hash);
+    // const web3HexToAscii = web3.utils.hexToAscii(approval.hash);
+    // const web3ToAscii = web3.utils.toAscii(approval.hash);
+    // const web3HexToUtf8 = web3.utils.hexToUtf8(approval.hash);
+    */
+
+  await refreshBalances(token, metadata);
+}
+
+function getEvent({ tx, receipt }) {
+  const { blockNumber, from, gasUsed, logs, to } = receipt;
+  const [log] = logs;
+  const { address, args } = log;
+  return args;
+}
+
 function readTransaction(transaction) {
   if (DEBUG) {
     logTransaction(transaction);
   }
   const event = getEvent(transaction);
   return event;
-}
-async function getMetadata(token) {
-  const decimals = await token._tokenDecimals();
-  const totalSupply = await token.totalSupply();
-  const metadata = {
-    admin: await token.getAdmin(),
-    name: await token._name(),
-    symbol: await token._symbol(),
-    decimals: decimals.words,
-    totalSupply: totalSupply.words,
-  };
-  if (DEBUG) {
-    debugger;
-  }
-  return metadata;
 }
 
 // describe('TokenFactory', (accounts) => {
@@ -150,7 +326,9 @@ contract('TokenFactory', (accounts) => {
     // fuji = await Token.at(fujiMetadata.address);
     fuji = await Token.at(fujiAddress);
     accountData.fuji.admin.address = await fuji.getAdmin();
-    fujiMetadata = await getMetadata(fuji);
+
+    const fujiInterface = new TokenInterface(fuji);
+    fujiMetadata = await fujiInterface.getMetadata();
 
     // const createHakuTransaction = await tokenFactory.createToken(
     //   'Haku',
@@ -164,7 +342,9 @@ contract('TokenFactory', (accounts) => {
     // haku = await Token.at(hakuMetadata.address);
     haku = await Token.at(hakuAddress);
     accountData.haku.admin.address = await haku.getAdmin();
-    hakuMetadata = await getMetadata(haku);
+
+    const hakuInterface = new TokenInterface(haku);
+    hakuMetadata = await hakuInterface.getMetadata();
 
     // const createTateTransaction = await tokenFactory.createToken(
     //   'Tate',
@@ -178,79 +358,11 @@ contract('TokenFactory', (accounts) => {
     // tate = await Token.at(tateMetadata.address);
     tate = await Token.at(tateAddress);
     accountData.tate.admin.address = await tate.getAdmin();
-    tateMetadata = await getMetadata(tate);
 
-    const fujiTotalSupplyTransaction = await fuji.totalSupply();
-    accountData.fuji.totalSupply = fujiTotalSupplyTransaction.words[0];
-    const fujiTotalMintedTransaction = await fuji.getTotalMinted();
-    accountData.fuji.totalMinted = fujiTotalMintedTransaction.words[0];
-
-    const fujiBalanceOfAdminTransaction = await fuji.balanceOf(
-      accountData.fuji.admin.address,
-    );
-    accountData.fuji.admin.balance = fujiBalanceOfAdminTransaction.words[0];
-
-    const fujiApprovalTransaction1 = await fuji.approve(
-      accountData.fuji.admin.address,
-      // accountData.sender.address,
-      accountData.fuji.totalSupply,
-    );
-    const fujiApprovalTransaction1Data = readTransaction(
-      fujiApprovalTransaction1,
-    );
-    const [fujiApproveFujiAdmin] = fujiApprovalTransaction1Data.value.words;
-
-    const fujiApprovalFromTransaction1 = await fuji.approveFrom(
-      accountData.fuji.admin.address,
-      accountData.fuji.address,
-      accountData.fuji.totalSupply,
-    );
-    const fujiApprovalFromTransaction1Data = readTransaction(
-      fujiApprovalFromTransaction1,
-    );
-    const [fujiApproveAdminFuji] = fujiApprovalFromTransaction1Data.value.words;
-
-    const fujiAllowanceFujiAdminTransaction = await fuji.allowance(
-      accountData.fuji.address,
-      accountData.fuji.admin.address,
-    );
-    const [fujiAllowanceFujiAdmin] = fujiAllowanceFujiAdminTransaction.words;
-
-    const fujiAllowanceAdminFujiTransaction = await fuji.allowance(
-      accountData.fuji.address,
-      accountData.fuji.admin.address,
-    );
-    const [fujiAllowanceAdminFuji] = fujiAllowanceAdminFujiTransaction.words;
+    const tateInterface = new TokenInterface(tate);
+    tateMetadata = await tateInterface.getMetadata();
 
     debugger;
-    // Need fuji to be allowed to do the transfer for the 1st address.
-    const fujiTransaferFromTransaction1 = await fuji.transferFrom(
-      accountData.fuji.address,
-      accountData.fuji.admin.address,
-      50,
-    );
-    // const transaction6 = await fuji.mint();
-    const fujiTransaferTransaction2 = await fuji.transfer(
-      accountData.receiver.address,
-      5,
-    );
-
-    debugger;
-
-    const allowancesMapping = await fuji._allowances();
-    const balancesMapping = await fuji._balances();
-
-    debugger;
-
-    const fujiBalanceOfReceiverTransaction = await fuji.balanceOf(
-      accountData.receiver.address,
-    );
-    accountData.receiver.balance = fujiBalanceOfReceiverTransaction.words[0];
-    debugger;
-
-    // hakuMetadata = await getMetadata(hakuContract);
-    // tateMetadata = await getMetadata(tateContract);
-    // debugger;
   });
 
   describe('Deployment', async () => {

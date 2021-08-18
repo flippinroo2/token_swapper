@@ -1,6 +1,6 @@
 const TokenInterface = require('../classes/TokenInterface.js');
 
-const DEBUG = true;
+const DEBUG = false;
 
 function logAccounts() {
   console.log('\n\nBALANCES:');
