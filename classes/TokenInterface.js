@@ -37,10 +37,10 @@ module.exports = class TokenInterface {
   async approve(arg1, arg2, arg3) {
     if (arg3 === undefined) {
       const approve = await this.token.approve(arg1, arg2);
-      return Boolean(approve.value.toNumber());
+      return approve;
     }
     const approveFrom = await this.token.approveFrom(arg1, arg2, arg3);
-    return Boolean(approveFrom.value.toNumber());
+    return approveFrom;
   }
 
   async getAllowance(owner, spender) {
@@ -51,10 +51,10 @@ module.exports = class TokenInterface {
   async transfer(arg1, arg2, arg3) {
     if (arg3 === undefined) {
       const transfer = await this.token.transfer(arg1, arg2);
-      return Boolean(transfer.value.toNumber());
+      return transfer;
     }
     const transferFrom = await this.token.transferFrom(arg1, arg2, arg3);
-    return Boolean(transferFrom.value.toNumber());
+    return transferFrom;
   }
 
   parseTransactionData({

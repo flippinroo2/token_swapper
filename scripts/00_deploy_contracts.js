@@ -98,7 +98,7 @@ function parseTransactionData({
   type,
 }) {
   if (DEBUG) {
-    logTransaction(transactionHash, blockNumber, from, gasUsed, to);
+    // logTransaction(transactionHash, blockNumber, from, gasUsed, to);
   }
   let eventObject = {};
   events.forEach((element, index, array) => {
@@ -143,11 +143,58 @@ function parseTransactionData({
   };
 }
 
+async function newTokenTransactions(token, metadata) {
+  const approval = await token.approve(
+    metadata.admin.address,
+    owner.address,
+    metadata.totalSupply,
+  ); // This returns a transaction response. (Not a receipt yet until it has confirmations.)
+  const approvalReceipt = await approval.wait(); // The wait() function returns a transaction receipt.
+
+  /* ETHERS.js DECODE TESTING
+  // IMPORTANT !!!
+  // const base58DecodeTest = ethers.utils.base58.decode(approval.hash);
+  const base64DecodeTest = ethers.utils.base64.decode(approval.hash);
+  // const RLPDecodeTest = ethers.utils.RLP.decode(base64DecodeTest);
+  // const bytes32Test = ethers.utils.parseBytes32String(approval.hash); // Not 32 bytes long
+  // const utf8Test = ethers.utils.toUtf8String(approval.hash);
+  // IMPORTANT !!!
+
+  // IMPORTANT !!!
+  // const test = ethers.utils.serializeTransaction(approval);
+  // const test = ethers.utils.parseTransaction(approval);
+  // IMPORTANT !!!
+
+  // IMPORTANT !!!
+  // These functions below turn strings into hashes, not vise versa!!!
+  // const idTest = ethers.utils.id(approval.data);
+  // const keccak256Test = ethers.utils.keccak256(approval.data);
+  // const sha256Test = ethers.utils.sha256(approval.data);
+  // IMPORTANT !!!
+  */
+
+  /* Web3.js TESTING
+  // const testChecksum = web3.utils.checkAddressChecksum(approval.hash);
+  // const bytesToHexTest = web3.utils.bytesToHex(approval.hash);
+  // const ascii = web3.utils.hexToAscii(approval.hash);
+  // const utf8 = web3.utils.hexToUtf8(approval.hash);
+   */
+
+  debugger;
+
+  const allowance = await token.getAllowance(
+    owner.address,
+    metadata.admin.address,
+  );
+  debugger;
+  const transfer = await token.transfer(
+    metadata.admin.address,
+    owner.address,
+    50,
+  );
+}
 async function tokenTransactions(token, metadata) {
   metadata.admin.address = await token.getAdmin();
-
-  const testMetadata = await transactionTest.getMetadata();
-  debugger;
 
   const totalSupplyTransaction = await token.totalSupply();
   const totalSupply = totalSupplyTransaction.toNumber();
@@ -176,12 +223,8 @@ async function tokenTransactions(token, metadata) {
   await refreshBalances(token, metadata);
 }
 
-let fujiMetadata = {
-    admin: { balance: 0, ownerAllowance: 0 },
-    balance: 0,
-    name: 'fuji',
-    ownerAllowance: 0,
-  },
+let fuji,
+  fujiMetadata,
   hakuMetadata = {
     admin: { balance: 0, ownerAllowance: 0 },
     balance: 0,
@@ -216,8 +259,27 @@ async function main() {
 
   const Token = await getContractFactory('Token'); // Might not need this.
 
+  /* NOTES:
+  // Contract.connect(providerOrSigner); // Returns a new instance of the contract, but connected to the provider or signer. (Could be useful for connecting to Ganache as the provider).
+
+  const tokenInterface = Token.interface; // This is the ABI for the contract
+  const tokenSigner = Token.signer; // If there is a signer provided with the constructor, then this will return the signer.
+  const tokenProvider = Token.provider // If there is a provider with the constructor, then this will return the provider.
+  const tokenDeployTransaction = Token.deployTransaction // This will return a TransactionResponse of the deployment transaction.
+  const tokenDeployTransaction = Token.getDeployTransaction(); // ...args [, overrides]
+  const tokenQueryFilter = Token.queryFilter(event) // This return events that match the event passed in.
+  */
+
   const Factory = await getContractFactory('TokenFactory');
   const tokenFactory = await Factory.deploy();
+
+  // IMPORTANT!!!
+  // This is the proper way to listen for events!!!
+  // tokenFactory.on('TokenCreated', (address, [indexes], ...paremeters) => {
+  //   debugger;
+  //   console.log(`TokenCreated:\nAddress - ${test}`);
+  // });
+  // IMPORTANT!!!
 
   const createFujiTransaction = await tokenFactory.createToken(
     'Fuji',
@@ -230,25 +292,10 @@ async function main() {
   );
   const fuji = await Token.attach(
     fujiTransactionData.events.TokenCreated.arguments.address,
-  );
-  const fujiInterface = new TokenInterface(fuji);
-  const testMetadata = await fujiInterface.getMetadata();
+  ); // Using this attach method is basically the same as calling the "Contract" constructor with this address and the interface & signerOrProvider passed in.
 
-  const approval = await fujiInterface.approve(
-    testMetadata.admin.address,
-    owner.address,
-    testMetadata.totalSupply,
-  );
-  const allowance = await fujiInterface.getAllowance(
-    owner.address,
-    testMetadata.admin.address,
-  );
-  const transfer = await fujiInterface.transfer(
-    testMetadata.admin.address,
-    owner.address,
-    50,
-  );
-  debugger;
+  const fujiInterface = new TokenInterface(fuji);
+  fujiMetadata = await fujiInterface.getMetadata();
 
   // const fuji2 = await Token.connect(
   //   fujiTransactionData.events.TokenCreated.arguments.address,
@@ -290,7 +337,8 @@ async function main() {
     `Owner Address: ${owner.address}\nSender Address:${sender.address}\nReceiver Address: ${receiver.address}\nUser Address: ${user.address}\nToken Factory Address: ${tokenFactory.address}\nFuji Address: ${fuji.address}\nHaku Address: ${haku.address}\nTate Address: ${tate.address}\nWrapper Address: ${wrapper.address}`,
   );
 
-  await tokenTransactions(fuji, fujiMetadata);
+  await newTokenTransactions(fujiInterface, fujiMetadata);
+
   await tokenTransactions(haku, hakuMetadata);
   await tokenTransactions(tate, tateMetadata);
 
