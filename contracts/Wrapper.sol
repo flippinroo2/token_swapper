@@ -40,6 +40,7 @@ contract Wrapper {
     // Template private _tate = new Token(tateArgs[0], tateArgs[1], 18, 1000);
 
     constructor(address address1_, address address2_) {
+        // console.log('constructor(address address1_ %s, address address2_ %s)', address1_, address2_);
         _admin = msg.sender;
         contractAddress = address(this);
         _address1 = address1_;
@@ -47,14 +48,16 @@ contract Wrapper {
     }
 
     function createFujiSwap(Token _fuji, Token _tate) public returns (Swap) {
+        // console.log('createFujiSwap(Token _fuji, Token _tate)');
+        // console.log('_address1: %s, _address2: %s', _address1, _address2);
         _fujiTateSwapper = new Swap(_address1, _fuji, _address2, _tate);
         return _fujiTateSwapper;
     }
 
-    function createHakuSwap(Token _haku, Token _tate) public returns (Swap) {
-        _hakuTateSwapper = new Swap(_address1, _haku, _address2, _tate);
-        return _hakuTateSwapper;
-    }
+    // function createHakuSwap(Token _haku, Token _tate) public returns (Swap) {
+    //     _hakuTateSwapper = new Swap(_address1, _haku, _address2, _tate);
+    //     return _hakuTateSwapper;
+    // }
 
     function swap(uint256 amount) public view {
         _fujiTateSwapper._swap(amount);
