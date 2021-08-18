@@ -40,7 +40,7 @@ contract Wrapper {
     // Template private _tate = new Token(tateArgs[0], tateArgs[1], 18, 1000);
 
     constructor(address address1_, address address2_) {
-        // console.log('constructor(address address1_ %s, address address2_ %s)', address1_, address2_);
+        console.log('constructor(address address1_ %s, address address2_ %s)', address1_, address2_);
         _admin = msg.sender;
         contractAddress = address(this);
         _address1 = address1_;
