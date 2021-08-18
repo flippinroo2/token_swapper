@@ -20,23 +20,15 @@ function logTransaction(transactionHash, blockNumber, from, gasUsed, to) {
 }
 
 async function refreshBalances(token, metadata) {
-  const tokenBalanceTransaction = await token.balanceOf(token.address);
-  metadata.balance = tokenBalanceTransaction.toNumber();
+  const tokenAddress = token.address;
+  const adminAddress = metadata.admin.address;
 
-  const adminBalanceTransaction = await token.balanceOf(metadata.admin.address);
-  metadata.admin.balance = adminBalanceTransaction.toNumber();
-
-  const ownerBalanceTransaction = await token.balanceOf(owner.address);
-  owner.balance = ownerBalanceTransaction.toNumber();
-
-  const senderBalanceTransaction = await token.balanceOf(sender.address);
-  sender.balance = senderBalanceTransaction.toNumber();
-
-  const receiverBalanceTransaction = await token.balanceOf(receiver.address);
-  receiver.balance = receiverBalanceTransaction.toNumber();
-
-  const userBalanceTransaction = await token.balanceOf(user.address);
-  user.balance = userBalanceTransaction.toNumber();
+  token.balance = await token.getBalance(tokenAddress);
+  metadata.admin.balance = await token.getBalance(adminAddress);
+  owner.balance = await token.getBalance(owner.address);
+  sender.balance = await token.getBalance(sender.address);
+  receiver.balance = await token.getBalance(receiver.address);
+  user.balance = await token.getBalance(user.address);
 
   if (DEBUG) {
     logAccounts();
@@ -49,13 +41,10 @@ async function refreshAllowance(token, metadata, account) {
   const accountAddress = account.address;
   const propertyString = `${account.name}Allowance`;
 
-  debugger;
   const tokenAllowance = await token.getAllowance(tokenAddress, accountAddress);
   token[propertyString] = tokenAllowance;
-  debugger;
   const adminAllowance = await token.getAllowance(adminAddress, accountAddress);
   metadata.admin[propertyString] = adminAllowance;
-  debugger;
 }
 
 async function refreshAllowances(token, metadata) {
@@ -141,7 +130,7 @@ async function approveAll(token, metadata) {
     token.address,
     totalSupply,
   ); // This returns a transaction response. (Not a receipt yet until it has confirmations.)
-  const approvalReceiptExample = await approval.wait(); // The wait() function returns a transaction receipt.
+  const approvalReceiptExample = await approvalExample.wait(); // The wait() function returns a transaction receipt.
 
   await token.approve(admin.address, owner.address, totalSupply);
   await token.approve(admin.address, sender.address, totalSupply);
@@ -175,9 +164,11 @@ async function approveAll(token, metadata) {
 async function newTokenTransactions(token, metadata) {
   const { admin, totalSupply } = metadata;
 
-  approveAll(token, metadata);
+  await refreshBalances(token, metadata);
 
-  // refreshAllowances(token, metadata);
+  await approveAll(token, metadata);
+
+  await refreshAllowances(token, metadata);
   // refreshAllowance(token, metadata, sender);
   // debugger;
 
@@ -213,14 +204,10 @@ async function newTokenTransactions(token, metadata) {
     // const web3HexToUtf8 = web3.utils.hexToUtf8(approval.hash);
     */
 
-  const senderAdminAllowance = await token.getAllowance(
-    admin.address,
-    sender.address,
-  );
-
-  debugger;
-  const transfer = await token.transfer(sender.address, receiver.address, 50);
+  const transfer = await token.transfer(admin.address, receiver.address, 50);
   const transferReceipt = await transfer.wait();
+
+  await refreshBalances(token, metadata);
   debugger;
 }
 async function tokenTransactions(token, metadata) {

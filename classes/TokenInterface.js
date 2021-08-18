@@ -35,6 +35,16 @@ module.exports = class TokenInterface {
     };
   }
 
+  async getBalance(owner) {
+    const balance = await this.token.balanceOf(owner);
+    return balance.toNumber();
+  }
+
+  async getAllowance(owner, spender) {
+    const allowance = await this.token.allowance(owner, spender);
+    return allowance.toNumber();
+  }
+
   async approve(arg1, arg2, arg3) {
     // const transaction = new Transaction(arg1, arg2, arg3, 'approve'); // Testing the "Transaction" object.
     if (arg3 === undefined) {
@@ -43,13 +53,7 @@ module.exports = class TokenInterface {
     return await this.token.approveFrom(arg1, arg2, arg3);
   }
 
-  async getAllowance(owner, spender) {
-    const allowance = await this.token.allowance(owner, spender);
-    return allowance.toNumber();
-  }
-
   async transfer(arg1, arg2, arg3) {
-    debugger;
     if (arg3 === undefined) {
       return await this.token.transfer(arg1, arg2);
     }
