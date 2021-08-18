@@ -22,7 +22,7 @@ contract Token is Template {
     using SafeMath for uint256;
     using Strings for string;
 
-    bool private constant DEBUG = true;
+    bool private constant DEBUG = false;
 
     // address private _admin;
     string public _name;

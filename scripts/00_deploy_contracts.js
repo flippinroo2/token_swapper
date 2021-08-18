@@ -242,21 +242,18 @@ async function tokenTransactions(token, metadata) {
 
 let fuji,
   fujiMetadata,
-  hakuMetadata = {
-    admin: { balance: 0, ownerAllowance: 0 },
-    balance: 0,
-    name: 'haku',
-    ownerAllowance: 0,
-  },
+  haku,
+  hakuMetadata,
   owner = { balance: 0, name: 'owner', ownerAllowance: 0 },
   sender = { balance: 0, name: 'sender', ownerAllowance: 0 },
   receiver = { balance: 0, name: 'receiver', ownerAllowance: 0 },
-  tateMetadata = {
-    admin: { balance: 0, ownerAllowance: 0 },
-    balance: 0,
-    name: 'tate',
-    ownerAllowance: 0,
-  },
+  tate,
+  // tateMetadata = {
+  //   admin: { balance: 0, ownerAllowance: 0 },
+  //   balance: 0,
+  //   name: 'tate',
+  //   ownerAllowance: 0,
+  // },
   user = { balance: 0, name: 'user', ownerAllowance: 0 };
 
 async function main() {
@@ -307,7 +304,7 @@ async function main() {
   const fujiTransactionData = parseTransactionData(
     await createFujiTransaction.wait(),
   );
-  const fuji = await Token.attach(
+  fuji = await Token.attach(
     fujiTransactionData.events.TokenCreated.arguments.address,
   ); // Using this attach method is basically the same as calling the "Contract" constructor with this address and the interface & signerOrProvider passed in.
 
@@ -327,9 +324,11 @@ async function main() {
   const hakuTransactionData = parseTransactionData(
     await createHakuTransaction.wait(),
   );
-  const haku = await Token.attach(
+  haku = await Token.attach(
     hakuTransactionData.events.TokenCreated.arguments.address,
   );
+  const hakuInterface = new TokenInterface(haku);
+  hakuMetadata = await hakuInterface.getMetadata();
 
   const createTateTransaction = await tokenFactory.createToken(
     'Tate',
@@ -340,9 +339,11 @@ async function main() {
   const tateTransactionData = parseTransactionData(
     await createTateTransaction.wait(),
   );
-  const tate = await Token.attach(
+  tate = await Token.attach(
     tateTransactionData.events.TokenCreated.arguments.address,
   );
+  const tateInterface = new TokenInterface(tate);
+  tateMetadata = await tateInterface.getMetadata();
 
   // const Swap = await getContractFactory('../artifacts/contracts/Swap.sol:Swap');
   // const Swap = await getContractFactory('contracts/Wrapper.sol:Swap');
@@ -355,9 +356,12 @@ async function main() {
   );
 
   await newTokenTransactions(fujiInterface, fujiMetadata);
+  await newTokenTransactions(hakuInterface, hakuMetadata);
+  await newTokenTransactions(tateInterface, tateMetadata);
 
-  await tokenTransactions(haku, hakuMetadata);
-  await tokenTransactions(tate, tateMetadata);
+  // await tokenTransactions(fuji, fujiMetadata);
+  // await tokenTransactions(haku, hakuMetadata);
+  // await tokenTransactions(tate, tateMetadata);
 
   debugger;
 }
