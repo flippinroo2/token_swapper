@@ -49,15 +49,15 @@ contract Wrapper {
 
     function createFujiSwap(Token _fuji, Token _tate) public returns (Swap) {
         // console.log('createFujiSwap(Token _fuji, Token _tate)');
-        // console.log('_address1: %s, _address2: %s', _address1, _address2);
+        console.log('_address1: %s, _address2: %s', _address1, _address2);
         _fujiTateSwapper = new Swap(_address1, _fuji, _address2, _tate);
         return _fujiTateSwapper;
     }
 
-    // function createHakuSwap(Token _haku, Token _tate) public returns (Swap) {
-    //     _hakuTateSwapper = new Swap(_address1, _haku, _address2, _tate);
-    //     return _hakuTateSwapper;
-    // }
+    function createHakuSwap(Token _haku, Token _tate) public returns (Swap) {
+        _hakuTateSwapper = new Swap(_address1, _haku, _address2, _tate);
+        return _hakuTateSwapper;
+    }
 
     function swap(uint256 amount) public view {
         _fujiTateSwapper._swap(amount);

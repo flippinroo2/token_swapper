@@ -206,6 +206,11 @@ async function main() {
 
   // console.log('Account balance:', (await owner.getBalance()).toString());
 
+  const Wrapper = await getContractFactory('Wrapper');
+  const wrapper = await Wrapper.deploy(owner.address, user.address);
+  // const otherWrapper = await wrapper.deployed();
+  // const wrapper = await Wrapper.at()
+
   const Token = await getContractFactory('Token'); // Might not need this.
 
   const Factory = await getContractFactory('TokenFactory');
@@ -271,14 +276,6 @@ async function main() {
   const tateInterface = new TokenInterface(tate);
   tateMetadata = await tateInterface.getMetadata();
 
-  // const Swap = await getContractFactory('../artifacts/contracts/Swap.sol:Swap');
-  // const Swap = await getContractFactory('contracts/Wrapper.sol:Swap');
-
-  const Wrapper = await getContractFactory('Wrapper');
-  const wrapper = await Wrapper.deploy(owner.address, user.address);
-  // const otherWrapper = await wrapper.deployed();
-  // const wrapper = await Wrapper.at();
-
   console.log(
     `Owner Address: ${owner.address}\nSender Address:${sender.address}\nReceiver Address: ${receiver.address}\nUser Address: ${user.address}\nToken Factory Address: ${tokenFactory.address}\nFuji Address: ${fuji.address}\nHaku Address: ${haku.address}\nTate Address: ${tate.address}\nWrapper Address: ${wrapper.address}`,
   );
@@ -286,6 +283,18 @@ async function main() {
   await tokenTransactions(fujiInterface, fujiMetadata);
   await tokenTransactions(hakuInterface, hakuMetadata);
   await tokenTransactions(tateInterface, tateMetadata);
+
+  // const Swap = await getContractFactory('../artifacts/contracts/Swap.sol:Swap');
+  // const Swap = await getContractFactory('contracts/Wrapper.sol:Swap');
+  // const Swap = await getContractFactory('Swap'); // Just testing for now.
+  // const test3 = await Token.deploy('Test3', 'TEST3', 18, 150);
+
+  // const swap = await Swap.deploy(
+  //   owner.address,
+  //   Token.deploy('Test1', 'TEST1', 18, 150),
+  //   user.address,
+  //   Token.deploy('Test2', 'TEST2', 18, 250),
+  // );
 
   const wrapperAdmin = await wrapper._admin();
   const wrapperAddress1 = await wrapper._address1();
@@ -296,8 +305,20 @@ async function main() {
   console.log(
     `Wrapper\n_address1 = ${wrapperAddress1}\n_address2 = ${wrapperAddress2}\nfuji address = ${fuji.address}\nhaku address = ${haku.address}\ntate address = ${tate.address}`,
   );
-  const createFujiSwap = await wrapper.createFujiSwap(fuji, tate);
-  const createHakuSwap = await wrapper.createHakuSwap(haku, tate);
+  const createFujiSwap = await wrapper.createFujiSwap(
+    fuji.address,
+    tate.address,
+  );
+  const fujiSwap = await createFujiSwap.wait();
+
+  const createHakuSwap = await wrapper.createHakuSwap(
+    haku.address,
+    tate.address,
+  );
+  const hakuSwap = await createHakuSwap.wait();
+
+  debugger;
+
   const wrapperFujiTateSwapper = await wrapper._fujiTateSwapper();
   const wrapperHakuTateSwapper = await wrapper._hakuTateSwapper();
 

@@ -21,10 +21,13 @@ contract Swap {
   using Strings for string;
 
   address public _address1;
-  Token public _token1;
-
   address public _address2;
+
+  Token public _token1;
   Token public _token2;
+
+    // Events
+    event SwapCreated(address indexed address1_, Token indexed token1_, address indexed address2_, Token indexed token2_);
 
   constructor(
     address address1_,
@@ -41,6 +44,7 @@ contract Swap {
     _token1 = token1_;
     _address2 = address2_;
     _token2 = token2_;
+    emit SwapCreated(address1_, token1_, address2_, token2_);
   }
 
   function _swap(uint256 amount) public view {
@@ -56,8 +60,8 @@ contract Swap {
       _token2.allowance(_address2, address(this)) >= amount,
       'Token 2 allowance is too low.'
     );
-    // _safeTransferFrom(_token1Address, _address1, _address2, amount);
-    // _safeTransferFrom(_token2Address, _address2, _address1, amount);
+    _safeTransferFrom(_token1Address, _address1, _address2, amount);
+    _safeTransferFrom(_token2Address, _address2, _address1, amount);
   }
 
   function _safeTransferFrom(
