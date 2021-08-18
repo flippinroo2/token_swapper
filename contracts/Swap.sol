@@ -32,11 +32,11 @@ contract Swap {
     address address2_,
     Token token2_
   ) {
-    // console.log(
-    //   'constructor(address address1_ %s, Template token1_, address address2_ %s, Template token2_)',
-    //   address1_,
-    //   address2_
-    // );
+    console.log(
+      'constructor(address address1_ %s, Template token1_, address address2_ %s, Template token2_)',
+      address1_,
+      address2_
+    );
     _address1 = address1_;
     _token1 = token1_;
     _address2 = address2_;
