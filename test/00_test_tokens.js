@@ -316,13 +316,13 @@ contract('TokenFactory', (accounts) => {
     // Token.setProvider(web3.currentProvider);
     // const tokenTest = await Token.deployed();
 
-    // const createFujiTransaction = await tokenFactory.createToken(
-    //   'Fuji',
-    //   'FUJI',
-    //   18,
-    //   100,
-    // );
-    // const fujiTransaction = readTransaction(createFujiTransaction);
+    const createFujiTransaction = await tokenFactory.createToken(
+      'Fuji',
+      'FUJI',
+      18,
+      100,
+    );
+    const fujiTransaction = readTransaction(createFujiTransaction);
     // fuji = await Token.at(fujiMetadata.address);
     fuji = await Token.at(fujiAddress);
     accountData.fuji.admin.address = await fuji.getAdmin();
