@@ -28,8 +28,7 @@ contract Token is Template {
     string public _name;
     string public _symbol;
     uint8 public _tokenDecimals;
-    // uint256 public override totalSupply;
-    uint256 public totalSupply;
+    uint256 public override totalSupply;
     uint256 public totalMinted;
 
     mapping(address => uint256) public _balances;
