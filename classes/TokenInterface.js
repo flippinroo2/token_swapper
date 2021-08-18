@@ -35,14 +35,26 @@ module.exports = class TokenInterface {
   }
 
   async approve(arg1, arg2, arg3) {
-    debugger;
     if (arg3 === undefined) {
       const approve = await this.token.approve(arg1, arg2);
-      const approveData = parseTransactionData(approve);
-      return;
+      return Boolean(approve.value.toNumber());
     }
     const approveFrom = await this.token.approveFrom(arg1, arg2, arg3);
-    const approveFromData = parseTransactionData(approveFrom);
+    return Boolean(approveFrom.value.toNumber());
+  }
+
+  async getAllowance(owner, spender) {
+    const allowance = await this.token.allowance(owner, spender);
+    return allowance.toNumber();
+  }
+
+  async transfer(arg1, arg2, arg3) {
+    debugger;
+    if (arg3 === undefined) {
+      await this.token.transfer();
+      return;
+    }
+    await this.token.transferFrom();
     debugger;
   }
 
@@ -60,7 +72,7 @@ module.exports = class TokenInterface {
     transactionIndex,
     type,
   }) {
-    if (DEBUG) {
+    if (this.debug) {
       logTransaction(transactionHash, blockNumber, from, gasUsed, to);
     }
     let eventObject = {};
@@ -121,20 +133,6 @@ module.exports = class TokenInterface {
     console.log(
       `Transaction: ${transactionHash}\nFrom: ${from}\nTo: ${to}\nBlock #: ${blockNumber}\nGas: ${gasUsed}`,
     );
-  }
-
-  async getAllowance(owner, spender) {
-    return await this.token.allowance(owner, spender);
-  }
-
-  async transfer(arg1, arg2, arg3) {
-    debugger;
-    if (arg3 === undefined) {
-      await this.token.transfer();
-      return;
-    }
-    await this.token.transferFrom();
-    debugger;
   }
 
   get balance() {
