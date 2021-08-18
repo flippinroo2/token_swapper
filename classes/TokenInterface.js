@@ -20,8 +20,8 @@ module.exports = class TokenInterface {
     const adminAddress = await this.#admin;
     return {
       address: adminAddress,
-      balance: 0
-    }
+      balance: 0,
+    };
   }
   async getMetadata() {
     const totalMinted = await this.totalMinted;
@@ -34,15 +34,108 @@ module.exports = class TokenInterface {
     };
   }
 
-  async #approve() {
+  async approve(arg1, arg2, arg3) {
+    debugger;
+    if (arg3 === undefined) {
+      const approve = await this.token.approve(arg1, arg2);
+      const approveData = parseTransactionData(approve);
+      return;
+    }
+    const approveFrom = await this.token.approveFrom(arg1, arg2, arg3);
+    const approveFromData = parseTransactionData(approveFrom);
     debugger;
   }
 
-  async #getAllowance() {
-    debugger;
+  parseTransactionData({
+    blockHash,
+    blockNumber,
+    confirmations,
+    events,
+    from,
+    gasUsed,
+    logs,
+    status,
+    to,
+    transactionHash,
+    transactionIndex,
+    type,
+  }) {
+    if (DEBUG) {
+      logTransaction(transactionHash, blockNumber, from, gasUsed, to);
+    }
+    let eventObject = {};
+    events.forEach((element, index, array) => {
+      // console.log('element:');
+      // console.dir(element);
+      // console.log(`index ${index}`);
+      if (index === 0) {
+      }
+      const eventProperty = element.hasOwnProperty('event');
+      const argsProperty = element.hasOwnProperty('args');
+      // const eventString = `event${index}`;
+      if (eventProperty) {
+        let eventArguments = {};
+        if (argsProperty) {
+          eventArguments.address = element.args[0];
+          eventArguments.name = element.args[1].hash;
+          eventArguments.symbol = element.args[2].hash;
+          eventArguments.decimals = element.args[3];
+          eventArguments.totalSupply = element.args[4].toNumber();
+        }
+        eventObject[element.event] = {
+          signature: element.eventSignature,
+          arguments: eventArguments,
+        };
+      }
+      if (index === array.length - 1) {
+        eventObject.data = element.data;
+      }
+    });
+    return {
+      from,
+      to,
+      transactionIndex,
+      transactionHash,
+      gasUsed: gasUsed.toNumber(),
+      type,
+      status,
+      blockNumber,
+      blockHash,
+      confirmations,
+      events: eventObject,
+    };
   }
 
-  async #transfer() {}
+  logAccounts() {
+    console.log('\n\nBALANCES:');
+    console.log(
+      `fujiAdmin: ${fujiMetadata.admin.balance}\tfujiMetadata: ${fujiMetadata.balance}\thakuAdmin: ${hakuMetadata.admin.balance}\thakuMetadata: ${hakuMetadata.balance}\towner: ${owner.balance}\treceiver: ${receiver.balance}\tsender: ${sender.balance}\ttateAdmin: ${tateMetadata.admin.balance}\ttateMetadata: ${tateMetadata.balance}\tuser: ${user.balance}`,
+    );
+    console.log('\nALLOWANCES:');
+    console.log(
+      `fujiAdmin: ${fujiMetadata.admin.ownerAllowance}\tfujiMetadata: ${fujiMetadata.ownerAllowance}\thakuAdmin: ${hakuMetadata.admin.ownerAllowance}\thakuMetadata: ${hakuMetadata.ownerAllowance}\towner: ${owner.ownerAllowance}\treceiver: ${receiver.ownerAllowance}\tsender: ${sender.ownerAllowance}\ttateAdmin: ${tateMetadata.admin.ownerAllowance}\ttateMetadata: ${tateMetadata.ownerAllowance}\tuser: ${user.ownerAllowance}`,
+    );
+  }
+
+  logTransaction(transactionHash, blockNumber, from, gasUsed, to) {
+    console.log(
+      `Transaction: ${transactionHash}\nFrom: ${from}\nTo: ${to}\nBlock #: ${blockNumber}\nGas: ${gasUsed}`,
+    );
+  }
+
+  async getAllowance(owner, spender) {
+    return await this.token.allowance(owner, spender);
+  }
+
+  async transfer(arg1, arg2, arg3) {
+    debugger;
+    if (arg3 === undefined) {
+      await this.token.transfer();
+      return;
+    }
+    await this.token.transferFrom();
+    debugger;
+  }
 
   get balance() {
     return this.balance;

@@ -233,7 +233,16 @@ async function main() {
   );
   const fujiInterface = new TokenInterface(fuji);
   const testMetadata = await fujiInterface.getMetadata();
-  await fujiInterface.approve();
+
+  debugger;
+
+  await fujiInterface.approve(
+    testMetadata.admin.address,
+    owner.address,
+    testMetadata.totalSupply,
+  );
+  await fujiInterface.getAllowance(owner.address, testMetadata.admin.address);
+  await fujiInterface.transfer(metadata.admin.address, owner.address);
 
   debugger;
 
