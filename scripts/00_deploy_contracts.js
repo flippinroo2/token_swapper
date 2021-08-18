@@ -43,44 +43,26 @@ async function refreshBalances(token, metadata) {
   }
 }
 
-async function refreshAllowances(token, metadata, account) {
+async function refreshAllowance(token, metadata, account) {
+  const tokenAddress = token.address;
+  const adminAddress = metadata.admin.address;
+  const accountAddress = account.address;
   const propertyString = `${account.name}Allowance`;
 
-  const tokenAllowanceTransaction = await token.allowance(
-    owner.address,
-    token.address,
-  );
-  metadata[propertyString] = tokenAllowanceTransaction.toNumber();
+  debugger;
+  const tokenAllowance = await token.getAllowance(tokenAddress, accountAddress);
+  token[propertyString] = tokenAllowance;
+  debugger;
+  const adminAllowance = await token.getAllowance(adminAddress, accountAddress);
+  metadata.admin[propertyString] = adminAllowance;
+  debugger;
+}
 
-  const adminAllowanceTransaction = await token.allowance(
-    owner.address,
-    metadata.admin.address,
-  );
-  metadata.admin[propertyString] = adminAllowanceTransaction.toNumber();
-
-  const ownerAllowanceTransaction = await token.allowance(
-    metadata.admin.address,
-    owner.address,
-  );
-  owner[propertyString] = ownerAllowanceTransaction.toNumber();
-
-  const senderAllowanceTransaction = await token.allowance(
-    owner.address,
-    sender.address,
-  );
-  sender[propertyString] = senderAllowanceTransaction.toNumber();
-
-  const receiverAllowanceTransaction = await token.allowance(
-    owner.address,
-    receiver.address,
-  );
-  receiver[propertyString] = receiverAllowanceTransaction.toNumber();
-
-  const userAllowanceTransaction = await token.allowance(
-    owner.address,
-    user.address,
-  );
-  user[propertyString] = userAllowanceTransaction.toNumber();
+async function refreshAllowances(token, metadata) {
+  await refreshAllowance(token, metadata, owner);
+  await refreshAllowance(token, metadata, sender);
+  await refreshAllowance(token, metadata, receiver);
+  await refreshAllowance(token, metadata, user);
 }
 
 function parseTransactionData({
@@ -143,15 +125,61 @@ function parseTransactionData({
   };
 }
 
+async function approveAll(token, metadata) {
+  // Could add an "accounts" parameter so we don't have to touch state variables.
+  const { admin, totalSupply } = metadata;
+
+  await token.approve(token.address, admin.address, totalSupply);
+  await token.approve(token.address, owner.address, totalSupply);
+  await token.approve(token.address, sender.address, totalSupply);
+  await token.approve(token.address, receiver.address, totalSupply);
+  await token.approve(token.address, user.address, totalSupply);
+
+  // approve(address owner, address spender, uint256 amount)
+  const approvalExample = await token.approve(
+    admin.address,
+    token.address,
+    totalSupply,
+  ); // This returns a transaction response. (Not a receipt yet until it has confirmations.)
+  const approvalReceiptExample = await approval.wait(); // The wait() function returns a transaction receipt.
+
+  await token.approve(admin.address, owner.address, totalSupply);
+  await token.approve(admin.address, sender.address, totalSupply);
+  await token.approve(admin.address, receiver.address, totalSupply);
+  await token.approve(admin.address, user.address, totalSupply);
+
+  await token.approve(owner.address, token.address, totalSupply);
+  await token.approve(owner.address, admin.address, totalSupply);
+  await token.approve(owner.address, sender.address, totalSupply);
+  await token.approve(owner.address, receiver.address, totalSupply);
+  await token.approve(owner.address, user.address, totalSupply);
+
+  await token.approve(sender.address, token.address, totalSupply);
+  await token.approve(sender.address, admin.address, totalSupply);
+  await token.approve(sender.address, owner.address, totalSupply);
+  await token.approve(sender.address, receiver.address, totalSupply);
+  await token.approve(sender.address, user.address, totalSupply);
+
+  await token.approve(receiver.address, token.address, totalSupply);
+  await token.approve(receiver.address, admin.address, totalSupply);
+  await token.approve(receiver.address, owner.address, totalSupply);
+  await token.approve(receiver.address, sender.address, totalSupply);
+  await token.approve(receiver.address, user.address, totalSupply);
+
+  await token.approve(user.address, token.address, totalSupply);
+  await token.approve(user.address, admin.address, totalSupply);
+  await token.approve(user.address, owner.address, totalSupply);
+  await token.approve(user.address, sender.address, totalSupply);
+  await token.approve(user.address, receiver.address, totalSupply);
+}
 async function newTokenTransactions(token, metadata) {
   const { admin, totalSupply } = metadata;
 
-  const approval = await token.approve(
-    admin.address,
-    sender.address,
-    totalSupply,
-  ); // This returns a transaction response. (Not a receipt yet until it has confirmations.)
-  const approvalReceipt = await approval.wait(); // The wait() function returns a transaction receipt.
+  approveAll(token, metadata);
+
+  // refreshAllowances(token, metadata);
+  // refreshAllowance(token, metadata, sender);
+  // debugger;
 
   /* ETHERS.js DECODE TESTING
   // IMPORTANT !!!
