@@ -28,9 +28,9 @@ contract Swap {
 
   constructor(
     address address1_,
-    Template token1_,
+    Token token1_,
     address address2_,
-    Template token2_
+    Token token2_
   ) {
     console.log(
       'constructor(address address1_ %s, Template token1_, address address2_ %s, Template token2_)',

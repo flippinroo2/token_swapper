@@ -293,7 +293,7 @@ async function main() {
   if (DEBUG) {
     debugger;
   }
-  const createFujiSwap = await wrapper.createFujiSwap(fuji, tate);
+  const createFujiSwap = await wrapper.createFujiSwap(fuji, tate); // 0xa16E02E87b7454126E5E10d957A927A7F5B5d2be
   const createHakuSwap = await wrapper.createHakuSwap(haku, tate);
   const wrapperFujiTateSwapper = await wrapper._fujiTateSwapper();
   const wrapperHakuTateSwapper = await wrapper._hakuTateSwapper();
