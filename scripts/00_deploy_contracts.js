@@ -25,7 +25,7 @@ async function refreshBalances(token, metadata) {
 
   const adminAddress = metadata.admin.address;
 
-  const propertyString = `${tokenName}Balance`;
+  const propertyString = `${tokenName.toLowerCase()}Balance`;
 
   metadata[propertyString] = await token.getBalance(tokenAddress);
   metadata.admin[propertyString] = await token.getBalance(adminAddress);
