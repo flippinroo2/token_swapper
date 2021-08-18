@@ -67,3 +67,16 @@ const base64DecodeTest = ethers.utils.base64.decode(approval.hash);
 // const web3ToAscii = web3.utils.toAscii(approval.hash);
 // const web3HexToUtf8 = web3.utils.hexToUtf8(approval.hash);
 */
+
+
+## NOTES
+  /* NOTES:
+  // Contract.connect(providerOrSigner); // Returns a new instance of the contract, but connected to the provider or signer. (Could be useful for connecting to Ganache as the provider).
+
+  const tokenInterface = Token.interface; // This is the ABI for the contract
+  const tokenSigner = Token.signer; // If there is a signer provided with the constructor, then this will return the signer.
+  const tokenProvider = Token.provider // If there is a provider with the constructor, then this will return the provider.
+  const tokenDeployTransaction = Token.deployTransaction // This will return a TransactionResponse of the deployment transaction.
+  const tokenDeployTransaction = Token.getDeployTransaction(); // ...args [, overrides]
+  const tokenQueryFilter = Token.queryFilter(event) // This return events that match the event passed in.
+  */
