@@ -26,6 +26,8 @@ WebAssembly
 
 const { eth, utils } = web3;
 
+const Wrapper = artifacts.require('Wrapper');
+const Swap = artifacts.require('Swap');
 const Token = artifacts.require('Token');
 const Factory = artifacts.require('TokenFactory');
 
@@ -218,6 +220,7 @@ async function approveAll(token, metadata) {
   await token.approve(user.address, sender.address, totalSupply);
   await token.approve(user.address, receiver.address, totalSupply);
 }
+
 async function tokenTransactions(token, metadata) {
   const { admin, totalSupply } = metadata;
 
@@ -234,40 +237,10 @@ async function tokenTransactions(token, metadata) {
   );
   const transferReceipt = parseTransactionData(transfer.receipt);
 
-  /* ETHERS.js DECODE TESTING
-  // IMPORTANT !!!
-  // const base58DecodeTest = ethers.utils.base58.decode(approval.hash);
-  const base64DecodeTest = ethers.utils.base64.decode(approval.hash);
-  // const RLPDecodeTest = ethers.utils.RLP.decode(base64DecodeTest);
-  // const bytes32Test = ethers.utils.parseBytes32String(approval.hash); // Not 32 bytes long
-  // const utf8Test = ethers.utils.toUtf8String(approval.hash);
-  // IMPORTANT !!!
-
-  // IMPORTANT !!!
-  // const test = ethers.utils.serializeTransaction(approval);
-  // const test = ethers.utils.serializeTransaction(approvalReceipt); // This just made a new hex of the entire transaction.
-  // const test = ethers.utils.parseTransaction(approval);
-  // const abiInterface = ethers.utils.Interface(ABI);
-  // IMPORTANT !!!
-
-  // IMPORTANT !!!
-  // These functions below turn strings into hashes, not vise versa!!!
-  // const idTest = ethers.utils.id(approval.data);
-  // const keccak256Test = ethers.utils.keccak256(approval.data);
-  // const sha256Test = ethers.utils.sha256(approval.data);
-  // IMPORTANT !!!
-  */
-
-  /* Web3.js TESTING
-    // const web3CheckAddressChecksum = web3.utils.checkAddressChecksum(approval.hash);
-    // const web3BytesToHex = web3.utils.bytesToHex(approval.hash);
-    // const web3HexToAscii = web3.utils.hexToAscii(approval.hash);
-    // const web3ToAscii = web3.utils.toAscii(approval.hash);
-    // const web3HexToUtf8 = web3.utils.hexToUtf8(approval.hash);
-    */
-
   await refreshBalances(token, metadata);
-  debugger;
+  if (DEBUG) {
+    // debugger;
+  }
 }
 
 function getEvent({ tx, receipt }) {
@@ -294,17 +267,13 @@ let accountData = {
   tate: { balance: 0, admin: {} },
   tokenFactory: { balance: 0, admin: {} },
   user: { balance: 0 },
+  wrapper: { balance: 0 },
 };
-let tokenFactory,
-  fuji,
-  fujiMetadata = {},
-  haku,
-  hakuMetadata = {},
-  tate,
-  tateMetadata = {};
+
+let wrapper, tokenFactory, fuji, haku, tate;
 
 // describe('TokenFactory', (accounts) => {
-contract('TokenFactory', (accounts) => {
+contract('Wrapper', (accounts) => {
   // this.timeout(timeout); // This doesn't work without mocha enabled.
   console.log('Accounts:');
   console.dir(accounts);
@@ -313,7 +282,33 @@ contract('TokenFactory', (accounts) => {
   accountData.sender.address = accounts[2];
   accountData.user.address = accounts[3];
 
+  let fujiMetadata = {},
+    hakuMetadata = {},
+    tateMetadata = {};
+
   before(async () => {
+    wrapper = await Wrapper.deployed();
+    accountData.wrapper.address = wrapper.address;
+    const wrapperAdmin = await wrapper._admin();
+    const wrapperAddress1 = await wrapper._address1();
+    const wrapperAddress2 = await wrapper._address2();
+    const wrapperFujiTateSwapper = await wrapper._fujiTateSwapper();
+    const wrapperHakuTateSwapper = await wrapper._hakuTateSwapper();
+
+    // Factory.setProvider(web3.currentProvider);
+    tokenFactory = await Factory.deployed();
+    accountData.tokenFactory.address = tokenFactory.address;
+
+    // Token.setProvider(web3.currentProvider);
+    // const tokenTest = await Token.deployed();
+
+    const tokenAddressesTransaction = await tokenFactory.getAddresses();
+    const [fujiAddress, hakuAddress, tateAddress] = tokenAddressesTransaction;
+
+    accountData.fuji.address = fujiAddress;
+    accountData.haku.address = hakuAddress;
+    accountData.tate.address = tateAddress;
+
     // These functions below only work if hardhat has compiled the abis
     // const temp = await hardhatEthers.getContractFactory('Fuji');
     // const test = await temp.deploy('Fuji', 'FUJI');
@@ -323,20 +318,6 @@ contract('TokenFactory', (accounts) => {
     // const FujiAddress = await Fuji.address;
     // const fujiNew = await Fuji.new('Fuji', 'FUJI');
     // const fujiDeployed = await Fuji.deployed();
-
-    // Factory.setProvider(web3.currentProvider);
-    tokenFactory = await Factory.deployed();
-    accountData.tokenFactory.address = tokenFactory.address;
-
-    const tokenAddressesTransaction = await tokenFactory.getAddresses();
-    const [fujiAddress, hakuAddress, tateAddress] = tokenAddressesTransaction;
-
-    accountData.fuji.address = fujiAddress;
-    accountData.haku.address = hakuAddress;
-    accountData.tate.address = tateAddress;
-
-    // Token.setProvider(web3.currentProvider);
-    // const tokenTest = await Token.deployed();
 
     const createFujiTransaction = await tokenFactory.createToken(
       'Fuji',
@@ -384,8 +365,6 @@ contract('TokenFactory', (accounts) => {
 
     const tateInterface = new TokenInterface(tate);
     tateMetadata = await tateInterface.getMetadata();
-
-    debugger;
   });
 
   describe('Deployment', async () => {
@@ -399,16 +378,33 @@ contract('TokenFactory', (accounts) => {
     });
 
     it('MINT', async () => {
+      // if (DEBUG) {
+      //   // console.log(
+      //   //   `Mint Transaction: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
+      //   // );
+      //   debugger;
+      // }
+    });
+  });
+
+  describe('Swap', async () => {
+    it('SWAP', async () => {
       if (DEBUG) {
-        // console.log(
-        //   `Mint Transaction: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
-        // );
         debugger;
       }
-      // const balanceOfTransaction = await fuji.balanceOf(owner.address);
-      // const [balance] = balanceOfTransaction.words;
-      // owner.balance = utils.hexToNumber(balanceOfTransaction);
-      // expect(owner.balance).to.equal(balance);
+      const wrapperAdmin = await wrapper._admin();
+      const wrapperAddress1 = await wrapper._address1();
+      const wrapperAddress2 = await wrapper._address2();
+      if (DEBUG) {
+        debugger;
+      }
+      const createFujiSwap = await wrapper.createFujiSwap(fuji, tate);
+      const createHakuSwap = await wrapper.createHakuSwap(haku, tate);
+      const wrapperFujiTateSwapper = await wrapper._fujiTateSwapper();
+      const wrapperHakuTateSwapper = await wrapper._hakuTateSwapper();
+      if (DEBUG) {
+        debugger;
+      }
     });
   });
 
