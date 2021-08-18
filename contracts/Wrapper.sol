@@ -59,11 +59,11 @@ contract Wrapper {
         return _hakuTateSwapper;
     }
 
-    function swap(uint256 amount) public view {
+    function swap(uint256 amount) public {
         _fujiTateSwapper._swap(amount);
     }
 
-    function unswap(uint256 amount) public view {
+    function unswap(uint256 amount) public {
         _hakuTateSwapper._swap(amount);
     }
 }
