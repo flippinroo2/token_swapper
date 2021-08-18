@@ -23,6 +23,7 @@ module.exports = class TokenInterface {
       balance: 0,
     };
   }
+
   async getMetadata() {
     const totalMinted = await this.totalMinted;
     const totalSupply = await this.totalSupply;
@@ -35,6 +36,7 @@ module.exports = class TokenInterface {
   }
 
   async approve(arg1, arg2, arg3) {
+    // const transaction = new Transaction(arg1, arg2, arg3, 'approve'); // Testing the "Transaction" object.
     if (arg3 === undefined) {
       return await this.token.approve(arg1, arg2);
     }
