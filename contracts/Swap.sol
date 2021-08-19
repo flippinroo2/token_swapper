@@ -73,8 +73,8 @@ contract Swap {
       'Not an authorized address.'
     );
 
-    _token1Allowance = _token1.allowance(user, address(this));
-    _token2Allowance = _token2.allowance(user, address(this));
+    _token1Allowance = _token1.allowance(_user1, address(this));
+    _token2Allowance = _token2.allowance(_user2, address(this));
 
     // require(
     //   _token1Allowance >= amount,

@@ -3,6 +3,10 @@ const TokenInterface = require('../classes/TokenInterface.js');
 const DEBUG = false;
 
 function logAccounts() {
+  if (DEBUG) {
+    debugger;
+  }
+
   console.log('\n\nBALANCES:');
   console.log(
     `fujiAdmin: ${fujiMetadata.admin.balance}\tfujiMetadata: ${fujiMetadata.balance}\thakuAdmin: ${hakuMetadata.admin.balance}\thakuMetadata: ${hakuMetadata.balance}\towner: ${owner.balance}\treceiver: ${receiver.balance}\tsender: ${sender.balance}\ttateAdmin: ${tateMetadata.admin.balance}\ttateMetadata: ${tateMetadata.balance}\tuser: ${user.balance}`,
@@ -14,12 +18,19 @@ function logAccounts() {
 }
 
 function logTransaction(transactionHash, blockNumber, from, gasUsed, to) {
+  if (DEBUG) {
+    debugger;
+  }
   console.log(
     `Transaction: ${transactionHash}\nFrom: ${from}\nTo: ${to}\nBlock #: ${blockNumber}\nGas: ${gasUsed}`,
   );
 }
 
 async function refreshBalances(token, metadata) {
+  if (DEBUG) {
+    debugger;
+  }
+
   const tokenAddress = token.address;
   const tokenName = metadata.name;
 
@@ -40,6 +51,10 @@ async function refreshBalances(token, metadata) {
 }
 
 async function refreshAllowance(token, metadata, account) {
+  if (DEBUG) {
+    debugger;
+  }
+
   const tokenAddress = token.address;
   const adminAddress = metadata.admin.address;
   const accountAddress = account.address;
@@ -78,6 +93,7 @@ function parseTransactionData({
 }) {
   if (DEBUG) {
     // logTransaction(transactionHash, blockNumber, from, gasUsed, to);
+    debugger;
   }
   let eventObject = {};
   events.forEach((element, index, array) => {
@@ -125,6 +141,10 @@ function parseTransactionData({
 async function approveAll(token, metadata) {
   // Could add an "accounts" parameter so we don't have to touch state variables.
   const { admin, totalSupply } = metadata;
+
+  if (DEBUG) {
+    debugger;
+  }
 
   await token.approve(token.address, admin.address, totalSupply);
   await token.approve(token.address, user.address, totalSupply);
@@ -231,6 +251,10 @@ async function approveAll(token, metadata) {
 }
 
 async function tokenTransactions(token, metadata) {
+  if (DEBUG) {
+    debugger;
+  }
+
   const { admin, totalSupply } = metadata;
 
   await refreshBalances(token, metadata);
@@ -286,6 +310,10 @@ async function tokenTransactions(token, metadata) {
   // tokenFactoryHakuTransfer = _tokenFactoryHakuTransfer.wait();
 
   await refreshBalances(token, metadata);
+
+  if (DEBUG) {
+    debugger;
+  }
 }
 
 let fuji,
@@ -461,8 +489,6 @@ async function main() {
   tokenAllowance = await hakuTateSwap._token2Allowance();
   hakuTateSwapMetadata.user2.tateAllowance = tokenAllowance.toNumber();
 
-  // We need allowance on Fuji for the user to spend the owner's tokens? (OR... ACUTALLY Fujis tokens? & we need to make sure Fuji has tokens minted already.)
-
   console.log(
     `Owner Address: ${owner.address}\nSender Address:${sender.address}\nReceiver Address: ${receiver.address}\nUser Address: ${user.address}\nToken Factory Address: ${tokenFactory.address}\nFuji Address: ${fuji.address}\nHaku Address: ${haku.address}\nTate Address: ${tate.address}\nWrapper Address: ${wrapper.address}`,
   );
@@ -475,17 +501,82 @@ async function main() {
     debugger;
   }
 
-  // console.log(
-  //   `Wrapper\n_address1 = ${wrapperAddress1}\n_address2 = ${wrapperAddress2}\nfuji address = ${fuji.address}\nhaku address = ${haku.address}\ntate address = ${tate.address}`,
-  // );
+  await (async () => {
+    const fujiAddress = fujiTateSwapMetadata.token1;
+    const tateAddress = fujiTateSwapMetadata.token2;
 
-  debugger;
+    let adminObject = {},
+      ownerObject = fujiTateSwapMetadata.user1,
+      userObject = fujiTateSwapMetadata.user2,
+      fujiObject = {},
+      tateObject = {};
+    let dataVariable;
+
+    async function fillFujiObject() {
+      dataVariable = await fuji.balanceOf(ownerObject.address);
+      ownerObject.fujiBalance = dataVariable.toNumber();
+
+      dataVariable = await fuji.balanceOf(userObject.address);
+      userObject.fujiBalance = dataVariable.toNumber();
+
+      dataVariable = await fuji.balanceOf(fujiAddress);
+      fujiObject.fujiBalance = dataVariable.toNumber();
+
+      dataVariable = await fuji.balanceOf(tateAddress);
+      tateObject.fujiBalance = dataVariable.toNumber();
+    }
+    async function fillTateObject() {
+      dataVariable = await fuji.balanceOf(ownerObject.address);
+      ownerObject.tateBalance = dataVariable.toNumber();
+
+      dataVariable = await fuji.balanceOf(userObject.address);
+      userObject.tateBalance = dataVariable.toNumber();
+
+      dataVariable = await fuji.balanceOf(fujiAddress);
+      fujiObject.tateBalance = dataVariable.toNumber();
+
+      dataVariable = await fuji.balanceOf(tateAddress);
+      tateObject.tateBalance = dataVariable.toNumber();
+    }
+
+    await fillFujiObject();
+    await fillTateObject();
+
+    debugger;
+
+    // dataVariable = fuji.
+    // dataVariable = fuji.
+    // dataVariable = fuji.
+    // dataVariable = fuji.
+    // dataVariable = fuji.
+    // dataVariable = fuji.
+    // dataVariable = fuji.
+    // dataVariable = fuji.
+    // dataVariable = fuji.
+    // dataVariable = fuji.
+    // dataVariable = fuji.
+    // dataVariable = fuji.
+    // dataVariable = fuji.
+    // dataVariable = fuji.
+    // dataVariable = fuji.
+    // dataVariable = fuji.
+    // dataVariable = fuji.
+    // dataVariable = fuji.
+    // dataVariable = fuji.
+
+    debugger;
+
+    // debugger;
+  })();
+
   const fujiTateSwapTransaction = await fujiTateSwap._swap(7);
   // debugger;
   // const hakuTateSwapTransaction = await hakuTateSwap._swap(3);
 
   if (DEBUG) {
-    debugger;
+    // console.log(
+    //   `Wrapper\n_address1 = ${wrapperAddress1}\n_address2 = ${wrapperAddress2}\nfuji address = ${fuji.address}\nhaku address = ${haku.address}\ntate address = ${tate.address}`,
+    // );
   }
 }
 
