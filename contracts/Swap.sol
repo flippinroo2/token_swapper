@@ -66,27 +66,16 @@ contract Swap {
     return address(_token2);
   }
 
-  function getToken1Allowance() external view returns (uint256) {
-    return _token1Allowance;
-  }
-
-  function getToken2Allowance() external view returns (uint256) {
-    return _token2Allowance;
-  }
-
-  function setToken1Allowance(address user) public {
-    _token1Allowance = _token1.allowance(user, address(this));
-  }
-
-  function setToken2Allowance(address user) public {
-    _token2Allowance = _token2.allowance(user, address(this));
-  }
-
   function _swap(uint256 amount) external {
+
     require(
       msg.sender == _user1 || msg.sender == _user2,
       'Not an authorized address.'
     );
+
+    _token1Allowance = _token1.allowance(user, address(this));
+    _token2Allowance = _token2.allowance(user, address(this));
+
     // require(
     //   _token1Allowance >= amount,
     //   'Token 1 allowance is too low.'
