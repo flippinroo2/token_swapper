@@ -292,12 +292,12 @@ let fuji,
   fujiInterface,
   fujiMetadata,
   fujiTateSwap,
-  fujiTateSwapMetadata = { token1: {}, token2: {} },
+  fujiTateSwapMetadata = { user1: {}, user2: {} },
   haku,
   hakuInterface,
   hakuMetadata,
   hakuTateSwap,
-  hakuTateSwapMetadata = { token1: {}, token2: {} },
+  hakuTateSwapMetadata = { user1: {}, user2: {} },
   owner = { balance: 0, name: 'owner', ownerAllowance: 0 },
   sender = { balance: 0, name: 'sender', ownerAllowance: 0 },
   receiver = { balance: 0, name: 'receiver', ownerAllowance: 0 },
@@ -427,41 +427,39 @@ async function main() {
 
   fujiTateSwap = Swap.attach(await wrapper._fujiTateSwapper());
 
-  fujiTateSwapMetadata.token1.address = await fujiTateSwap._token1();
-  let tokenAllowance = await fujiTateSwap._token1Allowance();
-  fujiTateSwapMetadata.token1.allowance = tokenAllowance.toNumber();
-
-  fujiTateSwapMetadata.token2.address = await fujiTateSwap._token2();
-  tokenAllowance = await fujiTateSwap._token2Allowance();
-  fujiTateSwapMetadata.token2.allowance = tokenAllowance.toNumber();
-
+  fujiTateSwapMetadata.token1 = await fujiTateSwap._token1();
   fujiTateSwapMetadata.user1 = {
     name: 'owner',
     address: await fujiTateSwap._user1(),
   };
+  let tokenAllowance = await fujiTateSwap._token1Allowance();
+  fujiTateSwapMetadata.user1.fujiAllowance = tokenAllowance.toNumber();
+
+  fujiTateSwapMetadata.token2 = await fujiTateSwap._token2();
   fujiTateSwapMetadata.user2 = {
     name: 'user',
     address: await fujiTateSwap._user2(),
   };
+  tokenAllowance = await fujiTateSwap._token2Allowance();
+  fujiTateSwapMetadata.user2.tateAllowance = tokenAllowance.toNumber();
 
   hakuTateSwap = Swap.attach(await wrapper._hakuTateSwapper());
 
-  hakuTateSwapMetadata.token1.address = await hakuTateSwap._token1();
-  tokenAllowance = await hakuTateSwap._token1Allowance();
-  hakuTateSwapMetadata.token1.allowance = tokenAllowance.toNumber();
-
-  hakuTateSwapMetadata.token2.address = await hakuTateSwap._token2();
-  tokenAllowance = await hakuTateSwap._token2Allowance();
-  hakuTateSwapMetadata.token2.allowance = tokenAllowance.toNumber();
-
+  hakuTateSwapMetadata.token1 = await hakuTateSwap._token1();
   hakuTateSwapMetadata.user1 = {
     name: 'owner',
     address: await hakuTateSwap._user1(),
   };
+  tokenAllowance = await hakuTateSwap._token1Allowance();
+  hakuTateSwapMetadata.user1.hakuAllowance = tokenAllowance.toNumber();
+
+  hakuTateSwapMetadata.token2 = await hakuTateSwap._token2();
   hakuTateSwapMetadata.user2 = {
     name: 'user',
     address: await hakuTateSwap._user2(),
   };
+  tokenAllowance = await hakuTateSwap._token2Allowance();
+  hakuTateSwapMetadata.user2.tateAllowance = tokenAllowance.toNumber();
 
   // We need allowance on Fuji for the user to spend the owner's tokens? (OR... ACUTALLY Fujis tokens? & we need to make sure Fuji has tokens minted already.)
 
