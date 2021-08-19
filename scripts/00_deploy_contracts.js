@@ -182,10 +182,10 @@ async function tokenTransactions(token, metadata) {
 
 let fuji,
   fujiMetadata,
-  fujiTateSwap
+  fujiTateSwap,
   haku,
   hakuMetadata,
-  hakuTateSwap
+  hakuTateSwap,
   owner = { balance: 0, name: 'owner', ownerAllowance: 0 },
   sender = { balance: 0, name: 'sender', ownerAllowance: 0 },
   receiver = { balance: 0, name: 'receiver', ownerAllowance: 0 },
