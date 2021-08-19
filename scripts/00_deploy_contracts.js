@@ -310,17 +310,60 @@ async function main() {
   const hakuSwap = await createHakuSwap.wait();
 
   const wrapperFujiTateSwapperAddress = await wrapper._fujiTateSwapper();
-  const wrapperFujiTateSwapper = Swap.attach(wrapperFujiTateSwapperAddress);
+  const fujiTateSwapper = Swap.attach(wrapperFujiTateSwapperAddress);
 
-  const wrapperHakuTateSwapperAddress = await wrapper._hakuTateSwapper();
-  const wrapperHakuTateSwapper = Swap.attach(wrapperHakuTateSwapperAddress);
+  // We need allowance on Fuji for the user to spend the owner's tokens? (OR... ACUTALLY Fujis tokens? & we need to make sure Fuji has tokens minted already.)
+
+  const fujiBalanceCheck1 = await fuji.balanceOf(fuji.address);
+  const fujiBalance1 = fujiBalanceCheck1.toNumber();
+
+  const fujiBalanceCheck2 = await fuji.balanceOf(owner.address);
+  const fujiBalance2 = fujiBalanceCheck2.toNumber();
+
+  const fujiAllowancesCheck1 = await fuji.allowance(
+    fuji.address,
+    owner.address,
+  );
+  const fujiAllowance1 = fujiAllowancesCheck1.toNumber();
+
+  const fujiAllowancesCheck2 = await fuji.allowance(
+    owner.address,
+    user.address,
+  );
+  const fujiAllowance2 = fujiAllowancesCheck2.toNumber();
 
   debugger;
 
-  // const wrapperFujiTateSwapper.
+  const fujiTateSwapperToken1Allowance =
+    await fujiTateSwapper._token1Allowance();
+  const fujiTateSwapperToken2Allowance =
+    await fujiTateSwapper._token2Allowance();
 
-  const fujiTateSwapTransaction = await wrapperFujiTateSwapper._swap(4);
-  const hakuTateSwapTransaction = await wrapperHakuTateSwapper._swap(7);
+  const fujiTateSwapperData = {
+    user1: await fujiTateSwapper._user1(),
+    user2: await fujiTateSwapper._user2(),
+    token1Address: await fujiTateSwapper._token1(),
+    token2Address: await fujiTateSwapper._token2(),
+    token1Allowance: fujiTateSwapperToken1Allowance.toNumber(),
+    token2Allowance: fujiTateSwapperToken2Allowance.toNumber(),
+  };
+
+  const wrapperHakuTateSwapperAddress = await wrapper._hakuTateSwapper();
+  const hakuTateSwapper = Swap.attach(wrapperHakuTateSwapperAddress);
+
+  const hakuTateSwapperData = {
+    user1: await hakuTateSwapper._user1(),
+    user2: await hakuTateSwapper._user2(),
+    token1Address: await hakuTateSwapper._token1(),
+    token2Address: await hakuTateSwapper._token2(),
+    token1Allowance: await hakuTateSwapper._token1Allowance(),
+    token2Allowance: await hakuTateSwapper._token2Allowance(),
+  };
+
+  debugger;
+
+  const fujiTateSwapTransaction = await fujiTateSwapper._swap(4);
+  const hakuTateSwapTransaction = await hakuTateSwapper._swap(7);
 
   debugger;
 
