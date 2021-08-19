@@ -351,8 +351,20 @@ async function main() {
     token2Allowance: fujiTateSwapToken2Allowance.toNumber(),
   };
 
-  const wrapperHakuTateSwapperAddress = await wrapper._hakuTateSwapper();
-  const hakuTateSwapper = Swap.attach(wrapperHakuTateSwapperAddress);
+  const hakuTateSwapper = Swap.attach(await wrapper._hakuTateSwapper());
+
+  let _hakuBalance = await fuji.balanceOf(haku.address);
+  let hakuBalance = _hakuBalance.toNumber();
+
+  _tokenFactoryBalance = await haku.balanceOf(tokenFactory.address);
+  tokenFactoryBalance = _tokenFactoryBalance.toNumber();
+
+  const _tokenFactoryHakuTransfer = await haku.transferFrom(
+    tokenFactory.address,
+    haku.address,
+    500,
+  );
+  const tokenFactoryHakuTransfer = _tokenFactoryHakuTransfer.wait();
 
   const hakuTateSwapperData = {
     user1: await hakuTateSwapper._user1(),
