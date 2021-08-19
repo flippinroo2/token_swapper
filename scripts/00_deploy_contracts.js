@@ -291,12 +291,15 @@ async function main() {
   const wrapperAdmin = await wrapper._admin();
   const wrapperAddress1 = await wrapper._address1();
   const wrapperAddress2 = await wrapper._address2();
+
   if (DEBUG) {
     debugger;
   }
+
   console.log(
     `Wrapper\n_address1 = ${wrapperAddress1}\n_address2 = ${wrapperAddress2}\nfuji address = ${fuji.address}\nhaku address = ${haku.address}\ntate address = ${tate.address}`,
   );
+
   const createFujiSwap = await wrapper.createFujiSwap(
     fuji.address,
     tate.address,
@@ -309,43 +312,43 @@ async function main() {
   );
   const hakuSwap = await createHakuSwap.wait();
 
-  const wrapperFujiTateSwapperAddress = await wrapper._fujiTateSwapper();
-  const fujiTateSwapper = Swap.attach(wrapperFujiTateSwapperAddress);
+  // const wrapperFujiTateSwapperAddress = ;
+  const fujiTateSwap = Swap.attach(await wrapper._fujiTateSwapper());
 
   // We need allowance on Fuji for the user to spend the owner's tokens? (OR... ACUTALLY Fujis tokens? & we need to make sure Fuji has tokens minted already.)
 
-  const fujiBalanceCheck1 = await fuji.balanceOf(fuji.address);
-  const fujiBalance1 = fujiBalanceCheck1.toNumber();
+  let _fujiBalance = await fuji.balanceOf(fuji.address);
+  let fujiBalance = _fujiBalance.toNumber();
 
-  const fujiBalanceCheck2 = await fuji.balanceOf(owner.address);
-  const fujiBalance2 = fujiBalanceCheck2.toNumber();
+  let _tokenFactoryBalance = await fuji.balanceOf(tokenFactory.address);
+  tokenFactoryBalance = _tokenFactoryBalance.toNumber();
 
-  const fujiAllowancesCheck1 = await fuji.allowance(
+  const _tokenFactoryFujiTransfer = await fuji.transferFrom(
+    tokenFactory.address,
     fuji.address,
-    owner.address,
+    500,
   );
-  const fujiAllowance1 = fujiAllowancesCheck1.toNumber();
+  const tokenFactoryFujiTransfer = _tokenFactoryFujiTransfer.wait();
 
-  const fujiAllowancesCheck2 = await fuji.allowance(
-    owner.address,
-    user.address,
-  );
-  const fujiAllowance2 = fujiAllowancesCheck2.toNumber();
+  _fujiBalance = await fuji.balanceOf(fuji.address);
+  fujiBalance = _fujiBalance.toNumber();
 
-  debugger;
+  let _fujiAllowance = await fuji.allowance(fuji.address, owner.address);
+  let fujiAllowance = _fujiAllowance.toNumber();
 
-  const fujiTateSwapperToken1Allowance =
-    await fujiTateSwapper._token1Allowance();
-  const fujiTateSwapperToken2Allowance =
-    await fujiTateSwapper._token2Allowance();
+  let _ownerAllowance = await fuji.allowance(owner.address, user.address);
+  let ownerAllowance = _fujiAllowance.toNumber();
+
+  const fujiTateSwapToken1Allowance = await fujiTateSwap._token1Allowance();
+  const fujiTateSwapToken2Allowance = await fujiTateSwap._token2Allowance();
 
   const fujiTateSwapperData = {
-    user1: await fujiTateSwapper._user1(),
-    user2: await fujiTateSwapper._user2(),
-    token1Address: await fujiTateSwapper._token1(),
-    token2Address: await fujiTateSwapper._token2(),
-    token1Allowance: fujiTateSwapperToken1Allowance.toNumber(),
-    token2Allowance: fujiTateSwapperToken2Allowance.toNumber(),
+    user1: await fujiTateSwap._user1(),
+    user2: await fujiTateSwap._user2(),
+    token1Address: await fujiTateSwap._token1(),
+    token2Address: await fujiTateSwap._token2(),
+    token1Allowance: fujiTateSwapToken1Allowance.toNumber(),
+    token2Allowance: fujiTateSwapToken2Allowance.toNumber(),
   };
 
   const wrapperHakuTateSwapperAddress = await wrapper._hakuTateSwapper();
@@ -360,10 +363,28 @@ async function main() {
     token2Allowance: await hakuTateSwapper._token2Allowance(),
   };
 
-  debugger;
+  // debugger;
 
-  const fujiTateSwapTransaction = await fujiTateSwapper._swap(4);
-  const hakuTateSwapTransaction = await hakuTateSwapper._swap(7);
+  let fujiApprovalTest = await fuji.approveFrom(
+    fuji.address,
+    tokenFactory.address,
+    1100,
+  );
+
+  fujiApprovalTest = await fuji.approveFrom(fuji.address, owner.address, 1100);
+  fujiApprovalTest = await fuji.approveFrom(
+    tokenFactory.address,
+    owner.address,
+    1100,
+  );
+  fujiApprovalTest = await fuji.approveFrom(
+    fujiTateSwap.address,
+    owner.address,
+    1100,
+  );
+
+  const fujiTateSwapTransaction = await fujiTateSwap._swap(7);
+  const hakuTateSwapTransaction = await hakuTateSwapper._swap(3);
 
   debugger;
 

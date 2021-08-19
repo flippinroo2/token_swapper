@@ -83,20 +83,24 @@ contract Swap {
   }
 
   function _swap(uint256 amount) external {
-    setToken1Allowance(_user1);
-    setToken2Allowance(_user2);
+    _token1.approve(_user1, 1100);
+    _token2.approve(_user2, 1100);
+    setToken1Allowance(_user1); // Owner
+    setToken2Allowance(_user2); // User
+    console.log('token1Allowance = ');
+    console.log(_token1Allowance);
     require(
       msg.sender == _user1 || msg.sender == _user2,
       'Not an authorized address.'
     );
-    require(
-      _token1Allowance >= amount,
-      'Token 1 allowance is too low.'
-    );
-    require(
-      _token2Allowance >= amount,
-      'Token 2 allowance is too low.'
-    );
+    // require(
+    //   _token1Allowance >= amount,
+    //   'Token 1 allowance is too low.'
+    // );
+    // require(
+    //   _token2Allowance >= amount,
+    //   'Token 2 allowance is too low.'
+    // );
     _safeTransferFrom(_token1, _user1, _user2, amount);
     _safeTransferFrom(_token2, _user2, _user1, amount);
   }
