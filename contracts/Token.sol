@@ -153,7 +153,7 @@ contract Token is Template {
 
     function _approve(address owner, address spender, uint256 amount) internal {
         if (DEBUG) {
-            console.log('_approve(address owner: %s, address spender: %s, uint256 amount)', owner, spender);
+            // console.log('_approve(address owner: %s, address spender: %s, uint256 amount)', owner, spender);
         }
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);

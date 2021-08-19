@@ -110,21 +110,21 @@ contract Swap {
     // Owner - 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
     // User - 0x90F79bf6EB2c4f870365E785982E1f101E93b906
 
-    console.log('token1OwnerAllowance');
-    uint256 token1OwnerAllowance = _token1.allowance(_user1, _user2);
-    console.log(token1OwnerAllowance);
+    // console.log('token1OwnerAllowance');
+    // uint256 token1OwnerAllowance = _token1.allowance(_user1, _user2);
+    // console.log(token1OwnerAllowance);
 
-    console.log('token1UserAllowance');
-    uint256 token1UserAllowance = _token1.allowance(_user2, _user1);
-    console.log(token1UserAllowance);
+    // console.log('token1UserAllowance');
+    // uint256 token1UserAllowance = _token1.allowance(_user2, _user1);
+    // console.log(token1UserAllowance);
 
-    console.log('token2OwnerAllowance');
-    uint256 token2OwnerAllowance = _token2.allowance(_user1, _user2);
-    console.log(token2OwnerAllowance);
+    // console.log('token2OwnerAllowance');
+    // uint256 token2OwnerAllowance = _token2.allowance(_user1, _user2);
+    // console.log(token2OwnerAllowance);
 
-    console.log('token2UserAllowance');
-    uint256 token2UserAllowance = _token2.allowance(_user2, _user1);
-    console.log(token2UserAllowance);
+    // console.log('token2UserAllowance');
+    // uint256 token2UserAllowance = _token2.allowance(_user2, _user1);
+    // console.log(token2UserAllowance);
 
     bool sent = token.transferFrom(sender, receiver, amount);
     require(sent, 'Token transfer failed.');
