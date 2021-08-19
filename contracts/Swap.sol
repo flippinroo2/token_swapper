@@ -89,6 +89,19 @@ contract Swap {
     console.log(_token1Allowance);
     console.log('token2Allowance = ');
     console.log(_token2Allowance);
+
+    uint256 token1OwnerAllowance = _token1.allowance(_user1, _user2);
+    console.log(token1OwnerAllowance);
+
+    uint256 token1UserAllowance = _token1.allowance(_user2, _user1);
+    console.log(token1UserAllowance);
+
+    uint256 token2OwnerAllowance = _token2.allowance(_user1, _user2);
+    console.log(token2OwnerAllowance);
+
+    uint256 token2UserAllowance = _token2.allowance(_user2, _user1);
+    console.log(token2UserAllowance);
+
     require(
       msg.sender == _user1 || msg.sender == _user2,
       'Not an authorized address.'
