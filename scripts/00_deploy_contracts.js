@@ -323,12 +323,26 @@ async function main() {
   let _tokenFactoryBalance = await fuji.balanceOf(tokenFactory.address);
   tokenFactoryBalance = _tokenFactoryBalance.toNumber();
 
-  const _tokenFactoryFujiTransfer = await fuji.transferFrom(
+  let _tokenFactoryFujiTransfer = await fuji.transferFrom(
     tokenFactory.address,
     fuji.address,
-    500,
+    200,
   );
-  const tokenFactoryFujiTransfer = _tokenFactoryFujiTransfer.wait();
+  let tokenFactoryFujiTransfer = _tokenFactoryFujiTransfer.wait();
+
+  _tokenFactoryFujiTransfer = await fuji.transferFrom(
+    tokenFactory.address,
+    owner.address,
+    100,
+  );
+  tokenFactoryFujiTransfer = _tokenFactoryFujiTransfer.wait();
+
+  _tokenFactoryFujiTransfer = await fuji.transferFrom(
+    tokenFactory.address,
+    receiver.address,
+    100,
+  );
+  tokenFactoryFujiTransfer = _tokenFactoryFujiTransfer.wait();
 
   _fujiBalance = await fuji.balanceOf(fuji.address);
   fujiBalance = _fujiBalance.toNumber();
@@ -359,12 +373,27 @@ async function main() {
   _tokenFactoryBalance = await haku.balanceOf(tokenFactory.address);
   tokenFactoryBalance = _tokenFactoryBalance.toNumber();
 
-  const _tokenFactoryHakuTransfer = await haku.transferFrom(
+  let _tokenFactoryHakuTransfer = await haku.transferFrom(
     tokenFactory.address,
     haku.address,
     500,
   );
-  const tokenFactoryHakuTransfer = _tokenFactoryHakuTransfer.wait();
+
+  let tokenFactoryHakuTransfer = _tokenFactoryHakuTransfer.wait();
+
+  _tokenFactoryHakuTransfer = await haku.transferFrom(
+    tokenFactory.address,
+    owner.address,
+    100,
+  );
+  tokenFactoryHakuTransfer = _tokenFactoryHakuTransfer.wait();
+
+  _tokenFactoryHakuTransfer = await haku.transferFrom(
+    tokenFactory.address,
+    receiver.address,
+    100,
+  );
+  tokenFactoryHakuTransfer = _tokenFactoryHakuTransfer.wait();
 
   const hakuTateSwapperData = {
     user1: await hakuTateSwapper._user1(),
