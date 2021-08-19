@@ -427,29 +427,41 @@ async function main() {
 
   fujiTateSwap = Swap.attach(await wrapper._fujiTateSwapper());
 
+  fujiTateSwapMetadata.token1.address = await fujiTateSwap._token1();
   let tokenAllowance = await fujiTateSwap._token1Allowance();
   fujiTateSwapMetadata.token1.allowance = tokenAllowance.toNumber();
 
+  fujiTateSwapMetadata.token2.address = await fujiTateSwap._token2();
   tokenAllowance = await fujiTateSwap._token2Allowance();
   fujiTateSwapMetadata.token2.allowance = tokenAllowance.toNumber();
 
-  fujiTateSwapMetadata.user1 = await fujiTateSwap._user1();
-  fujiTateSwapMetadata.user2 = await fujiTateSwap._user2();
-  fujiTateSwapMetadata.token1.address = await fujiTateSwap._token1();
-  fujiTateSwapMetadata.token2.address = await fujiTateSwap._token2();
+  fujiTateSwapMetadata.user1 = {
+    name: 'owner',
+    address: await fujiTateSwap._user1(),
+  };
+  fujiTateSwapMetadata.user2 = {
+    name: 'user',
+    address: await fujiTateSwap._user2(),
+  };
 
   hakuTateSwap = Swap.attach(await wrapper._hakuTateSwapper());
 
+  hakuTateSwapMetadata.token1.address = await hakuTateSwap._token1();
   tokenAllowance = await hakuTateSwap._token1Allowance();
   hakuTateSwapMetadata.token1.allowance = tokenAllowance.toNumber();
 
+  hakuTateSwapMetadata.token2.address = await hakuTateSwap._token2();
   tokenAllowance = await hakuTateSwap._token2Allowance();
   hakuTateSwapMetadata.token2.allowance = tokenAllowance.toNumber();
 
-  hakuTateSwapMetadata.user1 = await hakuTateSwap._user1();
-  hakuTateSwapMetadata.user2 = await hakuTateSwap._user2();
-  hakuTateSwapMetadata.token1Address = await hakuTateSwap._token1();
-  hakuTateSwapMetadata.token2Address = await hakuTateSwap._token2();
+  hakuTateSwapMetadata.user1 = {
+    name: 'owner',
+    address: await hakuTateSwap._user1(),
+  };
+  hakuTateSwapMetadata.user2 = {
+    name: 'user',
+    address: await hakuTateSwap._user2(),
+  };
 
   // We need allowance on Fuji for the user to spend the owner's tokens? (OR... ACUTALLY Fujis tokens? & we need to make sure Fuji has tokens minted already.)
 
