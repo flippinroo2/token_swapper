@@ -505,12 +505,22 @@ async function main() {
     const fujiAddress = fujiTateSwapMetadata.token1;
     const tateAddress = fujiTateSwapMetadata.token2;
 
-    let adminObject = {},
+    let adminObject = { address: tokenFactory.address, name: 'admin' },
       ownerObject = fujiTateSwapMetadata.user1,
       userObject = fujiTateSwapMetadata.user2,
       fujiObject = {},
-      tateObject = {};
+      tateObject = {},
+      swapObject = {};
+
     let dataVariable;
+
+    async function fillAdminObject() {
+      dataVariable = await fuji.balanceOf(adminObject.address);
+      adminObject.fujiBalance = dataVariable.toNumber();
+      dataVariable = await tate.balanceOf(adminObject.address);
+      adminObject.tateBalance = dataVariable.toNumber();
+      debugger;
+    }
 
     async function fillFujiObject() {
       dataVariable = await fuji.balanceOf(ownerObject.address);
@@ -539,30 +549,9 @@ async function main() {
       tateObject.tateBalance = dataVariable.toNumber();
     }
 
+    await fillAdminObject();
     await fillFujiObject();
     await fillTateObject();
-
-    debugger;
-
-    // dataVariable = fuji.
-    // dataVariable = fuji.
-    // dataVariable = fuji.
-    // dataVariable = fuji.
-    // dataVariable = fuji.
-    // dataVariable = fuji.
-    // dataVariable = fuji.
-    // dataVariable = fuji.
-    // dataVariable = fuji.
-    // dataVariable = fuji.
-    // dataVariable = fuji.
-    // dataVariable = fuji.
-    // dataVariable = fuji.
-    // dataVariable = fuji.
-    // dataVariable = fuji.
-    // dataVariable = fuji.
-    // dataVariable = fuji.
-    // dataVariable = fuji.
-    // dataVariable = fuji.
 
     debugger;
 
