@@ -365,7 +365,7 @@ async function main() {
     token2Allowance: fujiTateSwapToken2Allowance.toNumber(),
   };
 
-  const hakuTateSwapper = Swap.attach(await wrapper._hakuTateSwapper());
+  const hakuTateSwap = Swap.attach(await wrapper._hakuTateSwapper());
 
   let _hakuBalance = await fuji.balanceOf(haku.address);
   let hakuBalance = _hakuBalance.toNumber();
@@ -395,13 +395,15 @@ async function main() {
   );
   tokenFactoryHakuTransfer = _tokenFactoryHakuTransfer.wait();
 
-  const hakuTateSwapperData = {
-    user1: await hakuTateSwapper._user1(),
-    user2: await hakuTateSwapper._user2(),
-    token1Address: await hakuTateSwapper._token1(),
-    token2Address: await hakuTateSwapper._token2(),
-    token1Allowance: await hakuTateSwapper._token1Allowance(),
-    token2Allowance: await hakuTateSwapper._token2Allowance(),
+  const hakuTateSwapToken1Allowance = await hakuTateSwap._token1Allowance();
+  const hakuTateSwapToken2Allowance = await hakuTateSwap._token2Allowance();
+  const hakuTateSwapData = {
+    user1: await hakuTateSwap._user1(),
+    user2: await hakuTateSwap._user2(),
+    token1Address: await hakuTateSwap._token1(),
+    token2Address: await hakuTateSwap._token2(),
+    token1Allowance: hakuTateSwapToken1Allowance.toNumber(),
+    token2Allowance: hakuTateSwapToken2Allowance.toNumber(),
   };
 
   // debugger;
@@ -446,10 +448,50 @@ async function main() {
     1100,
   );
 
-  const fujiTateSwapTransaction = await fujiTateSwap._swap(7);
-  // const hakuTateSwapTransaction = await hakuTateSwapper._swap(3);
+  let hakuApprovalTest = await haku.approveFrom(
+    haku.address,
+    tokenFactory.address,
+    1100,
+  );
+  hakuApprovalTest = await haku.approveFrom(haku.address, owner.address, 1100);
+  hakuApprovalTest = await haku.approveFrom(haku.address, user.address, 1100);
+
+  hakuApprovalTest = await haku.approveFrom(
+    hakuTateSwap.address,
+    tokenFactory.address,
+    1100,
+  );
+  hakuApprovalTest = await haku.approveFrom(
+    hakuTateSwap.address,
+    owner.address,
+    1100,
+  );
+  hakuApprovalTest = await haku.approveFrom(
+    hakuTateSwap.address,
+    user.address,
+    1100,
+  );
+
+  hakuApprovalTest = await haku.approveFrom(
+    tokenFactory.address,
+    haku.address,
+    1100,
+  );
+  hakuApprovalTest = await haku.approveFrom(
+    tokenFactory.address,
+    owner.address,
+    1100,
+  );
+  hakuApprovalTest = await haku.approveFrom(
+    tokenFactory.address,
+    user.address,
+    1100,
+  );
 
   debugger;
+  const fujiTateSwapTransaction = await fujiTateSwap._swap(7);
+  debugger;
+  // const hakuTateSwapTransaction = await hakuTateSwap._swap(3);
 
   if (DEBUG) {
     debugger;

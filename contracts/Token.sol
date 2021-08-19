@@ -172,9 +172,9 @@ contract Token is Template {
     address recipient,
     uint256 amount
     ) external override returns (bool) {
-        if (DEBUG) {
-            console.log('transferFrom(address sender: %s, address recipient: %s, uint256 amount)', sender, recipient);
-        }
+        // if (DEBUG) {
+        //     console.log('transferFrom(address sender: %s, address recipient: %s, uint256 amount)', sender, recipient);
+        // }
         _transfer(sender, recipient, amount);
         uint256 currentAllowance = _allowances[sender][msg.sender];
         require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
