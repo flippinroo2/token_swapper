@@ -182,14 +182,19 @@ async function tokenTransactions(token, metadata) {
 
 let fuji,
   fujiMetadata,
+  fujiTateSwap
   haku,
   hakuMetadata,
+  hakuTateSwap
   owner = { balance: 0, name: 'owner', ownerAllowance: 0 },
   sender = { balance: 0, name: 'sender', ownerAllowance: 0 },
   receiver = { balance: 0, name: 'receiver', ownerAllowance: 0 },
   tate,
+  tokenFactory,
+  tokenFactoryMetadata,
   tateMetadata,
-  user = { balance: 0, name: 'user', ownerAllowance: 0 };
+  user = { balance: 0, name: 'user', ownerAllowance: 0 },
+  wrapper;
 
 async function main() {
   const { artifacts, config, ethers, network, waffle, web3 } = hre;
@@ -313,7 +318,7 @@ async function main() {
   const hakuSwap = await createHakuSwap.wait();
 
   // const wrapperFujiTateSwapperAddress = ;
-  const fujiTateSwap = Swap.attach(await wrapper._fujiTateSwapper());
+  fujiTateSwap = Swap.attach(await wrapper._fujiTateSwapper());
 
   // We need allowance on Fuji for the user to spend the owner's tokens? (OR... ACUTALLY Fujis tokens? & we need to make sure Fuji has tokens minted already.)
 
@@ -365,7 +370,7 @@ async function main() {
     token2Allowance: fujiTateSwapToken2Allowance.toNumber(),
   };
 
-  const hakuTateSwap = Swap.attach(await wrapper._hakuTateSwapper());
+  hakuTateSwap = Swap.attach(await wrapper._hakuTateSwapper());
 
   let _hakuBalance = await fuji.balanceOf(haku.address);
   let hakuBalance = _hakuBalance.toNumber();
