@@ -133,7 +133,6 @@ async function approveAll(token, metadata) {
   await token.approve(token.address, receiver.address, totalSupply);
   await token.approve(token.address, tokenFactory.address, totalSupply);
   await token.approve(token.address, wrapper.address, totalSupply);
-  debugger;
   await token.approve(token.address, fujiTateSwap.address, totalSupply);
   await token.approve(token.address, hakuTateSwap.address, totalSupply);
 
@@ -293,10 +292,12 @@ let fuji,
   fujiInterface,
   fujiMetadata,
   fujiTateSwap,
+  fujiTateSwapMetadata = { token1: {}, token2: {} },
   haku,
   hakuInterface,
   hakuMetadata,
   hakuTateSwap,
+  hakuTateSwapMetadata = { token1: {}, token2: {} },
   owner = { balance: 0, name: 'owner', ownerAllowance: 0 },
   sender = { balance: 0, name: 'sender', ownerAllowance: 0 },
   receiver = { balance: 0, name: 'receiver', ownerAllowance: 0 },
@@ -310,7 +311,13 @@ let fuji,
     ownerAllowance: 0,
   },
   user = { balance: 0, name: 'user', ownerAllowance: 0 },
-  wrapperMetadata = { balance: 0, name 'wrapper', ownerAllowance: 0 };
+  wrapper,
+  wrapperMetadata = {
+    admin: {},
+    balance: 0,
+    name: 'wrapper',
+    ownerAllowance: 0,
+  };
 
 async function main() {
   const { artifacts, config, ethers, network, waffle, web3 } = hre;
@@ -330,10 +337,11 @@ async function main() {
   const Wrapper = await getContractFactory('Wrapper');
   wrapper = await Wrapper.deploy(owner.address, user.address);
   // const otherWrapper = await wrapper.deployed();
-  // const wrapper = await Wrapper.at()
-  wrapper.admin.address = await wrapper._admin();
-  wrapper.owner.address = await wrapper._address1();
-  wrapper.user.address = await wrapper._address2();
+  // const wrapper = await Wrapper.at();
+
+  wrapperMetadata.admin = await wrapper._admin();
+  wrapperMetadata.owner = await wrapper._address1();
+  wrapperMetadata.user = await wrapper._address2();
 
   const Token = await getContractFactory('Token'); // Might not need this.
 
@@ -367,12 +375,12 @@ async function main() {
     fujiTransactionData.events.TokenCreated.arguments.address,
   ); // Using this attach method is basically the same as calling the "Contract" constructor with this address and the interface & signerOrProvider passed in.
 
-  fujiInterface = new TokenInterface(fuji);
-  fujiMetadata = await fujiInterface.getMetadata();
-
   // const fuji2 = await Token.connect(
   //   fujiTransactionData.events.TokenCreated.arguments.address,
   // );
+
+  fujiInterface = new TokenInterface(fuji);
+  fujiMetadata = await fujiInterface.getMetadata();
 
   const createHakuTransaction = await tokenFactory.createToken(
     'Haku',
@@ -409,38 +417,39 @@ async function main() {
     fuji.address,
     tate.address,
   );
-  const fujiSwap = await createFujiSwap.wait();
-
-  const fujiTateSwapToken1Allowance = await fujiTateSwap._token1Allowance();
-  const fujiTateSwapToken2Allowance = await fujiTateSwap._token2Allowance();
-  const fujiTateSwapperData = {
-    user1: await fujiTateSwap._user1(),
-    user2: await fujiTateSwap._user2(),
-    token1Address: await fujiTateSwap._token1(),
-    token2Address: await fujiTateSwap._token2(),
-    token1Allowance: fujiTateSwapToken1Allowance.toNumber(),
-    token2Allowance: fujiTateSwapToken2Allowance.toNumber(),
-  };
+  await createFujiSwap.wait();
 
   const createHakuSwap = await wrapper.createHakuSwap(
     haku.address,
     tate.address,
   );
-  const hakuSwap = await createHakuSwap.wait();
+  await createHakuSwap.wait();
 
   fujiTateSwap = Swap.attach(await wrapper._fujiTateSwapper());
+
+  let tokenAllowance = await fujiTateSwap._token1Allowance();
+  fujiTateSwapMetadata.token1.allowance = tokenAllowance.toNumber();
+
+  tokenAllowance = await fujiTateSwap._token2Allowance();
+  fujiTateSwapMetadata.token2.allowance = tokenAllowance.toNumber();
+
+  fujiTateSwapMetadata.user1 = await fujiTateSwap._user1();
+  fujiTateSwapMetadata.user2 = await fujiTateSwap._user2();
+  fujiTateSwapMetadata.token1.address = await fujiTateSwap._token1();
+  fujiTateSwapMetadata.token2.address = await fujiTateSwap._token2();
+
   hakuTateSwap = Swap.attach(await wrapper._hakuTateSwapper());
 
-  const hakuTateSwapToken1Allowance = await hakuTateSwap._token1Allowance();
-  const hakuTateSwapToken2Allowance = await hakuTateSwap._token2Allowance();
-  const hakuTateSwapData = {
-    user1: await hakuTateSwap._user1(),
-    user2: await hakuTateSwap._user2(),
-    token1Address: await hakuTateSwap._token1(),
-    token2Address: await hakuTateSwap._token2(),
-    token1Allowance: hakuTateSwapToken1Allowance.toNumber(),
-    token2Allowance: hakuTateSwapToken2Allowance.toNumber(),
-  };
+  tokenAllowance = await hakuTateSwap._token1Allowance();
+  hakuTateSwapMetadata.token1.allowance = tokenAllowance.toNumber();
+
+  tokenAllowance = await hakuTateSwap._token2Allowance();
+  hakuTateSwapMetadata.token2.allowance = tokenAllowance.toNumber();
+
+  hakuTateSwapMetadata.user1 = await hakuTateSwap._user1();
+  hakuTateSwapMetadata.user2 = await hakuTateSwap._user2();
+  hakuTateSwapMetadata.token1Address = await hakuTateSwap._token1();
+  hakuTateSwapMetadata.token2Address = await hakuTateSwap._token2();
 
   // We need allowance on Fuji for the user to spend the owner's tokens? (OR... ACUTALLY Fujis tokens? & we need to make sure Fuji has tokens minted already.)
 
@@ -456,9 +465,9 @@ async function main() {
     debugger;
   }
 
-  console.log(
-    `Wrapper\n_address1 = ${wrapperAddress1}\n_address2 = ${wrapperAddress2}\nfuji address = ${fuji.address}\nhaku address = ${haku.address}\ntate address = ${tate.address}`,
-  );
+  // console.log(
+  //   `Wrapper\n_address1 = ${wrapperAddress1}\n_address2 = ${wrapperAddress2}\nfuji address = ${fuji.address}\nhaku address = ${haku.address}\ntate address = ${tate.address}`,
+  // );
 
   debugger;
   const fujiTateSwapTransaction = await fujiTateSwap._swap(7);
