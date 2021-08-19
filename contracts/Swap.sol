@@ -83,12 +83,12 @@ contract Swap {
   }
 
   function _swap(uint256 amount) external {
-    _token1.approve(_user1, 1100);
-    _token2.approve(_user2, 1100);
-    setToken1Allowance(_user1); // Owner
-    setToken2Allowance(_user2); // User
+    setToken1Allowance(_user1); // Owner - 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+    setToken2Allowance(_user2); // User - 0x90F79bf6EB2c4f870365E785982E1f101E93b906
     console.log('token1Allowance = ');
     console.log(_token1Allowance);
+    console.log('token2Allowance = ');
+    console.log(_token2Allowance);
     require(
       msg.sender == _user1 || msg.sender == _user2,
       'Not an authorized address.'
@@ -111,7 +111,8 @@ contract Swap {
     address receiver,
     uint256 amount
   ) internal {
-    console.log('_safeTransferFrom(Token token, address sender: %s, address receiver %s, uint256 amount)', sender, receiver);
+    console.log('_safeTransferFrom(Token token: %s, address sender: %s, address receiver %s, uint256 amount)', address(token), sender, receiver);
+
     bool sent = token.transferFrom(sender, receiver, amount);
     require(sent, 'Token transfer failed.');
   }

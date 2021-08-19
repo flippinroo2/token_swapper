@@ -122,7 +122,7 @@ contract Token is Template {
     function approve(address spender, uint256 amount) public override returns (bool){
         address owner = msg.sender;
         if (DEBUG) {
-            console.log('approve(address spender: %s, uint256 amount)', spender);
+            // console.log('approve(address spender: %s, uint256 amount)', spender);
         }
         require(owner != address(0), "ERC20: approve from the zero address");
         require(spender != address(0), "ERC20: approve to the zero address");
@@ -135,25 +135,25 @@ contract Token is Template {
     address spender,
     uint256 amount) external returns (bool) {
         if (DEBUG) {
-            console.log('approveFrom(address owner: %s, address spender: %s, uint256 amount)', owner, spender);
+            // console.log('approveFrom(address owner: %s, address spender: %s, uint256 amount)', owner, spender);
         }
         uint256 currentAllowance = _allowances[owner][spender];
         if (DEBUG) {
-            console.log('currentAllowance');
-            console.log(currentAllowance);
+            // console.log('currentAllowance');
+            // console.log(currentAllowance);
         }
         _approve(owner, spender, amount);
         uint256 newAllowance = _allowances[owner][spender];
         if (DEBUG) {
-            console.log('newAllowance');
-            console.log(newAllowance);
+            // console.log('newAllowance');
+            // console.log(newAllowance);
         }
         return true;
     }
 
     function _approve(address owner, address spender, uint256 amount) internal {
         if (DEBUG) {
-            console.log('_approve(address owner: %s, address spender: %s, uint256 amount)', owner, spender);
+            // console.log('_approve(address owner: %s, address spender: %s, uint256 amount)', owner, spender);
         }
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);
@@ -161,7 +161,7 @@ contract Token is Template {
 
     function transfer(address recipient, uint256 amount) public override returns (bool){
         if (DEBUG) {
-            console.log('transfer(address recipient: %s, uint256 amount)', recipient);
+            // console.log('transfer(address recipient: %s, uint256 amount)', recipient);
         }
         _transfer(msg.sender, recipient, amount);
         return true;

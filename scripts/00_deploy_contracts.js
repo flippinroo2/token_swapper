@@ -370,16 +370,38 @@ async function main() {
     tokenFactory.address,
     1100,
   );
-
   fujiApprovalTest = await fuji.approveFrom(fuji.address, owner.address, 1100);
+  fujiApprovalTest = await fuji.approveFrom(fuji.address, user.address, 1100);
+
+  fujiApprovalTest = await fuji.approveFrom(
+    fujiTateSwap.address,
+    tokenFactory.address,
+    1100,
+  );
+  fujiApprovalTest = await fuji.approveFrom(
+    fujiTateSwap.address,
+    owner.address,
+    1100,
+  );
+  fujiApprovalTest = await fuji.approveFrom(
+    fujiTateSwap.address,
+    user.address,
+    1100,
+  );
+
+  fujiApprovalTest = await fuji.approveFrom(
+    tokenFactory.address,
+    fuji.address,
+    1100,
+  );
   fujiApprovalTest = await fuji.approveFrom(
     tokenFactory.address,
     owner.address,
     1100,
   );
   fujiApprovalTest = await fuji.approveFrom(
-    fujiTateSwap.address,
-    owner.address,
+    tokenFactory.address,
+    user.address,
     1100,
   );
 
