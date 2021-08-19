@@ -406,7 +406,7 @@ async function main() {
   );
 
   const fujiTateSwapTransaction = await fujiTateSwap._swap(7);
-  const hakuTateSwapTransaction = await hakuTateSwapper._swap(3);
+  // const hakuTateSwapTransaction = await hakuTateSwapper._swap(3);
 
   debugger;
 
