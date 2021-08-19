@@ -56,6 +56,10 @@ async function refreshAllowances(token, metadata) {
   await refreshAllowance(token, metadata, sender);
   await refreshAllowance(token, metadata, receiver);
   await refreshAllowance(token, metadata, user);
+  await refreshAllowance(token, metadata, tokenFactory);
+  await refreshAllowance(token, metadata, wrapper);
+  await refreshAllowance(token, metadata, fujiTateSwap);
+  await refreshAllowance(token, metadata, hakuTateSwap);
 }
 
 function parseTransactionData({
@@ -123,10 +127,15 @@ async function approveAll(token, metadata) {
   const { admin, totalSupply } = metadata;
 
   await token.approve(token.address, admin.address, totalSupply);
+  await token.approve(token.address, user.address, totalSupply);
   await token.approve(token.address, owner.address, totalSupply);
   await token.approve(token.address, sender.address, totalSupply);
   await token.approve(token.address, receiver.address, totalSupply);
-  await token.approve(token.address, user.address, totalSupply);
+  await token.approve(token.address, tokenFactory.address, totalSupply);
+  await token.approve(token.address, wrapper.address, totalSupply);
+  debugger;
+  await token.approve(token.address, fujiTateSwap.address, totalSupply);
+  await token.approve(token.address, hakuTateSwap.address, totalSupply);
 
   // approve(address owner, address spender, uint256 amount)
   const approvalExample = await token.approve(
@@ -140,31 +149,88 @@ async function approveAll(token, metadata) {
   await token.approve(admin.address, sender.address, totalSupply);
   await token.approve(admin.address, receiver.address, totalSupply);
   await token.approve(admin.address, user.address, totalSupply);
+  await token.approve(admin.address, tokenFactory.address, totalSupply);
+  await token.approve(admin.address, wrapper.address, totalSupply);
+  await token.approve(admin.address, fujiTateSwap.address, totalSupply);
+  await token.approve(admin.address, hakuTateSwap.address, totalSupply);
 
   await token.approve(owner.address, token.address, totalSupply);
   await token.approve(owner.address, admin.address, totalSupply);
   await token.approve(owner.address, sender.address, totalSupply);
   await token.approve(owner.address, receiver.address, totalSupply);
   await token.approve(owner.address, user.address, totalSupply);
+  await token.approve(owner.address, tokenFactory.address, totalSupply);
+  await token.approve(owner.address, wrapper.address, totalSupply);
+  await token.approve(owner.address, fujiTateSwap.address, totalSupply);
+  await token.approve(owner.address, hakuTateSwap.address, totalSupply);
 
   await token.approve(sender.address, token.address, totalSupply);
   await token.approve(sender.address, admin.address, totalSupply);
   await token.approve(sender.address, owner.address, totalSupply);
   await token.approve(sender.address, receiver.address, totalSupply);
   await token.approve(sender.address, user.address, totalSupply);
+  await token.approve(sender.address, tokenFactory.address, totalSupply);
+  await token.approve(sender.address, wrapper.address, totalSupply);
+  await token.approve(sender.address, fujiTateSwap.address, totalSupply);
+  await token.approve(sender.address, hakuTateSwap.address, totalSupply);
 
   await token.approve(receiver.address, token.address, totalSupply);
   await token.approve(receiver.address, admin.address, totalSupply);
   await token.approve(receiver.address, owner.address, totalSupply);
   await token.approve(receiver.address, sender.address, totalSupply);
   await token.approve(receiver.address, user.address, totalSupply);
+  await token.approve(receiver.address, tokenFactory.address, totalSupply);
+  await token.approve(receiver.address, wrapper.address, totalSupply);
+  await token.approve(receiver.address, fujiTateSwap.address, totalSupply);
+  await token.approve(receiver.address, hakuTateSwap.address, totalSupply);
 
   await token.approve(user.address, token.address, totalSupply);
   await token.approve(user.address, admin.address, totalSupply);
   await token.approve(user.address, owner.address, totalSupply);
   await token.approve(user.address, sender.address, totalSupply);
   await token.approve(user.address, receiver.address, totalSupply);
+  await token.approve(user.address, tokenFactory.address, totalSupply);
+  await token.approve(user.address, wrapper.address, totalSupply);
+  await token.approve(user.address, fujiTateSwap.address, totalSupply);
+  await token.approve(user.address, hakuTateSwap.address, totalSupply);
+
+  await token.approve(tokenFactory.address, token.address, totalSupply);
+  await token.approve(tokenFactory.address, admin.address, totalSupply);
+  await token.approve(tokenFactory.address, sender.address, totalSupply);
+  await token.approve(tokenFactory.address, receiver.address, totalSupply);
+  await token.approve(tokenFactory.address, user.address, totalSupply);
+  await token.approve(tokenFactory.address, wrapper.address, totalSupply);
+  await token.approve(tokenFactory.address, fujiTateSwap.address, totalSupply);
+  await token.approve(tokenFactory.address, hakuTateSwap.address, totalSupply);
+
+  await token.approve(wrapper.address, token.address, totalSupply);
+  await token.approve(wrapper.address, admin.address, totalSupply);
+  await token.approve(wrapper.address, sender.address, totalSupply);
+  await token.approve(wrapper.address, receiver.address, totalSupply);
+  await token.approve(wrapper.address, user.address, totalSupply);
+  await token.approve(wrapper.address, tokenFactory.address, totalSupply);
+  await token.approve(wrapper.address, fujiTateSwap.address, totalSupply);
+  await token.approve(wrapper.address, hakuTateSwap.address, totalSupply);
+
+  await token.approve(fujiTateSwap.address, token.address, totalSupply);
+  await token.approve(fujiTateSwap.address, admin.address, totalSupply);
+  await token.approve(fujiTateSwap.address, sender.address, totalSupply);
+  await token.approve(fujiTateSwap.address, receiver.address, totalSupply);
+  await token.approve(fujiTateSwap.address, user.address, totalSupply);
+  await token.approve(fujiTateSwap.address, tokenFactory.address, totalSupply);
+  await token.approve(fujiTateSwap.address, wrapper.address, totalSupply);
+  await token.approve(fujiTateSwap.address, hakuTateSwap.address, totalSupply);
+
+  await token.approve(hakuTateSwap.address, token.address, totalSupply);
+  await token.approve(hakuTateSwap.address, admin.address, totalSupply);
+  await token.approve(hakuTateSwap.address, sender.address, totalSupply);
+  await token.approve(hakuTateSwap.address, receiver.address, totalSupply);
+  await token.approve(hakuTateSwap.address, user.address, totalSupply);
+  await token.approve(hakuTateSwap.address, tokenFactory.address, totalSupply);
+  await token.approve(hakuTateSwap.address, fujiTateSwap.address, totalSupply);
+  await token.approve(hakuTateSwap.address, wrapper.address, totalSupply);
 }
+
 async function tokenTransactions(token, metadata) {
   const { admin, totalSupply } = metadata;
 
@@ -177,24 +243,74 @@ async function tokenTransactions(token, metadata) {
   const transfer = await token.transfer(admin.address, receiver.address, 50);
   const transferReceipt = await transfer.wait();
 
+  // let _tokenFactoryFujiTransfer = await fuji.transferFrom(
+  //   tokenFactory.address,
+  //   fuji.address,
+  //   200,
+  // );
+  // let tokenFactoryFujiTransfer = _tokenFactoryFujiTransfer.wait();
+
+  // _tokenFactoryFujiTransfer = await fuji.transferFrom(
+  //   tokenFactory.address,
+  //   owner.address,
+  //   100,
+  // );
+  // tokenFactoryFujiTransfer = _tokenFactoryFujiTransfer.wait();
+
+  // _tokenFactoryFujiTransfer = await fuji.transferFrom(
+  //   tokenFactory.address,
+  //   receiver.address,
+  //   100,
+  // );
+  // tokenFactoryFujiTransfer = _tokenFactoryFujiTransfer.wait();
+
+  // let _tokenFactoryHakuTransfer = await haku.transferFrom(
+  //   tokenFactory.address,
+  //   haku.address,
+  //   500,
+  // );
+
+  // let tokenFactoryHakuTransfer = _tokenFactoryHakuTransfer.wait();
+
+  // _tokenFactoryHakuTransfer = await haku.transferFrom(
+  //   tokenFactory.address,
+  //   owner.address,
+  //   100,
+  // );
+  // tokenFactoryHakuTransfer = _tokenFactoryHakuTransfer.wait();
+
+  // _tokenFactoryHakuTransfer = await haku.transferFrom(
+  //   tokenFactory.address,
+  //   receiver.address,
+  //   100,
+  // );
+  // tokenFactoryHakuTransfer = _tokenFactoryHakuTransfer.wait();
+
   await refreshBalances(token, metadata);
 }
 
 let fuji,
+  fujiInterface,
   fujiMetadata,
   fujiTateSwap,
   haku,
+  hakuInterface,
   hakuMetadata,
   hakuTateSwap,
   owner = { balance: 0, name: 'owner', ownerAllowance: 0 },
   sender = { balance: 0, name: 'sender', ownerAllowance: 0 },
   receiver = { balance: 0, name: 'receiver', ownerAllowance: 0 },
   tate,
-  tokenFactory,
-  tokenFactoryMetadata,
+  tateInterface,
   tateMetadata,
+  tokenFactory,
+  tokenFactoryMetadata = {
+    balance: 0,
+    name: 'tokenMetadata',
+    ownerAllowance: 0,
+  },
   user = { balance: 0, name: 'user', ownerAllowance: 0 },
-  wrapper;
+  wrapperMetadata = { balance: 0, name 'wrapper', ownerAllowance: 0 };
 
 async function main() {
   const { artifacts, config, ethers, network, waffle, web3 } = hre;
@@ -212,14 +328,21 @@ async function main() {
   // console.log('Account balance:', (await owner.getBalance()).toString());
 
   const Wrapper = await getContractFactory('Wrapper');
-  const wrapper = await Wrapper.deploy(owner.address, user.address);
+  wrapper = await Wrapper.deploy(owner.address, user.address);
   // const otherWrapper = await wrapper.deployed();
   // const wrapper = await Wrapper.at()
+  wrapper.admin.address = await wrapper._admin();
+  wrapper.owner.address = await wrapper._address1();
+  wrapper.user.address = await wrapper._address2();
 
   const Token = await getContractFactory('Token'); // Might not need this.
 
   const Factory = await getContractFactory('TokenFactory');
-  const tokenFactory = await Factory.deploy();
+  tokenFactory = await Factory.deploy();
+
+  // const Swap = await getContractFactory('../artifacts/contracts/Swap.sol:Swap');
+  // const Swap = await getContractFactory('contracts/Wrapper.sol:Swap');
+  const Swap = await getContractFactory('Swap');
 
   // IMPORTANT!!!
   // This is the proper way to listen for events!!!
@@ -244,7 +367,7 @@ async function main() {
     fujiTransactionData.events.TokenCreated.arguments.address,
   ); // Using this attach method is basically the same as calling the "Contract" constructor with this address and the interface & signerOrProvider passed in.
 
-  const fujiInterface = new TokenInterface(fuji);
+  fujiInterface = new TokenInterface(fuji);
   fujiMetadata = await fujiInterface.getMetadata();
 
   // const fuji2 = await Token.connect(
@@ -263,7 +386,7 @@ async function main() {
   haku = await Token.attach(
     hakuTransactionData.events.TokenCreated.arguments.address,
   );
-  const hakuInterface = new TokenInterface(haku);
+  hakuInterface = new TokenInterface(haku);
   hakuMetadata = await hakuInterface.getMetadata();
 
   const createTateTransaction = await tokenFactory.createToken(
@@ -272,38 +395,15 @@ async function main() {
     18,
     1000,
   );
+
   const tateTransactionData = parseTransactionData(
     await createTateTransaction.wait(),
   );
   tate = await Token.attach(
     tateTransactionData.events.TokenCreated.arguments.address,
   );
-  const tateInterface = new TokenInterface(tate);
+  tateInterface = new TokenInterface(tate);
   tateMetadata = await tateInterface.getMetadata();
-
-  console.log(
-    `Owner Address: ${owner.address}\nSender Address:${sender.address}\nReceiver Address: ${receiver.address}\nUser Address: ${user.address}\nToken Factory Address: ${tokenFactory.address}\nFuji Address: ${fuji.address}\nHaku Address: ${haku.address}\nTate Address: ${tate.address}\nWrapper Address: ${wrapper.address}`,
-  );
-
-  await tokenTransactions(fujiInterface, fujiMetadata);
-  await tokenTransactions(hakuInterface, hakuMetadata);
-  await tokenTransactions(tateInterface, tateMetadata);
-
-  // const Swap = await getContractFactory('../artifacts/contracts/Swap.sol:Swap');
-  // const Swap = await getContractFactory('contracts/Wrapper.sol:Swap');
-  const Swap = await getContractFactory('Swap');
-
-  const wrapperAdmin = await wrapper._admin();
-  const wrapperAddress1 = await wrapper._address1();
-  const wrapperAddress2 = await wrapper._address2();
-
-  if (DEBUG) {
-    debugger;
-  }
-
-  console.log(
-    `Wrapper\n_address1 = ${wrapperAddress1}\n_address2 = ${wrapperAddress2}\nfuji address = ${fuji.address}\nhaku address = ${haku.address}\ntate address = ${tate.address}`,
-  );
 
   const createFujiSwap = await wrapper.createFujiSwap(
     fuji.address,
@@ -311,56 +411,8 @@ async function main() {
   );
   const fujiSwap = await createFujiSwap.wait();
 
-  const createHakuSwap = await wrapper.createHakuSwap(
-    haku.address,
-    tate.address,
-  );
-  const hakuSwap = await createHakuSwap.wait();
-
-  // const wrapperFujiTateSwapperAddress = ;
-  fujiTateSwap = Swap.attach(await wrapper._fujiTateSwapper());
-
-  // We need allowance on Fuji for the user to spend the owner's tokens? (OR... ACUTALLY Fujis tokens? & we need to make sure Fuji has tokens minted already.)
-
-  let _fujiBalance = await fuji.balanceOf(fuji.address);
-  let fujiBalance = _fujiBalance.toNumber();
-
-  let _tokenFactoryBalance = await fuji.balanceOf(tokenFactory.address);
-  tokenFactoryBalance = _tokenFactoryBalance.toNumber();
-
-  let _tokenFactoryFujiTransfer = await fuji.transferFrom(
-    tokenFactory.address,
-    fuji.address,
-    200,
-  );
-  let tokenFactoryFujiTransfer = _tokenFactoryFujiTransfer.wait();
-
-  _tokenFactoryFujiTransfer = await fuji.transferFrom(
-    tokenFactory.address,
-    owner.address,
-    100,
-  );
-  tokenFactoryFujiTransfer = _tokenFactoryFujiTransfer.wait();
-
-  _tokenFactoryFujiTransfer = await fuji.transferFrom(
-    tokenFactory.address,
-    receiver.address,
-    100,
-  );
-  tokenFactoryFujiTransfer = _tokenFactoryFujiTransfer.wait();
-
-  _fujiBalance = await fuji.balanceOf(fuji.address);
-  fujiBalance = _fujiBalance.toNumber();
-
-  let _fujiAllowance = await fuji.allowance(fuji.address, owner.address);
-  let fujiAllowance = _fujiAllowance.toNumber();
-
-  let _ownerAllowance = await fuji.allowance(owner.address, user.address);
-  let ownerAllowance = _fujiAllowance.toNumber();
-
   const fujiTateSwapToken1Allowance = await fujiTateSwap._token1Allowance();
   const fujiTateSwapToken2Allowance = await fujiTateSwap._token2Allowance();
-
   const fujiTateSwapperData = {
     user1: await fujiTateSwap._user1(),
     user2: await fujiTateSwap._user2(),
@@ -370,35 +422,14 @@ async function main() {
     token2Allowance: fujiTateSwapToken2Allowance.toNumber(),
   };
 
-  hakuTateSwap = Swap.attach(await wrapper._hakuTateSwapper());
-
-  let _hakuBalance = await fuji.balanceOf(haku.address);
-  let hakuBalance = _hakuBalance.toNumber();
-
-  _tokenFactoryBalance = await haku.balanceOf(tokenFactory.address);
-  tokenFactoryBalance = _tokenFactoryBalance.toNumber();
-
-  let _tokenFactoryHakuTransfer = await haku.transferFrom(
-    tokenFactory.address,
+  const createHakuSwap = await wrapper.createHakuSwap(
     haku.address,
-    500,
+    tate.address,
   );
+  const hakuSwap = await createHakuSwap.wait();
 
-  let tokenFactoryHakuTransfer = _tokenFactoryHakuTransfer.wait();
-
-  _tokenFactoryHakuTransfer = await haku.transferFrom(
-    tokenFactory.address,
-    owner.address,
-    100,
-  );
-  tokenFactoryHakuTransfer = _tokenFactoryHakuTransfer.wait();
-
-  _tokenFactoryHakuTransfer = await haku.transferFrom(
-    tokenFactory.address,
-    receiver.address,
-    100,
-  );
-  tokenFactoryHakuTransfer = _tokenFactoryHakuTransfer.wait();
+  fujiTateSwap = Swap.attach(await wrapper._fujiTateSwapper());
+  hakuTateSwap = Swap.attach(await wrapper._hakuTateSwapper());
 
   const hakuTateSwapToken1Allowance = await hakuTateSwap._token1Allowance();
   const hakuTateSwapToken2Allowance = await hakuTateSwap._token2Allowance();
@@ -411,91 +442,27 @@ async function main() {
     token2Allowance: hakuTateSwapToken2Allowance.toNumber(),
   };
 
-  // debugger;
+  // We need allowance on Fuji for the user to spend the owner's tokens? (OR... ACUTALLY Fujis tokens? & we need to make sure Fuji has tokens minted already.)
 
-  let fujiApprovalTest = await fuji.approveFrom(
-    fuji.address,
-    tokenFactory.address,
-    1100,
-  );
-  fujiApprovalTest = await fuji.approveFrom(fuji.address, owner.address, 1100);
-  fujiApprovalTest = await fuji.approveFrom(fuji.address, user.address, 1100);
-
-  fujiApprovalTest = await fuji.approveFrom(
-    fujiTateSwap.address,
-    tokenFactory.address,
-    1100,
-  );
-  fujiApprovalTest = await fuji.approveFrom(
-    fujiTateSwap.address,
-    owner.address,
-    1100,
-  );
-  fujiApprovalTest = await fuji.approveFrom(
-    fujiTateSwap.address,
-    user.address,
-    1100,
+  console.log(
+    `Owner Address: ${owner.address}\nSender Address:${sender.address}\nReceiver Address: ${receiver.address}\nUser Address: ${user.address}\nToken Factory Address: ${tokenFactory.address}\nFuji Address: ${fuji.address}\nHaku Address: ${haku.address}\nTate Address: ${tate.address}\nWrapper Address: ${wrapper.address}`,
   );
 
-  fujiApprovalTest = await fuji.approveFrom(
-    tokenFactory.address,
-    fuji.address,
-    1100,
-  );
-  fujiApprovalTest = await fuji.approveFrom(
-    tokenFactory.address,
-    owner.address,
-    1100,
-  );
-  fujiApprovalTest = await fuji.approveFrom(
-    tokenFactory.address,
-    user.address,
-    1100,
-  );
+  await tokenTransactions(fujiInterface, fujiMetadata);
+  await tokenTransactions(hakuInterface, hakuMetadata);
+  await tokenTransactions(tateInterface, tateMetadata);
 
-  let hakuApprovalTest = await haku.approveFrom(
-    haku.address,
-    tokenFactory.address,
-    1100,
-  );
-  hakuApprovalTest = await haku.approveFrom(haku.address, owner.address, 1100);
-  hakuApprovalTest = await haku.approveFrom(haku.address, user.address, 1100);
+  if (DEBUG) {
+    debugger;
+  }
 
-  hakuApprovalTest = await haku.approveFrom(
-    hakuTateSwap.address,
-    tokenFactory.address,
-    1100,
-  );
-  hakuApprovalTest = await haku.approveFrom(
-    hakuTateSwap.address,
-    owner.address,
-    1100,
-  );
-  hakuApprovalTest = await haku.approveFrom(
-    hakuTateSwap.address,
-    user.address,
-    1100,
-  );
-
-  hakuApprovalTest = await haku.approveFrom(
-    tokenFactory.address,
-    haku.address,
-    1100,
-  );
-  hakuApprovalTest = await haku.approveFrom(
-    tokenFactory.address,
-    owner.address,
-    1100,
-  );
-  hakuApprovalTest = await haku.approveFrom(
-    tokenFactory.address,
-    user.address,
-    1100,
+  console.log(
+    `Wrapper\n_address1 = ${wrapperAddress1}\n_address2 = ${wrapperAddress2}\nfuji address = ${fuji.address}\nhaku address = ${haku.address}\ntate address = ${tate.address}`,
   );
 
   debugger;
   const fujiTateSwapTransaction = await fujiTateSwap._swap(7);
-  debugger;
+  // debugger;
   // const hakuTateSwapTransaction = await hakuTateSwap._swap(3);
 
   if (DEBUG) {
