@@ -74,8 +74,8 @@ contract Swap {
     );
 
     // Set approvals for users
-    _token1.approve()
-    _token2.approve()
+    // _token1.approve()
+    // _token2.approve()
 
     // Set allowances
     _token1Allowance = _token1.allowance(_user1, address(this));
