@@ -200,11 +200,14 @@ contract Token is Template {
 
         console.log('senderBalance: %s\trecipientBalance: %s', senderBalance, recipientBalance);
 
+        uint256 newSenderBalance = senderBalance - amount;
+        uint256 newRecipientBalance = recipientBalance + amount;
+
         require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
         unchecked {
-            _balances[sender] = senderBalance - amount;
+            _balances[sender] = newSenderBalance;
         }
-        _balances[recipient] += amount;
+        _balances[recipient] = newRecipientBalance;
         emit Transfer(sender, recipient, amount);
     }
 
