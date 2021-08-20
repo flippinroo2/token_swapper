@@ -20,6 +20,8 @@ contract Swap {
   using SafeMath for uint256;
   using Strings for string;
 
+  bool private constant DEBUG = true;
+
   address public _user1;
   address public _user2;
 
@@ -46,12 +48,14 @@ contract Swap {
     address user2_,
     Token token2_
   ) {
+    if(DEBUG){
     console.log(
       '\n\nconstructor(address user1_ %s, Token token1_, address user2_ %s, Token token2_)',
       user1_,
       user2_
     );
     console.log('Swap creator: %s', msg.sender);
+    }
     _user1 = user1_;
     _token1 = token1_;
     _user2 = user2_;
@@ -100,7 +104,9 @@ contract Swap {
     address receiver,
     uint256 amount
   ) internal {
+    if(DEBUG){
     console.log('_safeTransferFrom(Token token: %s, address sender: %s, address receiver %s, uint256 amount)\n', address(token), sender, receiver);
+    }
 
     // Owner - 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
     // User - 0x90F79bf6EB2c4f870365E785982E1f101E93b906

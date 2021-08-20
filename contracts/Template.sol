@@ -75,7 +75,7 @@ abstract contract Template is IERC20 {
         address admin = msg.sender;
         if (DEBUG) {
             console.log('\n\nconstructor()');
-            console.log('Contract creator: %s', admin);
+            console.log('Template creator: %s', admin);
         }
         setAdmin(msg.sender);
     }

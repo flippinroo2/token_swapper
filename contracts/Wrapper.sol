@@ -22,6 +22,8 @@ contract Wrapper {
     using SafeMath for uint256;
     using Strings for string;
 
+    bool private constant DEBUG = true;
+
     address public _admin;
     address public contractAddress;
     address public _address1;
@@ -40,23 +42,31 @@ contract Wrapper {
     // Template private _tate = new Token(tateArgs[0], tateArgs[1], 18, 1000);
 
     constructor(address address1_, address address2_) {
-        console.log('constructor(address address1_ %s, address address2_ %s)', address1_, address2_);
         address admin = msg.sender;
-        _admin = admin;
+        if (DEBUG){
+        console.log('\n\nconstructor(address address1_ %s, address address2_ %s)', address1_, address2_);
         console.log('Wrapper creator: %s', admin);
+        }
+        _admin = admin;
         contractAddress = address(this);
         _address1 = address1_;
         _address2 = address2_;
     }
 
     function createFujiSwap(Token _fuji, Token _tate) public returns (Swap) {
-        // console.log('createFujiSwap(Token _fuji, Token _tate)');
-        console.log('_address1: %s, _address2: %s', _address1, _address2);
+        if(DEBUG){
+        console.log('\ncreateFujiSwap(Token _fuji, Token _tate)');
+        console.log('_address1: %s, _address2: %s\n', _address1, _address2);
+        }
         _fujiTateSwapper = new Swap(_address1, _fuji, _address2, _tate);
         return _fujiTateSwapper;
     }
 
     function createHakuSwap(Token _haku, Token _tate) public returns (Swap) {
+        if(DEBUG){
+        console.log('\ncreateHakuSwap(Token _fuji, Token _tate)');
+        console.log('_address1: %s, _address2: %s\n', _address1, _address2);
+        }
         _hakuTateSwapper = new Swap(_address1, _haku, _address2, _tate);
         return _hakuTateSwapper;
     }

@@ -35,8 +35,8 @@ contract TokenFactory {
     constructor() payable {
         address admin = msg.sender;
         if (DEBUG) {
-            console.log('Contract creator: %s', admin);
             console.log('constructor()');
+            console.log('TokenFactory creator: %s', admin);
         }
     }
 
