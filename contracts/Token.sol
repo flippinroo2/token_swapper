@@ -190,25 +190,16 @@ contract Token is Template {
 
     function _transfer(address sender, address recipient, uint256 amount) internal {
         if (DEBUG) {
-            // console.log('_transfer(address sender: %s, address recipient: %s, uint256 amount: %s)\n', sender, recipient, amount);
+            console.log('_transfer(address sender: %s, address recipient: %s, uint256 amount: %s)\n', sender, recipient, amount);
         }
         require(sender != address(0), "ERC20: transfer from the zero address");
         require(recipient != address(0), "ERC20: transfer to the zero address");
 
-        console.log('sender: %s', sender);
-        console.log('recipient: :%s', recipient);
-
         uint256 senderBalance = _balances[sender];
         uint256 recipientBalance = _balances[recipient];
 
-        console.log('senderBalance');
-        console.log(senderBalance);
-
-        console.log('recipientBalance');
-        console.log(recipientBalance);
-
-        console.log('amount');
-        console.log(amount);
+        console.log('senderBalance: %s', senderBalance);
+        console.log('recipientBalance: %s', recipientBalance);
 
         require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
         unchecked {
