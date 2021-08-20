@@ -33,8 +33,9 @@ contract TokenFactory {
     event TokenCreated(address indexed tokenAddress, string indexed name, string indexed symbol, uint8 decimals, uint256 totalSupply);
 
     constructor() payable {
+        address admin = msg.sender;
         if (DEBUG) {
-            console.log('Contract creator: %s', msg.sender);
+            console.log('Contract creator: %s', admin);
             console.log('constructor()');
         }
     }

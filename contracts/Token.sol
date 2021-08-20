@@ -53,9 +53,10 @@ contract Token is Template {
     }
 
     constructor(string memory name_, string memory symbol_, uint8 decimals_, uint256 totalSupply_) payable Template() {
+        address admin = msg.sender;
         if (DEBUG) {
             console.log('\n\nconstructor(string name_: %s, string symbol_: %s, uint8 decimals, uint256 totalSupply_)', name_, symbol_); // Cannot convert ", decimals_, totalSupply_" into strings without a prewritten funciton. (https://ethereum.stackexchange.com/questions/10932/how-to-convert-string-to-int)
-            console.log('Contract creator: %s', msg.sender);
+            console.log('Contract creator: %s', admin);
             console.log('Total supply', totalSupply_);
         }
         // setAdmin(msg.sender); // Already implemented in the "Template" contract.

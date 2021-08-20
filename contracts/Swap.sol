@@ -47,7 +47,7 @@ contract Swap {
     Token token2_
   ) {
     console.log(
-      'constructor(address user1_ %s, Token token1_, address user2_ %s, Token token2_)',
+      '\n\nconstructor(address user1_ %s, Token token1_, address user2_ %s, Token token2_)',
       user1_,
       user2_
     );
@@ -100,7 +100,7 @@ contract Swap {
     address receiver,
     uint256 amount
   ) internal {
-    console.log('_safeTransferFrom(Token token: %s, address sender: %s, address receiver %s, uint256 amount)', address(token), sender, receiver);
+    console.log('_safeTransferFrom(Token token: %s, address sender: %s, address receiver %s, uint256 amount)\n', address(token), sender, receiver);
 
     // Owner - 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
     // User - 0x90F79bf6EB2c4f870365E785982E1f101E93b906

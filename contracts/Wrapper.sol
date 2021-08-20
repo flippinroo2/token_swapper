@@ -41,7 +41,9 @@ contract Wrapper {
 
     constructor(address address1_, address address2_) {
         console.log('constructor(address address1_ %s, address address2_ %s)', address1_, address2_);
-        _admin = msg.sender;
+        address admin = msg.sender;
+        _admin = admin;
+        console.log('Wrapper creator: %s', admin);
         contractAddress = address(this);
         _address1 = address1_;
         _address2 = address2_;
