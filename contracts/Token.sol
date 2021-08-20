@@ -56,6 +56,7 @@ contract Token is Template {
         if (DEBUG) {
             console.log('Contract creator: %s', msg.sender);
             console.log('constructor(string name_: %s, string symbol_: %s, uint8 decimals, uint256 totalSupply_)', name_, symbol_); // Cannot convert ", decimals_, totalSupply_" into strings without a prewritten funciton. (https://ethereum.stackexchange.com/questions/10932/how-to-convert-string-to-int)
+            console.log('Total supply', totalSupply_);
         }
         // setAdmin(msg.sender); // Already implemented in the "Template" contract.
         _name = name_;
