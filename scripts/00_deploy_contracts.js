@@ -490,9 +490,11 @@ async function main() {
   tokenAllowance = await hakuTateSwap._token2Allowance();
   hakuTateSwapMetadata.user2.tateAllowance = tokenAllowance.toNumber();
 
-  console.log(
-    `\n\nOwner Address: ${owner.address}\nSender Address:${sender.address}\nReceiver Address: ${receiver.address}\nUser Address: ${user.address}\nWrapper Address: ${wrapper.address}\nToken Factory Address: ${tokenFactory.address}\nFuji Address: ${fuji.address}\nHaku Address: ${haku.address}\nTate Address: ${tate.address}\nfujiTateSwap Address: ${fujiTateSwap.address}\nhakuTateSwap Address: ${hakuTateSwap.address}\n\n`,
-  );
+  if (DEBUG) {
+    console.log(
+      `\n\nOwner Address: ${owner.address}\nSender Address:${sender.address}\nReceiver Address: ${receiver.address}\nUser Address: ${user.address}\nWrapper Address: ${wrapper.address}\nToken Factory Address: ${tokenFactory.address}\nFuji Address: ${fuji.address}\nHaku Address: ${haku.address}\nTate Address: ${tate.address}\nfujiTateSwap Address: ${fujiTateSwap.address}\nhakuTateSwap Address: ${hakuTateSwap.address}\n\n`,
+    );
+  }
 
   if (DEBUG) {
     debugger;
