@@ -71,7 +71,7 @@ contract Token is Template {
     }
 
     function balanceOf(address account)
-    external
+    public
     view
     override
     returns (uint256)
@@ -114,8 +114,9 @@ contract Token is Template {
         override
         returns (uint256)
     {
-        require(owner != address(0), "ERC20: approve from the zero address");
-        require(spender != address(0), "ERC20: approve to the zero address");
+        // require(owner != address(0), "ERC20: mint from the zero address");
+        // require(spender != address(0), "ERC20: mint to the zero address");
+        require((owner != address(0) || (spender != address(0))), "ERC20: mint from the zero address");
         return _allowances[owner][spender];
     }
 
@@ -124,8 +125,10 @@ contract Token is Template {
         if (DEBUG) {
             // console.log('approve(address spender: %s, uint256 amount)', spender);
         }
-        require(owner != address(0), "ERC20: approve from the zero address");
-        require(spender != address(0), "ERC20: approve to the zero address");
+        require((owner != address(0) || (spender != address(0))), "ERC20: approve from the zero address");
+        require(amount >= (amount - totalSupply), "Approval would exceed the total supply");
+        uint256 spenderBalance = balanceOf(spender);
+        require(amount >= spenderBalance, "Approval would exceed spender's balance");
         _approve(owner, spender, amount);
         return true;
     }
@@ -137,6 +140,7 @@ contract Token is Template {
         if (DEBUG) {
             // console.log('approveFrom(address owner: %s, address spender: %s, uint256 amount)', owner, spender);
         }
+        require((owner != address(0) || (spender != address(0))), "ERC20: approve from the zero address");
         uint256 currentAllowance = _allowances[owner][spender];
         if (DEBUG) {
             // console.log('currentAllowance');

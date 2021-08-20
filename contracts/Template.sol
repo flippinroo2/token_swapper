@@ -94,7 +94,7 @@ abstract contract Template is IERC20 {
     function setTotalSupply(uint256 totalSupply_) internal virtual;
 
     function balanceOf(address account)
-        external
+        public
         view
         virtual
         override
