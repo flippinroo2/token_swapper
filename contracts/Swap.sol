@@ -112,16 +112,14 @@ contract Swap {
     // User - 0x90F79bf6EB2c4f870365E785982E1f101E93b906
 
     uint256 token1OwnerAllowance = _token1.allowance(_user1, _user2);
-    console.log('token1OwnerAllowance: %s', token1OwnerAllowance);
-
     uint256 token1UserAllowance = _token1.allowance(_user2, _user1);
-    console.log('token1UserAllowance: %s', token1UserAllowance);
-
     uint256 token2OwnerAllowance = _token2.allowance(_user1, _user2);
-    console.log('token2OwnerAllowance: %s', token2OwnerAllowance);
-
     uint256 token2UserAllowance = _token2.allowance(_user2, _user1);
-    console.log('token2UserAllowance: %s', token2UserAllowance);
+
+    console.log('token1OwnerAllowance: %s', token1OwnerAllowance);
+    console.log('token1UserAllowance: %s', token1UserAllowance);
+    console.log('token2OwnerAllowance: %s', token2OwnerAllowance);
+    console.log('token2UserAllowance: %s\n', token2UserAllowance);
 
     bool sent = token.transferFrom(sender, receiver, amount);
     require(sent, 'Token transfer failed.');
