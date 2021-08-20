@@ -51,6 +51,7 @@ contract Swap {
       user1_,
       user2_
     );
+    console.log('Swap creator: %s', msg.sender);
     _user1 = user1_;
     _token1 = token1_;
     _user2 = user2_;
