@@ -13,7 +13,7 @@ contract TokenFactory {
     using SafeMath for uint256;
     using Strings for string;
 
-    bool private constant DEBUG = false;
+    bool private constant DEBUG = true;
 
     address private _admin;
 
@@ -35,18 +35,18 @@ contract TokenFactory {
     constructor() payable {
         address admin = msg.sender;
         if (DEBUG) {
-            console.log('constructor()');
+            console.log('\n\nconstructor()');
             console.log('TokenFactory creator: %s', admin);
         }
     }
 
     function createToken(string memory name, string memory symbol, uint8 decimals, uint256 totalSupply) public returns (Token) {
         if (DEBUG) {
-            console.log('name: %s\nsymbol: %s', name, symbol);
-            console.log('decimals');
-            console.log(decimals);
-            console.log('totalSupply');
-            console.log(totalSupply);
+            // console.log('name: %s\nsymbol: %s', name, symbol);
+            // console.log('decimals');
+            // console.log(decimals);
+            // console.log('totalSupply');
+            // console.log(totalSupply);
         }
         tokenData memory metadata = tokenData(name, symbol, decimals, totalSupply); // Check the difference between "storage" and "memory".
         Token token = new Token(name, symbol, decimals, totalSupply);
