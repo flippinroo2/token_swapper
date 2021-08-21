@@ -68,8 +68,6 @@ async function refreshAllowance(token, metadata, account) {
 
 async function refreshAllowances(token, metadata) {
   await refreshAllowance(token, metadata, owner);
-  await refreshAllowance(token, metadata, sender);
-  await refreshAllowance(token, metadata, receiver);
   await refreshAllowance(token, metadata, user);
   await refreshAllowance(token, metadata, tokenFactory);
   await refreshAllowance(token, metadata, wrapper);
