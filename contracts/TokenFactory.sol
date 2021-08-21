@@ -15,7 +15,7 @@ contract TokenFactory {
 
     bool private constant DEBUG = true;
 
-    address private _admin;
+    address public _admin;
 
     address[] public _tokenAddresses;
 	string[] public _tokenNames;
@@ -38,6 +38,7 @@ contract TokenFactory {
             console.log('\n\nconstructor()');
             console.log('TokenFactory creator: %s', admin);
         }
+        _admin = admin;
     }
 
     function createToken(string memory name, string memory symbol, uint8 decimals, uint256 totalSupply) public returns (Token) {

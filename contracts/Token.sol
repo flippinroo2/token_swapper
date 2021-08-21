@@ -24,7 +24,6 @@ contract Token is Template {
 
     bool private constant DEBUG = true;
 
-    // address private _admin;
     string public _name;
     string public _symbol;
     uint8 public _tokenDecimals;
@@ -138,7 +137,7 @@ contract Token is Template {
     address spender,
     uint256 amount) external returns (bool) {
         if (DEBUG) {
-            console.log('approveFrom(address owner: %s, address spender: %s, uint256 amount: %s)\n', owner, spender, amount);
+            // console.log('approveFrom(address owner: %s, address spender: %s, uint256 amount: %s)\n', owner, spender, amount);
         }
         require((owner != address(0) || (spender != address(0))), "ERC20: approve from the zero address");
         uint256 currentAllowance = _allowances[owner][spender];

@@ -22,6 +22,8 @@ contract Swap {
 
   bool private constant DEBUG = true;
 
+  address private _admin;
+
   address public _user1;
   address public _user2;
 
@@ -56,6 +58,8 @@ contract Swap {
     );
     console.log('Swap creator: %s', msg.sender);
     }
+    address admin = msg.sender;
+    _admin = admin;
     _user1 = user1_;
     _token1 = token1_;
     _user2 = user2_;
@@ -112,7 +116,7 @@ contract Swap {
     // User - 0x90F79bf6EB2c4f870365E785982E1f101E93b906
 
     address contractAddress = address(this);
-    console.log('contractAddres: %s', contractAddress);
+    console.log('contractAddres: %s\n', contractAddress);
 
     // _token1.approveFrom(sender, contractAddress, amount);
 
