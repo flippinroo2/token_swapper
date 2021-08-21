@@ -13,7 +13,7 @@ function logAccounts() {
   );
   console.log('\nALLOWANCES:');
   console.log(
-    `fujiAdmin: ${fujiMetadata.admin.ownerAllowance}\tfujiMetadata: ${fujiMetadata.ownerAllowance}\thakuAdmin: ${hakuMetadata.admin.ownerAllowance}\thakuMetadata: ${hakuMetadata.ownerAllowance}\towner: ${owner.ownerAllowance}\treceiver: ${receiver.ownerAllowance}\tsender: ${sender.ownerAllowance}\ttateAdmin: ${tateMetadata.admin.ownerAllowance}\ttateMetadata: ${tateMetadata.ownerAllowance}\tuser: ${user.ownerAllowance}`,
+    `fujiAdmin: ${fujiMetadata.admin.fujiAllowance}\tfujiMetadata: ${fujiMetadata.fujiAllowance}\thakuAdmin: ${hakuMetadata.admin.fujiAllowance}\thakuMetadata: ${hakuMetadata.fujiAllowance}\towner: ${owner.fujiAllowance}\treceiver: ${receiver.fujiAllowance}\tsender: ${sender.fujiAllowance}\ttateAdmin: ${tateMetadata.admin.fujiAllowance}\ttateMetadata: ${tateMetadata.fujiAllowance}\tuser: ${user.fujiAllowance}`,
   );
 }
 
@@ -326,9 +326,9 @@ let fuji,
   hakuMetadata,
   hakuTateSwap,
   hakuTateSwapMetadata = { user1: {}, user2: {} },
-  owner = { balance: 0, name: 'owner', ownerAllowance: 0 },
-  sender = { balance: 0, name: 'sender', ownerAllowance: 0 },
-  receiver = { balance: 0, name: 'receiver', ownerAllowance: 0 },
+  owner = { balance: 0, name: 'owner', fujiAllowance: 0 },
+  sender = { balance: 0, name: 'sender', fujiAllowance: 0 },
+  receiver = { balance: 0, name: 'receiver', fujiAllowance: 0 },
   tate,
   tateInterface,
   tateMetadata,
@@ -336,15 +336,15 @@ let fuji,
   tokenFactoryMetadata = {
     balance: 0,
     name: 'tokenMetadata',
-    ownerAllowance: 0,
+    fujiAllowance: 0,
   },
-  user = { balance: 0, name: 'user', ownerAllowance: 0 },
+  user = { balance: 0, name: 'user', fujiAllowance: 0 },
   wrapper,
   wrapperMetadata = {
     admin: {},
     balance: 0,
     name: 'wrapper',
-    ownerAllowance: 0,
+    fujiAllowance: 0,
   };
 
 async function main() {
@@ -362,6 +362,12 @@ async function main() {
 
   // console.log('Account balance:', (await owner.getBalance()).toString());
 
+  const Factory = await getContractFactory('TokenFactory');
+  tokenFactory = await Factory.deploy();
+  tokenFactoryMetadata.address = tokenFactory.address;
+
+  const Token = await getContractFactory('Token'); // Might not need this.
+
   const Wrapper = await getContractFactory('Wrapper');
   wrapper = await Wrapper.deploy(owner.address, user.address);
   // const otherWrapper = await wrapper.deployed();
@@ -370,11 +376,6 @@ async function main() {
   wrapperMetadata.admin = await wrapper._admin();
   wrapperMetadata.owner = await wrapper._address1();
   wrapperMetadata.user = await wrapper._address2();
-
-  const Token = await getContractFactory('Token'); // Might not need this.
-
-  const Factory = await getContractFactory('TokenFactory');
-  tokenFactory = await Factory.deploy();
 
   // const Swap = await getContractFactory('../artifacts/contracts/Swap.sol:Swap');
   // const Swap = await getContractFactory('contracts/Wrapper.sol:Swap');
@@ -554,7 +555,7 @@ async function main() {
     await fillTateObject();
     await fillSwapObject();
 
-    debugger;
+    // debugger;
     const fujiTateSwapTransaction = await fujiTateSwap._swap(7);
     debugger;
     const hakuTateSwapTransaction = await hakuTateSwap._swap(3);

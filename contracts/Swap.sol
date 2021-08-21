@@ -105,18 +105,23 @@ contract Swap {
     uint256 amount
   ) internal {
     if(DEBUG){
-    console.log('_safeTransferFrom(Token token: %s, address sender: %s, address receiver %s, uint256 amount)\n', address(token), sender, receiver);
+      console.log('_safeTransferFrom(Token token: %s, address sender: %s, address receiver %s, uint256 amount)\n', address(token), sender, receiver);
     }
 
     // Owner - 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
     // User - 0x90F79bf6EB2c4f870365E785982E1f101E93b906
+
+    address contractAddress = address(this);
+    console.log('contractAddres: %s', contractAddress);
+
+    // _token1.approveFrom(sender, contractAddress, amount);
 
     uint256 token1OwnerAllowance = _token1.allowance(_user1, _user2);
     uint256 token1UserAllowance = _token1.allowance(_user2, _user1);
     uint256 token2OwnerAllowance = _token2.allowance(_user1, _user2);
     uint256 token2UserAllowance = _token2.allowance(_user2, _user1);
 
-    console.log('token1OwnerAllowance: %s', token1OwnerAllowance);
+    console.log('\ntoken1OwnerAllowance: %s', token1OwnerAllowance);
     console.log('token1UserAllowance: %s', token1UserAllowance);
     console.log('token2OwnerAllowance: %s', token2OwnerAllowance);
     console.log('token2UserAllowance: %s\n', token2UserAllowance);
