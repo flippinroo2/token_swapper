@@ -47,8 +47,8 @@ async function main() {
     18,
     1100,
   );
-  const fujiTransactionData = await createFujiTransaction.wait();
-  fuji = Token.attach(fujiTransactionData.to);
+  dataVariable = await createFujiTransaction.wait();
+  fuji = Token.attach(dataVariable.to);
 
   const createHakuTransaction = await tokenFactory.createToken(
     'Haku',
@@ -56,8 +56,8 @@ async function main() {
     18,
     1050,
   );
-  const hakuTransactionData = await createHakuTransaction.wait();
-  haku = Token.attach(hakuTransactionData.to);
+  dataVariable = await createHakuTransaction.wait();
+  haku = Token.attach(dataVariable.to);
 
   const createTateTransaction = await tokenFactory.createToken(
     'Tate',
@@ -65,8 +65,8 @@ async function main() {
     18,
     1000,
   );
-  const tateTransactionData = await createTateTransaction.wait();
-  tate = Token.attach(tateTransactionData.to);
+  dataVariable = await createTateTransaction.wait();
+  tate = Token.attach(dataVariable.to);
 
   const Wrapper = await getContractFactory('Wrapper');
   wrapper = await Wrapper.deploy(owner.address, user.address);
@@ -89,7 +89,9 @@ async function main() {
 
   hakuTateSwap = Swap.attach(await wrapper._hakuTateSwapper());
 
-  // dataVariable = await fuji.balanceOf(tokenFactory.address);
+  debugger;
+
+  dataVariable = await fuji.balanceOf(tokenFactory.address);
 
   debugger;
 
