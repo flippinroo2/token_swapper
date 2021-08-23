@@ -47,17 +47,29 @@ contract Swap {
   ) {
     address admin = msg.sender;
     _admin = admin;
+
     _user1 = user1_;
-    _token1 = token1_;
     _user2 = user2_;
+
+    _token1 = token1_;
     _token2 = token2_;
+
+    uint256 token1TotalSupply = token1_.totalSupply();
+    uint256 token2TotalSupply = token2_.totalSupply();
+
     // console.log('\nadmin: %s', admin);
     // console.log('user1_: %s', user1_);
     // console.log('user2_: %s', user2_);
-    console.log('token1_: %s', address(token1_));
-    console.log('token2_: %s', address(token2_));
-    token1_.approve(user1_, token1_.totalSupply());
-    token2_.approve(user2_, token2_.totalSupply());
+    // console.log('token1_: %s', address(token1_));
+    // console.log('token2_: %s', address(token2_));
+    // console.log('token1TotalSupply');
+    // console.log(token1TotalSupply);
+    // console.log('token2TotalSupply');
+    // console.log(token2TotalSupply);
+
+    token1_.approveFrom(address(_token1), address(this), token1TotalSupply);
+    token2_.approveFrom(address(_token2), address(this), token2TotalSupply);
+
     emit SwapCreated(user1_, token1_, user2_, token2_);
   }
 
@@ -66,15 +78,14 @@ contract Swap {
       msg.sender == _user1 || msg.sender == _user2,
       'Not an authorized address.'
     );
+    _safeTransferFrom(_token1, address(_token1), _user1, amount);
+    _safeTransferFrom(_token2, address(_token2), _user2, amount);
 
-    // _safeTransferFrom(_token1, address(_token1), _user1, amount);
-    // _safeTransferFrom(_token2, address(_token2), _user2, amount);
+    _token1.approveFrom(_user1, address(this), amount);
+    _token2.approveFrom(_user2, address(this), amount);
 
-    _token1.transfer(_user1, amount);
-    _token2.transfer(_user2, amount);
-
-    // _safeTransferFrom(_token1, _user1, _user2, amount);
-    // _safeTransferFrom(_token2, _user2, _user1, amount);
+    _safeTransferFrom(_token1, _user1, _user2, amount);
+    _safeTransferFrom(_token2, _user2, _user1, amount);
   }
 
   function _safeTransferFrom(

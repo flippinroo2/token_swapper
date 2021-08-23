@@ -115,6 +115,13 @@ contract Token is Template {
     }
 
     function _approve(address owner, address spender, uint256 amount) internal {
+
+        // console.log('\n_approve()');
+        // console.log('contract - ', address(this));
+        // console.log('owner: %s', owner);
+        // console.log('spender: %s', spender);
+        // console.log(amount);
+
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);
     }
@@ -141,6 +148,12 @@ contract Token is Template {
     function _transfer(address sender, address recipient, uint256 amount) internal {
         require(sender != address(0), "ERC20: transfer from the zero address");
         require(recipient != address(0), "ERC20: transfer to the zero address");
+
+        console.log('\n_transfer()');
+        console.log('contract - ', address(this));
+        console.log('sender: %s,', sender);
+        console.log('recipient: %s', recipient);
+        console.log(amount);
 
         uint256 senderBalance = _balances[sender];
         uint256 recipientBalance = _balances[recipient];
