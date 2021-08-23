@@ -30,7 +30,13 @@ var fuji,
 async function main() {
   let dataVariable;
 
-  const balances = { tokenFactory: {}, owner: {}, user: {} };
+  const balances = {
+    tokenFactory: {},
+    fuji: {},
+    haku: {},
+    owner: {},
+    user: {},
+  };
 
   const signers = await getSigners();
   const [signer] = signers;
@@ -121,6 +127,8 @@ async function main() {
 
   dataVariable = await fuji.balanceOf(tokenFactory.address);
   balances.tokenFactory.fuji = dataVariable.toNumber();
+  dataVariable = await fuji.balanceOf(fuji.address);
+  balances.fuji.fuji = dataVariable.toNumber();
   dataVariable = await fuji.balanceOf(owner.address);
   balances.owner.fuji = dataVariable.toNumber();
   dataVariable = await fuji.balanceOf(user.address);
@@ -128,6 +136,8 @@ async function main() {
 
   dataVariable = await haku.balanceOf(tokenFactory.address);
   balances.tokenFactory.haku = dataVariable.toNumber();
+  dataVariable = await haku.balanceOf(haku.address);
+  balances.haku.haku = dataVariable.toNumber();
   dataVariable = await haku.balanceOf(owner.address);
   balances.owner.haku = dataVariable.toNumber();
   dataVariable = await haku.balanceOf(user.address);

@@ -49,8 +49,9 @@ contract Token is Template {
         _name = name_;
         _symbol = symbol_;
         _tokenDecimals = decimals_;
+        // console.log('this: %s', address(this));
         setTotalSupply(totalSupply_);
-        mint(getAdmin(), totalSupply_);
+        mint(address(this), totalSupply_);
     }
 
     function setTotalSupply(uint256 totalSupply_) internal override {
