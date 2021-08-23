@@ -63,23 +63,6 @@ let fuji,
     tateBalance: 0,
   };
 
-if (DEBUG) {
-  debugger;
-}
-function logAccounts() {
-  if (DEBUG) {
-    debugger;
-  }
-
-  console.log('\n\nBALANCES:');
-  console.log(
-    `fujiAdmin: ${fujiMetadata.admin.balance}\tfujiMetadata: ${fujiMetadata.balance}\thakuAdmin: ${hakuMetadata.admin.balance}\thakuMetadata: ${hakuMetadata.balance}\towner: ${owner.balance}\treceiver: ${receiver.balance}\tsender: ${sender.balance}\ttateAdmin: ${tateMetadata.admin.balance}\ttateMetadata: ${tateMetadata.balance}\tuser: ${user.balance}`,
-  );
-  console.log('\nALLOWANCES:');
-  console.log(
-    `fujiAdmin: ${fujiMetadata.admin.fujiAllowance}\tfujiMetadata: ${fujiMetadata.fujiAllowance}\thakuAdmin: ${hakuMetadata.admin.fujiAllowance}\thakuMetadata: ${hakuMetadata.fujiAllowance}\towner: ${owner.fujiAllowance}\treceiver: ${receiver.fujiAllowance}\tsender: ${sender.fujiAllowance}\ttateAdmin: ${tateMetadata.admin.fujiAllowance}\ttateMetadata: ${tateMetadata.fujiAllowance}\tuser: ${user.fujiAllowance}`,
-  );
-}
 async function main() {
   const signers = await getSigners();
   const [signer] = signers;
@@ -91,130 +74,46 @@ async function main() {
     debugger;
   }
 
-  await refreshData(fujiInterface, fujiMetadata);
-  await refreshData(hakuInterface, hakuMetadata);
-  await refreshData(tateInterface, tateMetadata);
-
   await (async () => {
-    let adminObject = { address: wrapperMetadata.address, name: 'admin' },
-      ownerObject = fujiTateSwapMetadata.user1,
-      userObject = fujiTateSwapMetadata.user2,
-      factoryObject = { address: tokenFactoryMetadata.address },
-      fujiObject = { addres: fujiMetadata.address },
-      tateObject = { address: tateMetadata.address },
-      swapObject = {
-        fujiTateSwap: {
-          address: fujiTateSwap.address,
-        },
-        hakuTateSwap: {
-          address: hakuTateSwap.address,
-        },
-      };
+    const Wrapper = await getContractFactory('Wrapper');
+    const wrapper = await Wrapper.deploy(owner.address, user.address);
 
+    const Token = await getContractFactory('Token');
+
+    const Factory = await getContractFactory('TokenFactory');
+    const tokenFactory = await Factory.deploy();
+
+    const fujiTransaction = await factory.createToken('Fuji', 'FUJI', 18, 1100);
+    const fujiTransactionData = parseTransactionData(fujiTransaction.receipt);
+    const fujiAddress = fujiTransactionData.events.TokenCreated.address;
+    const fuji = await Token.at(fujiAddress);
+
+    const hakuTransaction = await factory.createToken('Haku', 'HAKU', 18, 1050);
+    const hakuTransactionData = parseTransactionData(hakuTransaction.receipt);
+    const hakuAddress = hakuTransactionData.events.TokenCreated.address;
+    const haku = await Token.at(hakuAddress);
+
+    const tateTransaction = await factory.createToken('Tate', 'TATE', 18, 1000);
+    const tateTransactionData = parseTransactionData(tateTransaction.receipt);
+    const tateAddress = tateTransactionData.events.TokenCreated.address;
+    const tate = await Token.at(tateAddress);
+
+    // const fujiNew = await Token.new('Fuji', 'FUJI', 1100);
+    // const hakuNew = await Token.new('Haku', 'HAKU', 1050);
+    // const tateNew = await Token.new('Tate', 'TATE', 1000);
+
+    await deployer.deploy(Wrapper, ReceiverAddress, sender);
+    const wrapper = await Wrapper.deployed();
+
+    // await deployer.deploy(Swap, owner, fuji, user, tate);
+    // const fujiTateSwap = await Swap.deployed();
+
+    // await deployer.deploy(Swap, owner, haku, user, tate);
+    // const hakuTateSwap = await Swap.deployed();
     let dataVariable;
 
-    async function refreshObjects() {
-      dataVariable = await fuji.balanceOf(adminObject.address);
-      adminObject.fujiBalance = dataVariable.toNumber();
-
-      dataVariable = await fuji.balanceOf(ownerObject.address);
-      ownerObject.fujiBalance = dataVariable.toNumber();
-
-      dataVariable = await fuji.balanceOf(userObject.address);
-      userObject.fujiBalance = dataVariable.toNumber();
-
-      dataVariable = await fuji.balanceOf(factoryObject.address);
-      factoryObject.fujiBalance = dataVariable.toNumber();
-
-      dataVariable = await fuji.balanceOf(fujiMetadata.address);
-      fujiObject.fujiBalance = dataVariable.toNumber();
-
-      dataVariable = await fuji.balanceOf(tateMetadata.address);
-      tateObject.fujiBalance = dataVariable.toNumber();
-
-      dataVariable = await fuji.balanceOf(fujiTateSwap.address);
-      swapObject.fujiTateSwap.fujiBalance = dataVariable.toNumber();
-
-      // BREAK
-
-      dataVariable = await haku.balanceOf(adminObject.address);
-      adminObject.hakuBalance = dataVariable.toNumber();
-
-      dataVariable = await haku.balanceOf(ownerObject.address);
-      ownerObject.hakuBalance = dataVariable.toNumber();
-
-      dataVariable = await haku.balanceOf(userObject.address);
-      userObject.hakuBalance = dataVariable.toNumber();
-
-      dataVariable = await haku.balanceOf(factoryObject.address);
-      factoryObject.hakuBalance = dataVariable.toNumber();
-
-      dataVariable = await haku.balanceOf(fujiMetadata.address);
-      fujiObject.hakuBalance = dataVariable.toNumber();
-
-      dataVariable = await haku.balanceOf(tateMetadata.address);
-      tateObject.hakuBalance = dataVariable.toNumber();
-
-      dataVariable = await haku.balanceOf(fujiTateSwap.address);
-      swapObject.fujiTateSwap.hakuBalance = dataVariable.toNumber();
-
-      // BREAK
-
-      dataVariable = await tate.balanceOf(adminObject.address);
-      adminObject.tateBalance = dataVariable.toNumber();
-
-      dataVariable = await tate.balanceOf(ownerObject.address);
-      ownerObject.tateBalance = dataVariable.toNumber();
-
-      dataVariable = await tate.balanceOf(userObject.address);
-      userObject.tateBalance = dataVariable.toNumber();
-
-      dataVariable = await tate.balanceOf(factoryObject.address);
-      factoryObject.tateBalance = dataVariable.toNumber();
-
-      dataVariable = await tate.balanceOf(fujiMetadata.address);
-      fujiObject.tateBalance = dataVariable.toNumber();
-
-      dataVariable = await tate.balanceOf(tateMetadata.address);
-      tateObject.tateBalance = dataVariable.toNumber();
-
-      dataVariable = await tate.balanceOf(fujiTateSwap.address);
-      swapObject.fujiTateSwap.tateBalance = dataVariable.toNumber();
-
-      // BREAK
-    }
-
-    async function transfer() {
-      dataVariable = await fuji.transferFrom(
-        tokenFactoryMetadata.address,
-        owner.address,
-        7,
-      );
-      dataVariable = await haku.transferFrom(
-        tokenFactoryMetadata.address,
-        owner.address,
-        4,
-      );
-      dataVariable = await tate.transferFrom(
-        tokenFactoryMetadata.address,
-        user.address,
-        11,
-      );
-    }
-
-    async function swap() {
-      const fujiTateSwapTransaction = await fujiTateSwap._swap(7);
-      const hakuTateSwapTransaction = await hakuTateSwap._swap(4);
-    }
-
-    await refreshObjects();
     debugger;
-    await transfer();
-    await refreshObjects();
-    debugger;
-    await swap();
-    await refreshObjects();
-    debugger;
+    await fujiTateSwap._swap(100);
   })();
 
   if (DEBUG) {
