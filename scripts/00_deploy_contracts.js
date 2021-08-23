@@ -72,7 +72,6 @@ async function main() {
   wrapper = await Wrapper.deploy(owner.address, user.address);
 
   const Swap = await getContractFactory('Swap');
-  debugger;
 
   const createFujiSwap = await wrapper.createFujiSwap(
     fuji.address,
@@ -90,7 +89,7 @@ async function main() {
 
   hakuTateSwap = Swap.attach(await wrapper._hakuTateSwapper());
 
-  dataVariable = await fuji.balanceOf(tokenFactory.address);
+  // dataVariable = await fuji.balanceOf(tokenFactory.address);
 
   debugger;
 
