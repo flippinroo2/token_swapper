@@ -12,7 +12,6 @@ import '@openzeppelin/contracts/utils/Address.sol';
 import '@openzeppelin/contracts/utils/Strings.sol';
 
 // Custom Tokens
-// import './Template.sol'; // Template Contract
 import './Token.sol'; // Token Contract
 
 contract Swap {
