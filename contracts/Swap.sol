@@ -51,13 +51,13 @@ contract Swap {
     _token1 = token1_;
     _user2 = user2_;
     _token2 = token2_;
-    console.log('\nadmin: %s', admin);
-    console.log('user1_: %s', user1_);
-    console.log('user2_: %s', user2_);
+    // console.log('\nadmin: %s', admin);
+    // console.log('user1_: %s', user1_);
+    // console.log('user2_: %s', user2_);
     // console.log('token1_: %s', address(token1_));
     // console.log('token2_: %s', address(token2_));
-    token1_.approveFrom(admin, user1_, token1_.totalSupply());
-    token2_.approveFrom(admin, user2_, token2_.totalSupply());
+    token1_.approve(user1_, token1_.totalSupply());
+    token2_.approve(user2_, token2_.totalSupply());
     emit SwapCreated(user1_, token1_, user2_, token2_);
   }
 
@@ -67,8 +67,10 @@ contract Swap {
       'Not an authorized address.'
     );
 
-    _safeTransferFrom(_token1, _admin, _user1, amount);
-    _safeTransferFrom(_token2, _admin, _user2, amount);
+    // _safeTransferFrom(_token1, address(_token1), _user1, amount);
+    // _safeTransferFrom(_token2, address(_token2), _user2, amount);
+    _token1.transfer(_user1, amount);
+    _token2.transfer(_user2, amount);
 
     // _safeTransferFrom(_token1, _user1, _user2, amount);
     // _safeTransferFrom(_token2, _user2, _user1, amount);
