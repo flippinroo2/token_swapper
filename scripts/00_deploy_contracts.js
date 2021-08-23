@@ -30,6 +30,8 @@ var fuji,
 async function main() {
   let dataVariable;
 
+  const balances = { tokenFactory: {}, owner: {}, user: {} };
+
   const signers = await getSigners();
   const [signer] = signers;
 
@@ -116,6 +118,20 @@ async function main() {
   // tate - "0xbf9fBFf01664500A33080Da5d437028b07DFcC55"
   // fujiTateSwap - "0x856e4424f806D16E8CBC702B3c0F2ede5468eae5"
   // hakuTateSwap - "0xb0279Db6a2F1E01fbC8483FCCef0Be2bC6299cC3"
+
+  dataVariable = await fuji.balanceOf(tokenFactory.address);
+  balances.tokenFactory.fuji = dataVariable.toNumber();
+  dataVariable = await fuji.balanceOf(owner.address);
+  balances.owner.fuji = dataVariable.toNumber();
+  dataVariable = await fuji.balanceOf(user.address);
+  balances.user.fuji = dataVariable.toNumber();
+
+  dataVariable = await haku.balanceOf(tokenFactory.address);
+  balances.tokenFactory.haku = dataVariable.toNumber();
+  dataVariable = await haku.balanceOf(owner.address);
+  balances.owner.haku = dataVariable.toNumber();
+  dataVariable = await haku.balanceOf(user.address);
+  balances.user.haku = dataVariable.toNumber();
 
   debugger;
 
