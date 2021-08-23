@@ -43,10 +43,6 @@ contract Wrapper {
 
     constructor(address address1_, address address2_) {
         address admin = msg.sender;
-        if (DEBUG){
-        console.log('\n\nconstructor(address address1_ %s, address address2_ %s)', address1_, address2_);
-        console.log('Wrapper creator: %s', admin);
-        }
         _admin = admin;
         contractAddress = address(this);
         _address1 = address1_;
@@ -54,19 +50,11 @@ contract Wrapper {
     }
 
     function createFujiSwap(Token _fuji, Token _tate) public returns (Swap) {
-        if(DEBUG){
-        console.log('\ncreateFujiSwap(Token _fuji, Token _tate)');
-        console.log('_address1: %s, _address2: %s\n', _address1, _address2);
-        }
         _fujiTateSwapper = new Swap(_address1, _fuji, _address2, _tate);
         return _fujiTateSwapper;
     }
 
     function createHakuSwap(Token _haku, Token _tate) public returns (Swap) {
-        if(DEBUG){
-        console.log('\ncreateHakuSwap(Token _fuji, Token _tate)');
-        console.log('_address1: %s, _address2: %s\n', _address1, _address2);
-        }
         _hakuTateSwapper = new Swap(_address1, _haku, _address2, _tate);
         return _hakuTateSwapper;
     }

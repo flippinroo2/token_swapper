@@ -33,13 +33,6 @@ contract Token is Template {
     mapping(address => uint256) public _balances;
     mapping(address => mapping(address => uint256)) public _allowances;
 
-    // Events
-    // event Approval(address indexed owner, address indexed spender, uint256 value);
-    // event Transfer(address indexed from, address indexed to, uint256 value);
-    // event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
-    // event Fallback(address indexed sender, uint256 value);
-
-    // Function Modifiers
     modifier restricted(uint256 number) {
         require(number != 0, 'Number cannot be zero');
         require(number > 0, 'Must be a positive number.');
@@ -53,21 +46,14 @@ contract Token is Template {
 
     constructor(string memory name_, string memory symbol_, uint8 decimals_, uint256 totalSupply_) payable Template() {
         address admin = msg.sender;
-        if (DEBUG) {
-            console.log('\n\nconstructor(string name_: %s, string symbol_: %s, uint8 decimals, uint256 totalSupply_)', name_, symbol_); // Cannot convert ", decimals_, totalSupply_" into strings without a prewritten funciton. (https://ethereum.stackexchange.com/questions/10932/how-to-convert-string-to-int)
-            console.log('Token creator: %s', admin);
-            console.log('Total supply', totalSupply_);
-        }
-        // setAdmin(msg.sender); // Already implemented in the "Template" contract.
         _name = name_;
         _symbol = symbol_;
         _tokenDecimals = decimals_;
-        setTotalSupply(totalSupply_); // Moving these functions to the createToken() function.
-        mint(getAdmin(), totalSupply_); // Moving these functions to the createToken() function.
+        setTotalSupply(totalSupply_);
+        mint(getAdmin(), totalSupply_);
     }
 
     function setTotalSupply(uint256 totalSupply_) internal override {
-        // Can uint256 have an overflow? If not, explain that next to variable declaration.
         totalSupply = totalSupply_;
     }
 
@@ -80,12 +66,6 @@ contract Token is Template {
     return _balances[account];
     }
 
-    // function allBalances() external view returns (uint256[]) {
-    //     // Need to create a loop to go through mapping and save all the items into an array in order to return it from a function.
-    //     address[] memory temp = new address[]
-    //     return _balances;
-    // }
-
     function mint(address account, uint256 amount)
     public
     override
@@ -93,13 +73,6 @@ contract Token is Template {
     safe(account)
     restricted(amount)
     {
-    if (DEBUG) {
-        // console.log(
-        // 'mint(address account: %s, uint256 amount: %s)\n',
-        // account,
-        // amount
-        // );
-    }
     _balances[account] += amount;
     totalMinted += amount;
     emit Transfer(address(0), account, amount);
@@ -121,9 +94,6 @@ contract Token is Template {
 
     function approve(address spender, uint256 amount) public override returns (bool){
         address owner = msg.sender;
-        if (DEBUG) {
-            console.log('approve(address spender: %s, uint256 amount: %s)\n', spender, amount);
-        }
         require((owner != address(0) || (spender != address(0))), "ERC20: approve from the zero address");
         require(amount >= (amount - totalSupply), "Approval would exceed the total supply");
         uint256 spenderBalance = balanceOf(spender);
@@ -136,36 +106,19 @@ contract Token is Template {
     address owner,
     address spender,
     uint256 amount) external returns (bool) {
-        if (DEBUG) {
-            // console.log('approveFrom(address owner: %s, address spender: %s, uint256 amount: %s)\n', owner, spender, amount);
-        }
         require((owner != address(0) || (spender != address(0))), "ERC20: approve from the zero address");
         uint256 currentAllowance = _allowances[owner][spender];
-        if (DEBUG) {
-            // console.log('currentAllowance');
-            // console.log(currentAllowance);
-        }
         _approve(owner, spender, amount);
         uint256 newAllowance = _allowances[owner][spender];
-        if (DEBUG) {
-            // console.log('newAllowance');
-            // console.log(newAllowance);
-        }
         return true;
     }
 
     function _approve(address owner, address spender, uint256 amount) internal {
-        if (DEBUG) {
-            // console.log('_approve(address owner: %s, address spender: %s, uint256 amount: %s)\n', owner, spender, amount);
-        }
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);
     }
 
     function transfer(address recipient, uint256 amount) public override returns (bool){
-        if (DEBUG) {
-            console.log('transfer(address recipient: %s, uint256 amount\n)', recipient);
-        }
         _transfer(msg.sender, recipient, amount);
         return true;
     }
@@ -175,9 +128,6 @@ contract Token is Template {
     address recipient,
     uint256 amount
     ) external override returns (bool) {
-        if (DEBUG) {
-            console.log('transferFrom(address sender: %s, address recipient: %s, uint256 amount: %s)\n', sender, recipient, amount);
-        }
         _transfer(sender, recipient, amount);
         uint256 currentAllowance = _allowances[sender][msg.sender];
         require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
@@ -188,16 +138,11 @@ contract Token is Template {
     }
 
     function _transfer(address sender, address recipient, uint256 amount) internal {
-        if (DEBUG) {
-            console.log('_transfer(address sender: %s, address recipient: %s, uint256 amount: %s)\n', sender, recipient, amount);
-        }
         require(sender != address(0), "ERC20: transfer from the zero address");
         require(recipient != address(0), "ERC20: transfer to the zero address");
 
         uint256 senderBalance = _balances[sender];
         uint256 recipientBalance = _balances[recipient];
-
-        console.log('senderBalance: %s\trecipientBalance: %s', senderBalance, recipientBalance);
 
         uint256 newRecipientBalance = recipientBalance + amount;
 
@@ -209,13 +154,4 @@ contract Token is Template {
         _balances[recipient] = newRecipientBalance;
         emit Transfer(sender, recipient, amount);
     }
-
-    function testFunction() external view {
-        address admin = getAdmin();
-        console.log('admin: %s', admin);
-    }
-
-    // receive() external payable {
-    //     emit Fallback(msg.sender, msg.value);
-    // }
 }

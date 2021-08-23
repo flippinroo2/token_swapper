@@ -1,19 +1,10 @@
-const TokenInterface = require('../classes/TokenInterface.js');
-
-const DEBUG = false;
-
-const { artifacts, config, ethers, network, waffle, web3 } = hre;
+const { ethers } = hre;
 
 const { getContractFactory, getSigners } = ethers;
 
-const Moralis = require('Moralis');
-// const { ACL, Analytics, AnonymousUtils, Cloud, CLP, Config, FacebookUtils, File, Plugins, Polygon, Query, Role, Schema, Session, Storag, UI, User, Web3, Web3API } = require('Moralis');
+var Factory, Swap, Token, Wrapper;
 
-const { eth, utils } = web3;
-
-let Factory, Swap, Token, Wrapper;
-
-let fuji,
+var fuji,
   fujiTateSwap,
   haku,
   hakuTateSwap,
@@ -37,6 +28,8 @@ let fuji,
   wrapper;
 
 async function main() {
+  let dataVariable;
+
   const signers = await getSigners();
   const [signer] = signers;
 
@@ -45,8 +38,6 @@ async function main() {
 
   const Factory = await getContractFactory('TokenFactory');
   tokenFactory = await Factory.deploy();
-  tokenFactoryMetadata.address = tokenFactory.address;
-  tokenFactoryMetadata.admin = await tokenFactory._admin();
 
   const Token = await getContractFactory('Token');
 
@@ -81,6 +72,7 @@ async function main() {
   wrapper = await Wrapper.deploy(owner.address, user.address);
 
   const Swap = await getContractFactory('Swap');
+  debugger;
 
   const createFujiSwap = await wrapper.createFujiSwap(
     fuji.address,
@@ -88,27 +80,22 @@ async function main() {
   );
   await createFujiSwap.wait();
 
+  fujiTateSwap = Swap.attach(await wrapper._fujiTateSwapper());
+
   const createHakuSwap = await wrapper.createHakuSwap(
     haku.address,
     tate.address,
   );
   await createHakuSwap.wait();
 
-  debugger;
-
-  fujiTateSwap = Swap.attach(await wrapper._fujiTateSwapper());
   hakuTateSwap = Swap.attach(await wrapper._hakuTateSwapper());
+
+  dataVariable = await fuji.balanceOf(tokenFactory.address);
 
   debugger;
 
   const fujiTateSwapTransaction = await fujiTateSwap._swap(7);
   const hakuTateSwapTransaction = await hakuTateSwap._swap(4);
-}
-
-if (DEBUG) {
-  // console.log(
-  //   `Wrapper\n_address1 = ${wrapperAddress1}\n_address2 = ${wrapperAddress2}\nfuji address = ${fuji.address}\nhaku address = ${haku.address}\ntate address = ${tate.address}`,
-  // );
 }
 
 main()
