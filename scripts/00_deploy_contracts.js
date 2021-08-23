@@ -38,8 +38,8 @@ async function main() {
 
   const Factory = await getContractFactory('TokenFactory');
   tokenFactory = await Factory.deploy();
-  tokenFactory.on('TokenCreated', async (address) => {
-    const tempToken = Token.attach(address);
+  await tokenFactory.on('TokenCreated', async (address) => {
+    const tempToken = await Token.attach(address);
     const symbol = await tempToken._symbol();
     if (symbol === 'FUJI') {
       fuji = tempToken;
@@ -50,6 +50,7 @@ async function main() {
     if (symbol === 'TATE') {
       tate = tempToken;
     }
+    console.log('TokenCreated');
     debugger;
   });
 
@@ -78,8 +79,6 @@ async function main() {
     1000,
   );
   dataVariable = await createTateTransaction.wait();
-
-  debugger;
 
   const Wrapper = await getContractFactory('Wrapper');
   wrapper = await Wrapper.deploy(owner.address, user.address);
@@ -112,14 +111,14 @@ async function main() {
 
   // wrapper - "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
   // tokenFactory - "0x5FbDB2315678afecb367f032d93F642f64180aa3"
-  // fuji - "0x5FbDB2315678afecb367f032d93F642f64180aa3"
-  // haku - "0x5FbDB2315678afecb367f032d93F642f64180aa3"
-  // tate - "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  // fuji - "0xa16E02E87b7454126E5E10d957A927A7F5B5d2be"
+  // haku - "0xB7A5bd0345EF1Cc5E66bf61BdeC17D2461fBd968"
+  // tate - "0xeEBe00Ac0756308ac4AaBfD76c05c4F3088B8883"
   // fujiTateSwap - "0x856e4424f806D16E8CBC702B3c0F2ede5468eae5"
   // hakuTateSwap - "0xb0279Db6a2F1E01fbC8483FCCef0Be2bC6299cC3"
 
-  // const fujiTateSwapTransaction = await fujiTateSwap._swap(7);
-  // const hakuTateSwapTransaction = await hakuTateSwap._swap(4);
+  const fujiTateSwapTransaction = await fujiTateSwap._swap(7);
+  const hakuTateSwapTransaction = await hakuTateSwap._swap(4);
 }
 
 main()
