@@ -38,21 +38,22 @@ async function main() {
 
   const Factory = await getContractFactory('TokenFactory');
   tokenFactory = await Factory.deploy();
-  await tokenFactory.on('TokenCreated', async (address) => {
-    const tempToken = await Token.attach(address);
-    const symbol = await tempToken._symbol();
-    if (symbol === 'FUJI') {
-      fuji = tempToken;
-    }
-    if (symbol === 'HAKU') {
-      haku = tempToken;
-    }
-    if (symbol === 'TATE') {
-      tate = tempToken;
-    }
-    console.log('TokenCreated');
-    debugger;
-  });
+
+  // tokenFactory.on('TokenCreated', async (address) => {
+  //   const tempToken = await Token.attach(address);
+  //   const symbol = await tempToken._symbol();
+  //   if (symbol === 'FUJI') {
+  //     fuji = tempToken;
+  //   }
+  //   if (symbol === 'HAKU') {
+  //     haku = tempToken;
+  //   }
+  //   if (symbol === 'TATE') {
+  //     tate = tempToken;
+  //   }
+  //   console.log('TokenCreated');
+  //   debugger;
+  // });
 
   const Token = await getContractFactory('Token');
 
@@ -84,6 +85,27 @@ async function main() {
   wrapper = await Wrapper.deploy(owner.address, user.address);
 
   const Swap = await getContractFactory('Swap');
+
+  const tokens = await tokenFactory.queryFilter('TokenCreated');
+
+  await tokens.forEach(async (token) => {
+    const [address] = token.args;
+    const tempToken = await Token.attach(address);
+    debugger;
+    const symbol = await tempToken._symbol();
+    debugger;
+    if (symbol === 'FUJI') {
+      fuji = tempToken;
+    }
+    if (symbol === 'HAKU') {
+      haku = tempToken;
+    }
+    if (symbol === 'TATE') {
+      tate = tempToken;
+    }
+  });
+
+  debugger;
 
   const createFujiSwap = await wrapper.createFujiSwap(
     fuji.address,
