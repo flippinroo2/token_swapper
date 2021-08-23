@@ -15,12 +15,9 @@ contract TokenFactory {
 
     bool private constant DEBUG = true;
 
-    address public _admin;
+    address private _admin;
 
-    address[] public _tokenAddresses;
-	string[] public _tokenNames;
-
-    mapping(address => uint256) private _tokens;
+    mapping(string => address) private _tokens;
 
     struct tokenData {
         string name;
@@ -37,11 +34,9 @@ contract TokenFactory {
     }
 
     function createToken(string memory name, string memory symbol, uint8 decimals, uint256 totalSupply) public returns (Token) {
-        tokenData memory metadata = tokenData(name, symbol, decimals, totalSupply);
         Token token = new Token(name, symbol, decimals, totalSupply);
         address tokenAddress = address(token);
-        _tokenAddresses.push(tokenAddress);
-        _tokenNames.push(name);
+        _tokens[symbol] = tokenAddress;
         emit TokenCreated(tokenAddress, name, symbol, decimals, totalSupply);
         return token;
     }

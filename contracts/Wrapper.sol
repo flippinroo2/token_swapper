@@ -24,46 +24,41 @@ contract Wrapper {
 
     bool private constant DEBUG = true;
 
-    address public _admin;
-    address public contractAddress;
-    address public _address1;
-    address public _address2;
+    address private _admin;
+    address private _address1;
+    address private _address2;
 
-    Swap public _fujiTateSwapper;
-    Swap public _hakuTateSwapper;
-
-    // Was testing a different method for instantiating the Swap contract.
-    // string[] fujiArgs = ['Fuji', 'FUJI'];
-    // string[] hakuArgs = ['Haku', 'HAKU'];
-    // string[] tateArgs = ['Tate', 'TATE'];
-
-    // Template private _fuji = new Token(fujiArgs[0], fujiArgs[1], 18, 1100);
-    // Template private _haku = new Token(hakuArgs[0], hakuArgs[1], 18, 1050);
-    // Template private _tate = new Token(tateArgs[0], tateArgs[1], 18, 1000);
+    Swap private _swapper;
+    Swap private _unswapper;
 
     constructor(address address1_, address address2_) {
         address admin = msg.sender;
         _admin = admin;
-        contractAddress = address(this);
         _address1 = address1_;
         _address2 = address2_;
     }
 
-    function createFujiSwap(Token _fuji, Token _tate) public returns (Swap) {
-        _fujiTateSwapper = new Swap(_address1, _fuji, _address2, _tate);
-        return _fujiTateSwapper;
+    function createSwapper(Token _fuji, Token _tate) external {
+        _swapper = new Swap(_address1, _fuji, _address2, _tate);
     }
 
-    function createHakuSwap(Token _haku, Token _tate) public returns (Swap) {
-        _hakuTateSwapper = new Swap(_address1, _haku, _address2, _tate);
-        return _hakuTateSwapper;
+    function createUnswapper(Token _tate, Token _haku) external {
+        _unswapper = new Swap(_address1, _tate, _address2, _haku);
     }
 
-    function swap(uint256 amount) public {
-        _fujiTateSwapper._swap(amount);
+    function getSwapperAddress() external view returns (address) {
+        return address(_swapper);
     }
 
-    function unswap(uint256 amount) public {
-        _hakuTateSwapper._swap(amount);
+    function getUnswapperAddress() external view returns (address) {
+        return address(_unswapper);
+    }
+
+    function swap(Token token1, Token token2, uint256 amount) public {
+        _swapper._swap(amount);
+    }
+
+    function unswap(Token token1, Token token2, uint256 amount) public {
+        _unswapper._swap(amount);
     }
 }

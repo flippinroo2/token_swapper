@@ -77,6 +77,7 @@ contract Swap {
       msg.sender == _user1 || msg.sender == _user2,
       'Not an authorized address.'
     );
+    // MOVE THESE TO WRAPPER
     _safeTransferFrom(_token1, address(_token1), _user1, amount);
     _safeTransferFrom(_token2, address(_token2), _user2, amount);
 
@@ -93,7 +94,6 @@ contract Swap {
     address receiver,
     uint256 amount
   ) internal {
-    address contractAddress = address(this);
     bool sent = token.transferFrom(sender, receiver, amount);
     require(sent, 'Token transfer failed.');
   }
