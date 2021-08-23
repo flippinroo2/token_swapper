@@ -83,19 +83,36 @@ async function main() {
     const Factory = await getContractFactory('TokenFactory');
     const tokenFactory = await Factory.deploy();
 
-    const fujiTransaction = await factory.createToken('Fuji', 'FUJI', 18, 1100);
-    const fujiTransactionData = parseTransactionData(fujiTransaction.receipt);
-    const fujiAddress = fujiTransactionData.events.TokenCreated.address;
+    let dataVariable;
+
+    const fujiTransaction = await tokenFactory.createToken(
+      'Fuji',
+      'FUJI',
+      18,
+      1100,
+    );
+    dataVariable = fujiTransaction.wait();
+    const fujiAddress = dataVariable.events.TokenCreated.address;
     const fuji = await Token.at(fujiAddress);
 
-    const hakuTransaction = await factory.createToken('Haku', 'HAKU', 18, 1050);
-    const hakuTransactionData = parseTransactionData(hakuTransaction.receipt);
-    const hakuAddress = hakuTransactionData.events.TokenCreated.address;
+    const hakuTransaction = await tokenFactory.createToken(
+      'Haku',
+      'HAKU',
+      18,
+      1050,
+    );
+    dataVariable = parseTransactionData(hakuTransaction.receipt);
+    const hakuAddress = dataVariable.events.TokenCreated.address;
     const haku = await Token.at(hakuAddress);
 
-    const tateTransaction = await factory.createToken('Tate', 'TATE', 18, 1000);
-    const tateTransactionData = parseTransactionData(tateTransaction.receipt);
-    const tateAddress = tateTransactionData.events.TokenCreated.address;
+    const tateTransaction = await tokenFactory.createToken(
+      'Tate',
+      'TATE',
+      18,
+      1000,
+    );
+    dataVariable = parseTransactionData(tateTransaction.receipt);
+    const tateAddress = dataVariable.events.TokenCreated.address;
     const tate = await Token.at(tateAddress);
 
     // const fujiNew = await Token.new('Fuji', 'FUJI', 1100);
@@ -103,14 +120,13 @@ async function main() {
     // const tateNew = await Token.new('Tate', 'TATE', 1000);
 
     await deployer.deploy(Wrapper, ReceiverAddress, sender);
-    const wrapper = await Wrapper.deployed();
+    wrapper = await Wrapper.deployed();
 
     // await deployer.deploy(Swap, owner, fuji, user, tate);
     // const fujiTateSwap = await Swap.deployed();
 
     // await deployer.deploy(Swap, owner, haku, user, tate);
     // const hakuTateSwap = await Swap.deployed();
-    let dataVariable;
 
     debugger;
     await fujiTateSwap._swap(100);
