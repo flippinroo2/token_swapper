@@ -12,15 +12,12 @@ import '@openzeppelin/contracts/utils/Address.sol';
 import '@openzeppelin/contracts/utils/Strings.sol';
 
 // Custom Tokens
-// import './Template.sol'; // Template Contract
 import './Token.sol'; // Token Contract
 
 contract Swap {
   using Address for address;
   using SafeMath for uint256;
   using Strings for string;
-
-  bool private constant DEBUG = true;
 
   address private _admin;
 
@@ -32,9 +29,6 @@ contract Swap {
 
   address public _token1Address;
   address public _token2Address;
-
-  uint256 public _token1Allowance;
-  uint256 public _token2Allowance;
 
   // Events
   event SwapCreated(
@@ -50,54 +44,46 @@ contract Swap {
     address user2_,
     Token token2_
   ) {
-    if(DEBUG){
-    console.log(
-      '\n\nconstructor(address user1_ %s, Token token1_, address user2_ %s, Token token2_)',
-      user1_,
-      user2_
-    );
-    console.log('Swap creator: %s', msg.sender);
-    }
     address admin = msg.sender;
     _admin = admin;
+
     _user1 = user1_;
-    _token1 = token1_;
     _user2 = user2_;
+
+    _token1 = token1_;
     _token2 = token2_;
+
+    uint256 token1TotalSupply = token1_.totalSupply();
+    uint256 token2TotalSupply = token2_.totalSupply();
+
+    // console.log('\nadmin: %s', admin);
+    // console.log('user1_: %s', user1_);
+    // console.log('user2_: %s', user2_);
+    // console.log('token1_: %s', address(token1_));
+    // console.log('token2_: %s', address(token2_));
+    // console.log('token1TotalSupply');
+    // console.log(token1TotalSupply);
+    // console.log('token2TotalSupply');
+    // console.log(token2TotalSupply);
+
+    token1_.approveFrom(address(_token1), address(this), token1TotalSupply);
+    token2_.approveFrom(address(_token2), address(this), token2TotalSupply);
+
     emit SwapCreated(user1_, token1_, user2_, token2_);
   }
 
-  function getToken1Address() external view returns (address) {
-    return address(_token1);
-  }
-
-  function getToken2Address() external view returns (address) {
-    return address(_token2);
-  }
-
   function _swap(uint256 amount) external {
-
     require(
       msg.sender == _user1 || msg.sender == _user2,
       'Not an authorized address.'
     );
+    // MOVE THESE TO WRAPPER
+    _safeTransferFrom(_token1, address(_token1), _user1, amount);
+    _safeTransferFrom(_token2, address(_token2), _user2, amount);
 
-    // Set approvals for users
-    // _token1.approve()
-    // _token2.approve()
+    _token1.approveFrom(_user1, address(this), amount);
+    _token2.approveFrom(_user2, address(this), amount);
 
-    // Set allowances
-    _token1Allowance = _token1.allowance(_user1, address(this));
-    _token2Allowance = _token2.allowance(_user2, address(this));
-
-    // require(
-    //   _token1Allowance >= amount,
-    //   'Token 1 allowance is too low.'
-    // );
-    // require(
-    //   _token2Allowance >= amount,
-    //   'Token 2 allowance is too low.'
-    // );
     _safeTransferFrom(_token1, _user1, _user2, amount);
     _safeTransferFrom(_token2, _user2, _user1, amount);
   }
@@ -108,28 +94,6 @@ contract Swap {
     address receiver,
     uint256 amount
   ) internal {
-    if(DEBUG){
-      console.log('_safeTransferFrom(Token token: %s, address sender: %s, address receiver %s, uint256 amount)\n', address(token), sender, receiver);
-    }
-
-    // Owner - 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-    // User - 0x90F79bf6EB2c4f870365E785982E1f101E93b906
-
-    address contractAddress = address(this);
-    console.log('contractAddres: %s\n', contractAddress);
-
-    // _token1.approveFrom(sender, contractAddress, amount);
-
-    uint256 token1OwnerAllowance = _token1.allowance(_user1, _user2);
-    uint256 token1UserAllowance = _token1.allowance(_user2, _user1);
-    uint256 token2OwnerAllowance = _token2.allowance(_user1, _user2);
-    uint256 token2UserAllowance = _token2.allowance(_user2, _user1);
-
-    console.log('\ntoken1OwnerAllowance: %s', token1OwnerAllowance);
-    console.log('token1UserAllowance: %s', token1UserAllowance);
-    console.log('token2OwnerAllowance: %s', token2OwnerAllowance);
-    console.log('token2UserAllowance: %s\n', token2UserAllowance);
-
     bool sent = token.transferFrom(sender, receiver, amount);
     require(sent, 'Token transfer failed.');
   }

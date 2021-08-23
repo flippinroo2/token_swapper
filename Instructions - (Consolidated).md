@@ -22,7 +22,7 @@ Avalanche is a multi-blockchain ecosystem. They have 3 main chains (X-Chain, P-C
 
 ## Deliverables
 
-1. Source code for the depoyed wrapper contract. (Tokens A, B & C + any other contracts used)
+1. Source code for the deployed wrapper contract. (Tokens A, B & C + any other contracts used)
 2. The Fuji development address of each contract from step 1.
-3. A pseudocode call sequence for the correct order & arguments to deploy all contracts and swapp 100 token A for C, then convert 50 token C to token B.
+3. A pseudocode call sequence for the correct order & arguments to deploy all contracts and swap 100 token A for C, then convert 50 token C to token B.
 4. Transfer 1000 of token A and token B to fuji address __0x808cE8deC9E10beD8d0892aCEEf9F1B8ec2F52Bd__.

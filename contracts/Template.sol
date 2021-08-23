@@ -28,7 +28,6 @@ import '@openzeppelin/contracts/utils/introspection/IERC165.sol';
 import '@openzeppelin/contracts/utils/introspection/IERC1820Registry.sol';
 
 abstract contract Template is IERC20 {
-// abstract contract Template is IERC20, IERC165, IERC1820Registry {
     using Address for address;
     using Arrays for uint256[];
     using SafeMath for uint256;
@@ -43,23 +42,15 @@ abstract contract Template is IERC20 {
 
     address private _admin;
 
-    // Events
     event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
     event Fallback(address indexed sender, uint256 value);
-    // event InterfaceImplementerSet(address indexed account, bytes32 indexed interfaceHash, address indexed implementer);
-    // event ManagerChanged(address indexed account, address indexed newManager);
 
-    // Function Modifiers
     modifier security {
         require(msg.sender == _admin, 'Must be contract admin');
         _;
     }
 
     modifier safe(address account) {
-        // assert.notEqual(address, 0x0);
-        // assert.notEqual(address, '');
-        // assert.notEqual(address, null);
-        // assert.notEqual(address, undefined);
         require(account != address(0), 'Cannot transact with the zero address');
         _;
     }
@@ -73,10 +64,6 @@ abstract contract Template is IERC20 {
 
     constructor() {
         address admin = msg.sender;
-        if (DEBUG) {
-            console.log('\n\nconstructor()');
-            console.log('Template creator: %s', admin);
-        }
         setAdmin(msg.sender);
     }
 
@@ -122,21 +109,6 @@ abstract contract Template is IERC20 {
 
     function getTotalMinted() public view virtual returns (uint256);
 
-    // function supportsInterface(bytes4 interfaceId) external view returns (bool);
-
-    // function setManager(address account, address newManager) external;
-
-    // function getManager(address account) external view returns (address);
-
-    // function setInterfaceImplementer(address account, bytes32 _interfaceHash) external view returns (address);
-
-    // function updateERC165Cache(address account, bytes4 interfaceId) external;
-
-    // function implementsERC165Interface(address account, bytes4 interfaceId) external view returns (bool);
-
-    // function implementsERC165InterfaceNoCache(address account, bytes4 interfaceId) external view returns (bool);
-
-    // New syntax for fallback functions.
     receive() external payable {
         emit Fallback(msg.sender, msg.value);
     }
