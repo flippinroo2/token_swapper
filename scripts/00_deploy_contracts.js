@@ -38,6 +38,20 @@ async function main() {
 
   const Factory = await getContractFactory('TokenFactory');
   tokenFactory = await Factory.deploy();
+  tokenFactory.on('TokenCreated', async (address) => {
+    const tempToken = Token.attach(address);
+    const symbol = await tempToken._symbol();
+    if (symbol === 'FUJI') {
+      fuji = tempToken;
+    }
+    if (symbol === 'HAKU') {
+      haku = tempToken;
+    }
+    if (symbol === 'TATE') {
+      tate = tempToken;
+    }
+    debugger;
+  });
 
   const Token = await getContractFactory('Token');
 
@@ -48,7 +62,6 @@ async function main() {
     1100,
   );
   dataVariable = await createFujiTransaction.wait();
-  fuji = Token.attach(dataVariable.to);
 
   const createHakuTransaction = await tokenFactory.createToken(
     'Haku',
@@ -57,7 +70,6 @@ async function main() {
     1050,
   );
   dataVariable = await createHakuTransaction.wait();
-  haku = Token.attach(dataVariable.to);
 
   const createTateTransaction = await tokenFactory.createToken(
     'Tate',
@@ -66,7 +78,8 @@ async function main() {
     1000,
   );
   dataVariable = await createTateTransaction.wait();
-  tate = Token.attach(dataVariable.to);
+
+  debugger;
 
   const Wrapper = await getContractFactory('Wrapper');
   wrapper = await Wrapper.deploy(owner.address, user.address);
@@ -77,26 +90,36 @@ async function main() {
     fuji.address,
     tate.address,
   );
-  await createFujiSwap.wait();
 
-  fujiTateSwap = Swap.attach(await wrapper._fujiTateSwapper());
+  const createFujiSwapReceipt = await createFujiSwap.wait();
+
+  const fujiTateSwapper = await wrapper._fujiTateSwapper();
+
+  fujiTateSwap = Swap.attach(fujiTateSwapper);
 
   const createHakuSwap = await wrapper.createHakuSwap(
     haku.address,
     tate.address,
   );
-  await createHakuSwap.wait();
 
-  hakuTateSwap = Swap.attach(await wrapper._hakuTateSwapper());
+  const hakuTateSwapReceipt = await createHakuSwap.wait();
+
+  const hakuTateSwapper = await wrapper._hakuTateSwapper();
+
+  hakuTateSwap = Swap.attach(hakuTateSwapper);
 
   debugger;
 
-  dataVariable = await fuji.balanceOf(tokenFactory.address);
+  // wrapper - "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+  // tokenFactory - "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  // fuji - "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  // haku - "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  // tate - "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  // fujiTateSwap - "0x856e4424f806D16E8CBC702B3c0F2ede5468eae5"
+  // hakuTateSwap - "0xb0279Db6a2F1E01fbC8483FCCef0Be2bC6299cC3"
 
-  debugger;
-
-  const fujiTateSwapTransaction = await fujiTateSwap._swap(7);
-  const hakuTateSwapTransaction = await hakuTateSwap._swap(4);
+  // const fujiTateSwapTransaction = await fujiTateSwap._swap(7);
+  // const hakuTateSwapTransaction = await hakuTateSwap._swap(4);
 }
 
 main()
