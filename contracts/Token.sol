@@ -51,7 +51,7 @@ contract Token is Template {
         _tokenDecimals = decimals_;
         setAdmin(admin);
         setTotalSupply(totalSupply_);
-        mint(address(this), totalSupply_);
+        mint(address(this), totalSupply);
     }
 
     function setTotalSupply(uint256 totalSupply_) internal override {
@@ -108,9 +108,7 @@ contract Token is Template {
     address spender,
     uint256 amount) public returns (bool) {
         require((owner != address(0) || (spender != address(0))), "ERC20: approve from the zero address");
-        uint256 currentAllowance = _allowances[owner][spender];
         _approve(owner, spender, amount);
-        uint256 newAllowance = _allowances[owner][spender];
         return true;
     }
 
@@ -141,13 +139,13 @@ contract Token is Template {
     function _transfer(address sender, address recipient, uint256 amount) internal {
         require(sender != address(0), "ERC20: transfer from the zero address");
         require(recipient != address(0), "ERC20: transfer to the zero address");
+        uint256 senderBalance = _balances[sender];
+        uint256 recipientBalance = _balances[recipient];
+        uint256 newRecipientBalance = recipientBalance + amount;
         console.log('sender: %s', sender);
         console.log('recipient: %s', recipient);
         console.log('amount');
         console.log(amount);
-        uint256 senderBalance = _balances[sender];
-        uint256 recipientBalance = _balances[recipient];
-        uint256 newRecipientBalance = recipientBalance + amount;
         require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
         unchecked {
         uint256 newSenderBalance = senderBalance - amount;

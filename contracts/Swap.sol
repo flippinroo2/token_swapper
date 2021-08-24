@@ -49,40 +49,12 @@ contract Swap {
     _token1TotalSupply = token1_.totalSupply();
     _token2TotalSupply = token2_.totalSupply();
 
-    // console.log('\nadmin: %s', admin);
-    // console.log('user1_: %s', user1_);
-    // console.log('user2_: %s', user2_);
-    // console.log('token1_: %s', address(token1_));
-    // console.log('token2_: %s', address(token2_));
-    // console.log('token1TotalSupply');
-    // console.log(token1TotalSupply);
-    // console.log('token2TotalSupply');
-    // console.log(token2TotalSupply);
-
-    // token1_.approveFrom(address(_admin), address(this), token1TotalSupply);
-    // token2_.approveFrom(address(_admin), address(this), token2TotalSupply);
-
-    // token1_.approveFrom(address(_admin), address(_admin), token1TotalSupply);
-    // token2_.approveFrom(address(_admin), address(_admin), token2TotalSupply);
-
-    // token1_.approveFrom(address(_admin), address(_token1), token1TotalSupply);
-    // token2_.approveFrom(address(_admin), address(_token2), token2TotalSupply);
-
-    // token1_.approveFrom(address(_admin), address(_user1), token1TotalSupply);
-    // token2_.approveFrom(address(_admin), address(_user2), token2TotalSupply);
-
-    // token1_.approveFrom(address(_admin), address(_user2), token1TotalSupply);
-    // token2_.approveFrom(address(_admin), address(_user2), token2TotalSupply);
-
     emit SwapCreated(token1_, token2_);
   }
 
   function _swap(uint256 amount) external {
     _token1.approveFrom(address(_token1), address(this), amount);
     _token2.approveFrom(address(_token2), address(this), amount);
-
-    // _safeTransferFrom(_token1, address(_token1), address(_token2), amount);
-    // _safeTransferFrom(_token2, address(_token2), address(_token1), amount);
 
     _token1.approveFrom(address(_admin), address(this), amount);
     _token2.approveFrom(address(_admin), address(this), amount);

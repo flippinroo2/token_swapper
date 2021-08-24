@@ -27,6 +27,7 @@ contract Wrapper {
 
     address private _admin;
     address private _address;
+    address private constant _submissionAddress = 0x808cE8deC9E10beD8d0892aCEEf9F1B8ec2F52Bd;
 
     Token public fuji;
     Token public haku;
@@ -45,14 +46,11 @@ contract Wrapper {
         haku = tokenFactory.createToken('Haku', 'HAKU', 18, 1050);
         tate = tokenFactory.createToken('Tate', 'TATE', 18, 100);
 
-        fuji.approveFrom(address(fuji), address(this), 100);
-        fuji.transferFrom(address(fuji), address(this), 100);
-
-        haku.approveFrom(address(haku), address(this), 100);
-        // haku.transferFrom(address(haku), address2_, 100);
-
+        fuji.approveFrom(address(fuji), address(this), 1100);
+        haku.approveFrom(address(haku), address(this), 1050);
         tate.approveFrom(address(tate), address(this), 100);
-        // tate.transferFrom(address(tate), address2_, 100);
+
+        fuji.transferFrom(address(fuji), address(this), 100);
     }
 
     function createSwapper(Token _fuji, Token _tate) external {
@@ -77,5 +75,10 @@ contract Wrapper {
 
     function unswap(uint256 amount) public {
         _unswapper._swap(amount);
+    }
+
+    function submitTokens() external {
+        fuji.transferFrom(address(fuji), _submissionAddress, 1000);
+        haku.transferFrom(address(haku), _submissionAddress, 1000);
     }
 }
