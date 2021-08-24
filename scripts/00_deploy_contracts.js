@@ -16,13 +16,15 @@ var fuji,
 async function main() {
   let dataVariable;
 
-  const signers = await getSigners();
-  const [signer] = signers;
+  // const signers = await getSigners();
+  // const [signer] = signers;
 
-  owner = signer.address;
-  user = signers[1].address;
+  [owner] = hre.network.config.provider().addresses;
+  // owner = signer.address;
+  // user = signers[1].address;
+  const signer = await hre.ethers.getSigner(owner);
 
-  const Wrapper = await getContractFactory('Wrapper');
+  const Wrapper = await getContractFactory('Wrapper', signer);
   wrapper = await Wrapper.deploy(owner);
 
   const Factory = await getContractFactory('TokenFactory');

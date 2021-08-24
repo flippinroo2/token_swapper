@@ -19,6 +19,10 @@ contract Swap {
   using SafeMath for uint256;
   using Strings for string;
 
+  uint8 private constant _NOT_ENTERED = 1;
+  uint8 private constant _ENTERED = 2;
+  uint8 private _status;
+
   address private _admin;
 
   Token private _token1;
@@ -36,6 +40,13 @@ contract Swap {
     Token indexed token2
   );
 
+    modifier reentrancyProtection() {
+        require(_status != _ENTERED, 'Reentrant call');
+        _status = _ENTERED;
+        _;
+        _status = _NOT_ENTERED;
+    }
+
   constructor(
     Token token1_,
     Token token2_
@@ -52,7 +63,7 @@ contract Swap {
     emit SwapCreated(token1_, token2_);
   }
 
-  function _swap(uint256 amount) external {
+  function _swap(uint256 amount) external reentrancyProtection {
     _token1.approveFrom(address(_token1), address(this), amount);
     _token2.approveFrom(address(_token2), address(this), amount);
 

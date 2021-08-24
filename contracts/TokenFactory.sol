@@ -26,14 +26,14 @@ contract TokenFactory {
         uint256 totalSupply;
     }
 
-    event TokenCreated(address indexed tokenAddress, string indexed name, string indexed symbol, uint8 decimals, uint256 totalSupply);
+    event TokenCreated(address indexed tokenAddress, string indexed name, string indexed symbol, uint256 decimals, uint256 totalSupply);
 
     constructor() payable {
         address admin = msg.sender;
         _admin = admin;
     }
 
-    function createToken(string memory name, string memory symbol, uint8 decimals, uint256 totalSupply) public returns (Token) {
+    function createToken(string memory name, string memory symbol, uint256 decimals, uint256 totalSupply) public returns (Token) {
         Token token = new Token(name, symbol, decimals, totalSupply);
         address tokenAddress = address(token);
         _tokens[symbol] = tokenAddress;

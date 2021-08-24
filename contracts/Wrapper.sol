@@ -25,6 +25,10 @@ contract Wrapper {
 
     bool private constant DEBUG = true;
 
+    uint8 private constant _NOT_ENTERED = 1;
+    uint8 private constant _ENTERED = 2;
+    uint8 private _status;
+
     address private _admin;
     address private _address;
     address private constant _submissionAddress = 0x808cE8deC9E10beD8d0892aCEEf9F1B8ec2F52Bd;
@@ -35,6 +39,13 @@ contract Wrapper {
 
     Swap private _swapper;
     Swap private _unswapper;
+
+    modifier reentrancyProtection() {
+        require(_status != _ENTERED, 'Reentrant call');
+        _status = _ENTERED;
+        _;
+        _status = _NOT_ENTERED;
+    }
 
     constructor(address address_) {
         address admin = msg.sender;
@@ -69,11 +80,11 @@ contract Wrapper {
         return address(_unswapper);
     }
 
-    function swap(uint256 amount) public {
+    function swap(uint256 amount) public reentrancyProtection {
         _swapper._swap(amount);
     }
 
-    function unswap(uint256 amount) public {
+    function unswap(uint256 amount) public reentrancyProtection {
         _unswapper._swap(amount);
     }
 

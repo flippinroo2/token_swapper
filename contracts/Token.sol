@@ -24,9 +24,13 @@ contract Token is Template {
 
     bool private constant DEBUG = true;
 
+    uint8 private constant _NOT_ENTERED = 1;
+    uint8 private constant _ENTERED = 2;
+    uint8 private _status;
+
     string public _name;
     string public _symbol;
-    uint8 public _tokenDecimals;
+    uint256 public _tokenDecimals;
     uint256 public override totalSupply;
     uint256 public totalMinted;
 
@@ -44,7 +48,7 @@ contract Token is Template {
         _;
     }
 
-    constructor(string memory name_, string memory symbol_, uint8 decimals_, uint256 totalSupply_) payable Template() {
+    constructor(string memory name_, string memory symbol_, uint256 decimals_, uint256 totalSupply_) payable Template() {
         address admin = msg.sender;
         _name = name_;
         _symbol = symbol_;
