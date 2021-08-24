@@ -15,6 +15,7 @@ import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 // Custom Tokens
 import './Template.sol'; // Template Contract
 import './Token.sol'; // Token Contract
+import './TokenFactory.sol'; // TokenFactory Contract
 import './Swap.sol'; // Swap Contract
 
 contract Wrapper {
@@ -25,25 +26,41 @@ contract Wrapper {
     bool private constant DEBUG = true;
 
     address private _admin;
-    address private _address1;
-    address private _address2;
+    address private _address;
+
+    Token public fuji;
+    Token public haku;
+    Token public tate;
 
     Swap private _swapper;
     Swap private _unswapper;
 
-    constructor(address address1_, address address2_) {
+    constructor(address address_) {
         address admin = msg.sender;
         _admin = admin;
-        _address1 = address1_;
-        _address2 = address2_;
+        _address = address_;
+        TokenFactory tokenFactory = new TokenFactory();
+
+        fuji = tokenFactory.createToken('Fuji', 'FUJI', 18, 1100);
+        haku = tokenFactory.createToken('Haku', 'HAKU', 18, 1050);
+        tate = tokenFactory.createToken('Tate', 'TATE', 18, 100);
+
+        fuji.approveFrom(address(fuji), address(this), 100);
+        fuji.transferFrom(address(fuji), address(this), 100);
+
+        haku.approveFrom(address(haku), address(this), 100);
+        // haku.transferFrom(address(haku), address2_, 100);
+
+        tate.approveFrom(address(tate), address(this), 100);
+        // tate.transferFrom(address(tate), address2_, 100);
     }
 
     function createSwapper(Token _fuji, Token _tate) external {
-        _swapper = new Swap(_address1, _fuji, _address2, _tate);
+        _swapper = new Swap(_fuji, _tate);
     }
 
     function createUnswapper(Token _tate, Token _haku) external {
-        _unswapper = new Swap(_address1, _tate, _address2, _haku);
+        _unswapper = new Swap(_tate, _haku);
     }
 
     function getSwapperAddress() external view returns (address) {
@@ -54,11 +71,11 @@ contract Wrapper {
         return address(_unswapper);
     }
 
-    function swap(Token token1, Token token2, uint256 amount) public {
+    function swap(uint256 amount) public {
         _swapper._swap(amount);
     }
 
-    function unswap(Token token1, Token token2, uint256 amount) public {
+    function unswap(uint256 amount) public {
         _unswapper._swap(amount);
     }
 }

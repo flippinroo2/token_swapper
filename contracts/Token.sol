@@ -64,7 +64,7 @@ contract Token is Template {
     override
     returns (uint256)
     {
-    return _balances[account];
+        return _balances[account];
     }
 
     function mint(address account, uint256 amount)
@@ -74,9 +74,9 @@ contract Token is Template {
     safe(account)
     restricted(amount)
     {
-    _balances[account] += amount;
-    totalMinted += amount;
-    emit Transfer(address(0), account, amount);
+        _balances[account] += amount;
+        totalMinted += amount;
+        emit Transfer(address(0), account, amount);
     }
 
     function getTotalMinted() public view override returns (uint256) {
@@ -106,11 +106,11 @@ contract Token is Template {
     function approveFrom(
     address owner,
     address spender,
-    uint256 amount) external returns (bool) {
+    uint256 amount) public returns (bool) {
         require((owner != address(0) || (spender != address(0))), "ERC20: approve from the zero address");
-        // uint256 currentAllowance = _allowances[owner][spender];
+        uint256 currentAllowance = _allowances[owner][spender];
         _approve(owner, spender, amount);
-        // uint256 newAllowance = _allowances[owner][spender];
+        uint256 newAllowance = _allowances[owner][spender];
         return true;
     }
 
@@ -147,9 +147,7 @@ contract Token is Template {
         console.log(amount);
         uint256 senderBalance = _balances[sender];
         uint256 recipientBalance = _balances[recipient];
-
         uint256 newRecipientBalance = recipientBalance + amount;
-
         require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
         unchecked {
         uint256 newSenderBalance = senderBalance - amount;

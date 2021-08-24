@@ -21,40 +21,33 @@ contract Swap {
 
   address private _admin;
 
-  address public _user1;
-  address public _user2;
+  Token private _token1;
+  Token private _token2;
 
-  Token public _token1;
-  Token public _token2;
+  address private _token1Address;
+  address private _token2Address;
 
-  address public _token1Address;
-  address public _token2Address;
+  uint256 private _token1TotalSupply;
+  uint256 private _token2TotalSupply;
 
   // Events
   event SwapCreated(
-    address user1,
     Token indexed token1,
-    address user2,
     Token indexed token2
   );
 
   constructor(
-    address user1_,
     Token token1_,
-    address user2_,
     Token token2_
   ) {
     address admin = msg.sender;
     _admin = admin;
 
-    _user1 = user1_;
-    _user2 = user2_;
-
     _token1 = token1_;
     _token2 = token2_;
 
-    uint256 token1TotalSupply = token1_.totalSupply();
-    uint256 token2TotalSupply = token2_.totalSupply();
+    _token1TotalSupply = token1_.totalSupply();
+    _token2TotalSupply = token2_.totalSupply();
 
     // console.log('\nadmin: %s', admin);
     // console.log('user1_: %s', user1_);
@@ -66,26 +59,36 @@ contract Swap {
     // console.log('token2TotalSupply');
     // console.log(token2TotalSupply);
 
-    token1_.approveFrom(address(_token1), address(this), token1TotalSupply);
-    token2_.approveFrom(address(_token2), address(this), token2TotalSupply);
+    // token1_.approveFrom(address(_admin), address(this), token1TotalSupply);
+    // token2_.approveFrom(address(_admin), address(this), token2TotalSupply);
 
-    emit SwapCreated(user1_, token1_, user2_, token2_);
+    // token1_.approveFrom(address(_admin), address(_admin), token1TotalSupply);
+    // token2_.approveFrom(address(_admin), address(_admin), token2TotalSupply);
+
+    // token1_.approveFrom(address(_admin), address(_token1), token1TotalSupply);
+    // token2_.approveFrom(address(_admin), address(_token2), token2TotalSupply);
+
+    // token1_.approveFrom(address(_admin), address(_user1), token1TotalSupply);
+    // token2_.approveFrom(address(_admin), address(_user2), token2TotalSupply);
+
+    // token1_.approveFrom(address(_admin), address(_user2), token1TotalSupply);
+    // token2_.approveFrom(address(_admin), address(_user2), token2TotalSupply);
+
+    emit SwapCreated(token1_, token2_);
   }
 
   function _swap(uint256 amount) external {
-    require(
-      msg.sender == _user1 || msg.sender == _user2,
-      'Not an authorized address.'
-    );
-    // MOVE THESE TO WRAPPER
-    _safeTransferFrom(_token1, address(_token1), _user1, amount);
-    _safeTransferFrom(_token2, address(_token2), _user2, amount);
+    _token1.approveFrom(address(_token1), address(this), amount);
+    _token2.approveFrom(address(_token2), address(this), amount);
 
-    _token1.approveFrom(_user1, address(this), amount);
-    _token2.approveFrom(_user2, address(this), amount);
+    // _safeTransferFrom(_token1, address(_token1), address(_token2), amount);
+    // _safeTransferFrom(_token2, address(_token2), address(_token1), amount);
 
-    _safeTransferFrom(_token1, _user1, _user2, amount);
-    _safeTransferFrom(_token2, _user2, _user1, amount);
+    _token1.approveFrom(address(_admin), address(this), amount);
+    _token2.approveFrom(address(_admin), address(this), amount);
+
+    _safeTransferFrom(_token1, _admin, address(_token2), amount);
+    _safeTransferFrom(_token2, address(_token2), _admin, amount);
   }
 
   function _safeTransferFrom(
