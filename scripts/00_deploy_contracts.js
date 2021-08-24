@@ -49,11 +49,11 @@ async function main() {
   tateHakuSwap = Swap.attach(await wrapper.getUnswapperAddress());
 
   // SWAP
-  await fujiTateSwap._swap(100);
-  await tateHakuSwap._swap(50);
+  // await fujiTateSwap._swap(100);
+  // await tateHakuSwap._swap(50);
 
   // TRANSFER
-  await wrapper.submitTokens();
+  // await wrapper.submitTokens();
 }
 
 main()
