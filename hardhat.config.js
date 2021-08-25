@@ -9,12 +9,10 @@ const port = 9650;
 const provider = new Web3.providers.HttpProvider(
   `${protocol}://${ip}:${port}/ext/bc/C/rpc`,
 );
-const testProvider = new Web3.providers.HttpProvider(
+const providerNoPort = new Web3.providers.HttpProvider(
   `${protocol}://${ip}/ext/bc/C/rpc`,
 );
-const privateKeys = [
-  '0x53f4305f5dfbe5228f7264fa7b15ff28dfbdee34b2dc0887b6e585774bec66d6',
-];
+const privateKeys = ['<INSERT_PRIVATE_KEY>'];
 
 require('@nomiclabs/hardhat-waffle');
 require('@nomiclabs/hardhat-web3');
@@ -26,7 +24,7 @@ module.exports = {
     // test: {
     //   url: 'https://api.avax-test.network/ext/bc/C/rpc',
     //   chainId: 43113,
-    //   from: 0xeb5c8fb7d97bf7084abdd77ccaf7db5beaab08fa,
+    //   from: 0xeB5c8FB7d97bF7084ABdD77CCaF7dB5BeAAB08fA,
     // },
     fuji: {
       provider: () => {

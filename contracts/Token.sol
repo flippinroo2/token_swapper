@@ -1,8 +1,7 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-// Custom Tokens
-import './Template.sol'; // Template
+import './Template.sol';
 
 contract Token is Template {
     using Address for address;
@@ -10,11 +9,11 @@ contract Token is Template {
     using SafeMath for uint256;
     using Strings for string;
 
-    bool private constant DEBUG = false;
-
     uint8 private constant _NOT_ENTERED = 1;
     uint8 private constant _ENTERED = 2;
     uint8 private _status;
+
+    address private _admin;
 
     string public _name;
     string public _symbol;
@@ -24,6 +23,16 @@ contract Token is Template {
 
     mapping(address => uint256) public _balances;
     mapping(address => mapping(address => uint256)) public _allowances;
+
+    modifier security {
+        require((msg.sender == getAdmin()) || (msg.sender == address(this)), 'Must be contract admin');
+        _;
+    }
+
+    modifier safe(address account) {
+        require(account != address(0), 'Cannot transact with the zero address');
+        _;
+    }
 
     modifier restricted(uint256 number) {
         require(number != 0, 'Number cannot be zero');
@@ -36,12 +45,12 @@ contract Token is Template {
         _;
     }
 
-    // modifier reentrancyProtection() {
-    //     require(_status != _ENTERED, 'Reentrant call');
-    //     _status = _ENTERED;
-    //     _;
-    //     _status = _NOT_ENTERED;
-    // }
+    modifier reentrancyProtection() {
+        require(_status != _ENTERED, 'Reentrant call');
+        _status = _ENTERED;
+        _;
+        _status = _NOT_ENTERED;
+    }
 
     constructor(string memory name_, string memory symbol_, uint256 decimals_, uint256 totalSupply_) payable Template() {
         address admin = msg.sender;
@@ -53,7 +62,7 @@ contract Token is Template {
         mint(address(this), totalSupply);
     }
 
-    function setTotalSupply(uint256 totalSupply_) internal override {
+    function setTotalSupply(uint256 totalSupply_) internal override security safe(msg.sender) {
         totalSupply = totalSupply_;
     }
 
@@ -92,7 +101,7 @@ contract Token is Template {
         return _allowances[owner][spender];
     }
 
-    function approve(address spender, uint256 amount) public override returns (bool){
+    function approve(address spender, uint256 amount) public override safe(msg.sender) returns (bool){
         address owner = msg.sender;
         require((owner != address(0) || (spender != address(0))), "ERC20: approve from the zero address");
         require(amount >= (amount - totalSupply), "Approval would exceed the total supply");
@@ -105,7 +114,7 @@ contract Token is Template {
     function approveFrom(
     address owner,
     address spender,
-    uint256 amount) public returns (bool) {
+    uint256 amount) public safe(msg.sender)  returns (bool) {
         require((owner != address(0) || (spender != address(0))), "ERC20: approve from the zero address");
         _approve(owner, spender, amount);
         return true;
@@ -113,17 +122,10 @@ contract Token is Template {
 
     function _approve(address owner, address spender, uint256 amount) internal {
         _allowances[owner][spender] = amount;
-        if(DEBUG){
-            console.log('_approve()');
-            console.log('owner: %s', owner);
-            console.log('spender: %s', spender);
-            console.log('amount');
-            console.log(amount);
-        }
         emit Approval(owner, spender, amount);
     }
 
-    function transfer(address recipient, uint256 amount) public override returns (bool){
+    function transfer(address recipient, uint256 amount) public override safe(msg.sender) returns (bool){
         _transfer(msg.sender, recipient, amount);
         return true;
     }
@@ -132,7 +134,7 @@ contract Token is Template {
     address sender,
     address recipient,
     uint256 amount
-    ) external override reentrancyProtection returns (bool) {
+    ) external override safe(msg.sender) reentrancyProtection returns (bool) {
         _transfer(sender, recipient, amount);
         uint256 currentAllowance = _allowances[sender][msg.sender];
         require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
@@ -148,13 +150,6 @@ contract Token is Template {
         uint256 senderBalance = _balances[sender];
         uint256 recipientBalance = _balances[recipient];
         uint256 newRecipientBalance = recipientBalance + amount;
-        if(DEBUG){
-            console.log('_transfer()');
-            console.log('sender: %s', sender);
-            console.log('recipient: %s', recipient);
-            console.log('amount');
-            console.log(amount);
-        }
         require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
         unchecked {
         uint256 newSenderBalance = senderBalance - amount;

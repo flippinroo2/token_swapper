@@ -1,15 +1,12 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-// Custom Tokens
-import './Token.sol'; // Token Contract
+import './Token.sol';
 
 contract Swap {
     using Address for address;
     using SafeMath for uint256;
     using Strings for string;
-
-    bool private constant DEBUG = false;
 
     uint8 private constant _NOT_ENTERED = 1;
     uint8 private constant _ENTERED = 2;
@@ -45,52 +42,27 @@ contract Swap {
         Token token2_
     ) {
         emit SwapDeployed(name_, address(this));
-
         address admin_ = msg.sender;
         setAdmin(admin_);
-
         name = name_;
-
         _token1 = token1_;
         _token2 = token2_;
-
         _token1TotalSupply = token1_.totalSupply();
         _token2TotalSupply = token2_.totalSupply();
-
-        if(DEBUG){
-            console.log('\n\nSwap()');
-            console.log('token1_: %s', address(token1_));
-            console.log('token2_: %s', address(token2_));
-            console.log('_token1TotalSupply');
-            console.log(_token1TotalSupply);
-            console.log('_token2TotalSupply');
-            console.log(_token2TotalSupply);
-        }
     }
 
     function setAdmin(address admin_) internal {
-        if(DEBUG){
-            console.log('setAdmin()');
-            console.log('Previous Admin: %s', _admin);
-            console.log('New Admin: %s', admin_);
-        }
         _admin = admin_;
         emit AdminChanged(_admin, admin_);
     }
 
     function swap(uint256 amount) external reentrancyProtection {
-        if(DEBUG){
-            console.log('\n\nSwap admin: %s', address(_admin)); // Wrapper
-        }
         _token1.approveFrom(address(_token1), address(this), amount);
         _token2.approveFrom(address(_token2), address(this), amount);
         _swap(amount);
     }
 
     function unswap(uint256 amount) external reentrancyProtection {
-        if(DEBUG){
-            console.log('\n\nSwap admin: %s', address(_admin)); // Wrapper
-        }
         _token1.approveFrom(address(_token2), address(this), amount);
         _token2.approveFrom(address(_token1), address(this), amount);
         _unswap(amount);
@@ -112,12 +84,6 @@ contract Swap {
         address receiver,
         uint256 amount
     ) internal {
-        if(DEBUG){
-            console.log('\nsender: %s', sender);
-            console.log('receiver: %s', receiver);
-            console.log('amount');
-            console.log(amount);
-        }
         bool sent = token.transferFrom(sender, receiver, amount);
         require(sent, 'Token transfer failed.');
     }
