@@ -23,29 +23,49 @@ async function deployWrapper() {
   Wrapper = await getContractFactory('Wrapper', signer);
   wrapper = await Wrapper.deploy(owner);
 }
-async function deployTokens() {
-  Factory = await getContractFactory('TokenFactory');
-  tokenFactory = await Factory.deploy();
 
+async function createTokenFactory() {
+  Factory = await getContractFactory('TokenFactory');
+
+  await wrapper.createTokenFactory();
+  // const test = await wrapper.createTokenFactory.call(); // Using call() will allow you to get the return value for testing.
+
+  const [factoryCreatedEvent] = await wrapper.queryFilter('FactoryCreated');
+  const [tokenFactoryAddress] = factoryCreatedEvent.args;
+
+  // tokenFactory = await Factory.deploy();
+  tokenFactory = await Factory.attach(tokenFactoryAddress);
+}
+
+async function createTokens() {
   Token = await getContractFactory('Token');
 
-  const test = await wrapper.createTokenFactory.call(); // Using call() will allow you to get the return value for testing.
-  const testWait = await test.wait();
-  const testToNumber = await test.value.toNumber();
+  await tokenFactory.createToken('Fuji', 'FUJI', 18, 1100);
+  await tokenFactory.createToken('Haku', 'HAKU', 18, 1050);
+  await tokenFactory.createToken('Tate', 'TATE', 18, 100);
+
+  const tokens = await tokenFactory.queryFilter('TokenCreated');
+
+  for (const token of tokens) {
+    const [address] = token.args;
+    const tempToken = await Token.attach(address);
+    const symbol = await tempToken._symbol();
+    if (symbol === 'FUJI') {
+      fuji = tempToken;
+    }
+    if (symbol === 'HAKU') {
+      haku = tempToken;
+    }
+    if (symbol === 'TATE') {
+      tate = tempToken;
+    }
+  }
+
+  // fuji = await Token.attach(fujiAddress);
+  // haku = await Token.attach(hakuAddress);
+  // tate = await Token.attach(tateAddress);
 
   debugger;
-
-  const fujiAddress = await wrapper.fuji();
-  const hakuAddress = await wrapper.haku();
-  const tateAddress = await wrapper.tate();
-
-  // fuji = tokenFactory.createToken('Fuji', 'FUJI', 18, 1100);
-  // haku = tokenFactory.createToken('Haku', 'HAKU', 18, 1050);
-  // tate = tokenFactory.createToken('Tate', 'TATE', 18, 100);
-
-  fuji = await Token.attach(fujiAddress);
-  haku = await Token.attach(hakuAddress);
-  tate = await Token.attach(tateAddress);
 }
 
 async function deploySwappers() {
@@ -83,7 +103,8 @@ async function transferTokens(address) {
 async function main() {
   setUsers(await getSigners());
   await deployWrapper();
-  await deployTokens();
+  await createTokenFactory();
+  await createTokens();
   await deploySwappers();
   // await swap();
   // await transferTokens(0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd);
@@ -93,7 +114,10 @@ async function main() {
 // owner = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 // user = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 // wrapper = 0x5FbDB2315678afecb367f032d93F642f64180aa3
-// tokenFactory = 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512
+// tokenFactory = 0xa16E02E87b7454126E5E10d957A927A7F5B5d2be
+// fuji = 0x8Ff3801288a85ea261E4277d44E1131Ea736F77B
+// haku = 0x4CEc804494d829bEA93AB8eA7045A7efBED3c229
+// tate = 0xb385A0bAA2F8f30C660ABd207e8624863fcf30AE
 
 main()
   .then(() => process.exit(0))

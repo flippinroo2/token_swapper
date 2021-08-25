@@ -86,8 +86,8 @@ contract Wrapper {
     }
 
     function createTokenFactory() external returns (TokenFactory) {
-        tokenFactory_ = new TokenFactory();
-        emit FactoryCreated(address(TokenFactory_));
+        TokenFactory tokenFactory_ = new TokenFactory();
+        emit FactoryCreated(address(tokenFactory_));
         return tokenFactory_;
     }
 
