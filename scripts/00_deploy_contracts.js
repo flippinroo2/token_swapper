@@ -102,8 +102,7 @@ async function transferTokens(address) {
 }
 
 async function checkBalances(addresses) {
-  let data = {};
-  const balances = await Promise.all(
+  return await Promise.all(
     addresses.map(async (item, index) => {
       let fujiBalance, hakuBalance, tateBalance;
       fujiBalance = await fuji.balanceOf(item);
@@ -116,8 +115,6 @@ async function checkBalances(addresses) {
       };
     }),
   );
-  debugger;
-  return data;
 }
 
 async function main() {
@@ -128,12 +125,12 @@ async function main() {
   await createTokens();
   await createSwappers();
   const addresses = [owner, user, fuji.address, haku.address, tate.address];
-  balances = await checkBalances(addresses);
+  console.dir(await checkBalances(addresses));
   await swap();
-  balances = await checkBalances(addresses);
+  console.dir(await checkBalances(addresses));
   await transferTokens(owner);
   // await transferTokens(0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd);
-  balances = await checkBalances(addresses);
+  console.dir(await checkBalances(addresses));
 }
 
 // SUBMISSION_ADDRESS = 0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd
