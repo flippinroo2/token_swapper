@@ -88,30 +88,30 @@ contract Swap {
     }
 
     function _swap(uint256 amount) external reentrancyProtection {
-        _token1.approveFrom(address(_admin), address(this), amount);
-        _token2.approveFrom(address(_admin), address(this), amount);
+        // _token1.approveFrom(address(_admin), address(this), amount);
+        // _token2.approveFrom(address(_admin), address(this), amount);
 
-        _token1.approveFrom(address(_admin), address(_admin), amount);
-        _token2.approveFrom(address(_admin), address(_admin), amount);
+        // _token1.approveFrom(address(_admin), address(_admin), amount);
+        // _token2.approveFrom(address(_admin), address(_admin), amount);
 
-        _token1.approveFrom(address(_admin), address(_token1), amount);
-        _token2.approveFrom(address(_admin), address(_token2), amount);
+        // _token1.approveFrom(address(_admin), address(_token1), amount);
+        // _token2.approveFrom(address(_admin), address(_token2), amount);
 
-        _token1.approveFrom(address(_admin), address(_token2), amount);
-        _token2.approveFrom(address(_admin), address(_token1), amount);
+        // _token1.approveFrom(address(_admin), address(_token2), amount);
+        // _token2.approveFrom(address(_admin), address(_token1), amount);
 
 
-        _token1.approveFrom(address(_token1), address(this), amount);
-        _token2.approveFrom(address(_token2), address(this), amount);
+        // _token1.approveFrom(address(_token1), address(this), amount);
+        // _token2.approveFrom(address(_token2), address(this), amount);
 
-        _token1.approveFrom(address(_token1), address(_admin), amount);
-        _token2.approveFrom(address(_token2), address(_admin), amount);
+        // _token1.approveFrom(address(_token1), address(_admin), amount);
+        // _token2.approveFrom(address(_token2), address(_admin), amount);
 
-        _token1.approveFrom(address(_token1), address(_token1), amount);
-        _token2.approveFrom(address(_token2), address(_token2), amount);
+        // _token1.approveFrom(address(_token1), address(_token1), amount);
+        // _token2.approveFrom(address(_token2), address(_token2), amount);
 
-        _token1.approveFrom(address(_token1), address(_token2), amount);
-        _token2.approveFrom(address(_token2), address(_token1), amount);
+        // _token1.approveFrom(address(_token1), address(_token2), amount);
+        // _token2.approveFrom(address(_token2), address(_token1), amount);
 
 
         _safeTransferFrom(_token1, _admin, address(_token2), amount);
