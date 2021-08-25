@@ -42,7 +42,7 @@ async function createTokens() {
 
   await tokenFactory.createToken('Fuji', 'FUJI', 18, 1100);
   await tokenFactory.createToken('Haku', 'HAKU', 18, 1050);
-  await tokenFactory.createToken('Tate', 'TATE', 18, 100);
+  await tokenFactory.createToken('Tate', 'TATE', 18, 150);
 
   const tokens = await tokenFactory.queryFilter('TokenCreated');
 
@@ -60,10 +60,6 @@ async function createTokens() {
       tate = tempToken;
     }
   }
-
-  // fuji = await Token.attach(fujiAddress);
-  // haku = await Token.attach(hakuAddress);
-  // tate = await Token.attach(tateAddress);
 }
 
 async function createSwappers() {
@@ -87,8 +83,10 @@ async function createSwappers() {
 }
 
 async function swap() {
-  await fujiTateSwap._swap(100);
-  await tateHakuSwap._swap(50);
+  await fujiTateSwap.swap(100);
+  // await fujiTateSwap.unswap(100);
+  await tateHakuSwap.swap(50);
+  // await tateHakuSwap.unswap(50);
 }
 
 async function transferTokens(address) {
@@ -129,9 +127,9 @@ async function main() {
   console.dir(await getBalances(addresses));
   await swap();
   console.dir(await getBalances(addresses));
-  // await transferTokens(owner);
+  await transferTokens(owner);
   // await transferTokens(0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd);
-  // console.dir(await getBalances(addresses));
+  console.dir(await getBalances(addresses));
 }
 
 // SUBMISSION_ADDRESS = 0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd

@@ -28,12 +28,12 @@ contract Wrapper {
     event SwapCreated(string name_, address swap_, address indexed token1_, address indexed token2_);
     event FallbackCalled(address indexed sender, uint256 value);
 
-    modifier reentrancyProtection() {
-        require(_status != _ENTERED, 'Reentrant call');
-        _status = _ENTERED;
-        _;
-        _status = _NOT_ENTERED;
-    }
+    // modifier reentrancyProtection() {
+    //     require(_status != _ENTERED, 'Reentrant call');
+    //     _status = _ENTERED;
+    //     _;
+    //     _status = _NOT_ENTERED;
+    // }
 
     constructor(address owner_) {
         address admin_ = msg.sender;
@@ -73,7 +73,7 @@ contract Wrapper {
         return address(_owner);
     }
 
-    function createTokenFactory() external reentrancyProtection returns (TokenFactory) {
+    function createTokenFactory() external returns (TokenFactory) {
         if(address(_tokenFactory) == address(0)){
             TokenFactory tokenFactory_ = new TokenFactory();
             emit FactoryCreated(address(tokenFactory_));
@@ -87,7 +87,7 @@ contract Wrapper {
         return _tokenFactory;
     }
 
-    function createSwapper(string memory name, Token token1_, Token token2_) external reentrancyProtection returns (Swap) {
+    function createSwapper(string memory name, Token token1_, Token token2_) external returns (Swap) {
         if(DEBUG){
             console.log('createSwapper()');
             console.log('name: %s', name);
@@ -99,7 +99,7 @@ contract Wrapper {
         return swap_;
     }
 
-    receive() external payable reentrancyProtection {
+    receive() external payable {
         emit FallbackCalled(msg.sender, msg.value);
     }
 }
