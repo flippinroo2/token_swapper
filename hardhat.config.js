@@ -24,7 +24,7 @@ module.exports = {
     // test: {
     //   url: 'https://api.avax-test.network/ext/bc/C/rpc',
     //   chainId: 43113,
-    //   from: <INSERT_ADDRESS>,
+    //   from: 0xeB5c8FB7d97bF7084ABdD77CCaF7dB5BeAAB08fA,
     // },
     fuji: {
       provider: () => {
