@@ -28,7 +28,7 @@ contract TokenFactory {
 
     event TokenCreated(address indexed tokenAddress, string indexed name, string indexed symbol, uint256 decimals, uint256 totalSupply);
 
-    constructor() payable {
+    constructor() {
         address admin = msg.sender;
         _admin = admin;
     }
