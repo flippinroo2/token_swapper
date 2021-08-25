@@ -118,6 +118,12 @@ contract Token is Template {
 
     function _approve(address owner, address spender, uint256 amount) internal {
         _allowances[owner][spender] = amount;
+        if(DEBUG){
+            // console.log('owner: %s', owner);
+            // console.log('spender: %s', spender);
+            // console.log('amount');
+            // console.log(amount);
+        }
         emit Approval(owner, spender, amount);
     }
 
@@ -146,10 +152,12 @@ contract Token is Template {
         uint256 senderBalance = _balances[sender];
         uint256 recipientBalance = _balances[recipient];
         uint256 newRecipientBalance = recipientBalance + amount;
-        console.log('sender: %s', sender);
-        console.log('recipient: %s', recipient);
-        console.log('amount');
-        console.log(amount);
+        if(DEBUG){
+            console.log('sender: %s', sender);
+            console.log('recipient: %s', recipient);
+            console.log('amount');
+            console.log(amount);
+        }
         require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
         unchecked {
         uint256 newSenderBalance = senderBalance - amount;

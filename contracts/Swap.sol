@@ -19,6 +19,8 @@ contract Swap {
   using SafeMath for uint256;
   using Strings for string;
 
+  bool private constant DEBUG = false;
+
   uint8 private constant _NOT_ENTERED = 1;
   uint8 private constant _ENTERED = 2;
   uint8 private _status;
@@ -60,6 +62,16 @@ contract Swap {
     _token1TotalSupply = token1_.totalSupply();
     _token2TotalSupply = token2_.totalSupply();
 
+    if(DEBUG){
+      console.log('\n\nSwap()');
+      console.log('token1_: %s', address(token1_));
+      console.log('token2_: %s', address(token2_));
+      // console.log('_token1TotalSupply');
+      // console.log(_token1TotalSupply);
+      // console.log('_token2TotalSupply');
+      // console.log(_token2TotalSupply);
+
+    }
     emit SwapCreated(token1_, token2_);
   }
 
@@ -80,6 +92,12 @@ contract Swap {
     address receiver,
     uint256 amount
   ) internal {
+    if(DEBUG){
+      console.log('\nsender: %s', sender);
+      console.log('receiver: %s', receiver);
+      // console.log('amount');
+      // console.log(amount);
+    }
     bool sent = token.transferFrom(sender, receiver, amount);
     require(sent, 'Token transfer failed.');
   }

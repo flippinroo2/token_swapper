@@ -13,7 +13,7 @@ contract TokenFactory {
     using SafeMath for uint256;
     using Strings for string;
 
-    bool private constant DEBUG = true;
+    bool private constant DEBUG = false;
 
     address private _admin;
 
@@ -37,6 +37,12 @@ contract TokenFactory {
         Token token = new Token(name, symbol, decimals, totalSupply);
         address tokenAddress = address(token);
         _tokens[symbol] = tokenAddress;
+        if(DEBUG){
+            console.log('\ncreateToken()');
+            console.log('string name: %s, string symbol: %s', name, symbol);
+            console.log('totalSupply');
+            console.log(totalSupply);
+        }
         emit TokenCreated(tokenAddress, name, symbol, decimals, totalSupply);
         return token;
     }
