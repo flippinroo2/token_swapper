@@ -97,11 +97,13 @@ async function transferTokens(address) {
     console.log(address);
   }
   debugger;
+  // fuji.approveFrom();
   fuji.transferFrom(fuji.address, address, 1000);
+  // haku.approveFrom();
   haku.transferFrom(haku.address, address, 1000);
 }
 
-async function checkBalances(addresses) {
+async function getBalances(addresses) {
   return await Promise.all(
     addresses.map(async (item, index) => {
       let fujiBalance, hakuBalance, tateBalance;
@@ -124,13 +126,13 @@ async function main() {
   await createTokenFactory();
   await createTokens();
   await createSwappers();
-  const addresses = [owner, user, fuji.address, haku.address, tate.address];
-  console.dir(await checkBalances(addresses));
+  const addresses = [owner, fuji.address, haku.address, tate.address];
+  console.dir(await getBalances(addresses));
   await swap();
-  console.dir(await checkBalances(addresses));
+  console.dir(await getBalances(addresses));
   await transferTokens(owner);
   // await transferTokens(0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd);
-  console.dir(await checkBalances(addresses));
+  console.dir(await getBalances(addresses));
 }
 
 // SUBMISSION_ADDRESS = 0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd
