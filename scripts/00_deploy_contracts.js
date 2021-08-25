@@ -98,6 +98,7 @@ async function transferTokens(address) {
   }
   fuji.approveFrom(fuji.address, address, 1000);
   fuji.transferFrom(fuji.address, address, 1000);
+
   haku.approveFrom(haku.address, address, 1000);
   haku.transferFrom(haku.address, address, 1000);
 }
@@ -128,9 +129,9 @@ async function main() {
   console.dir(await getBalances(addresses));
   await swap();
   console.dir(await getBalances(addresses));
-  await transferTokens(owner);
+  // await transferTokens(owner);
   // await transferTokens(0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd);
-  console.dir(await getBalances(addresses));
+  // console.dir(await getBalances(addresses));
 }
 
 // SUBMISSION_ADDRESS = 0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd
