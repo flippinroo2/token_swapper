@@ -64,7 +64,7 @@ abstract contract Template is IERC20 {
 
     constructor() {
         address admin = msg.sender;
-        setAdmin(msg.sender);
+        setAdmin(admin);
     }
 
     function setAdmin(address admin) internal {
