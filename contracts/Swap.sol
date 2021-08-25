@@ -9,7 +9,7 @@ contract Swap {
     using SafeMath for uint256;
     using Strings for string;
 
-    bool private constant DEBUG = false;
+    bool private constant DEBUG = true;
 
     uint8 private constant _NOT_ENTERED = 1;
     uint8 private constant _ENTERED = 2;

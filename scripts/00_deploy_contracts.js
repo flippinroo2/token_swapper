@@ -88,7 +88,7 @@ async function createSwappers() {
 
 async function swap() {
   await fujiTateSwap._swap(100);
-  // await tateHakuSwap._swap(50);
+  await tateHakuSwap._swap(50);
 }
 
 async function transferTokens(address) {
@@ -119,7 +119,6 @@ async function getBalances(addresses) {
 }
 
 async function main() {
-  var balances;
   setUsers(await getSigners());
   await deployWrapper();
   await createTokenFactory();
