@@ -36,6 +36,13 @@ contract Token is Template {
         _;
     }
 
+    // modifier reentrancyProtection() {
+    //     require(_status != _ENTERED, 'Reentrant call');
+    //     _status = _ENTERED;
+    //     _;
+    //     _status = _NOT_ENTERED;
+    // }
+
     constructor(string memory name_, string memory symbol_, uint256 decimals_, uint256 totalSupply_) payable Template() {
         address admin = msg.sender;
         _name = name_;
@@ -125,7 +132,7 @@ contract Token is Template {
     address sender,
     address recipient,
     uint256 amount
-    ) external override returns (bool) {
+    ) external override reentrancyProtection returns (bool) {
         _transfer(sender, recipient, amount);
         uint256 currentAllowance = _allowances[sender][msg.sender];
         require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");

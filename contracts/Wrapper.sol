@@ -10,7 +10,7 @@ contract Wrapper {
     using SafeMath for uint256;
     using Strings for string;
 
-    bool private constant DEBUG = true;
+    bool private constant DEBUG = false;
 
     uint8 private constant _NOT_ENTERED = 1;
     uint8 private constant _ENTERED = 2;
@@ -73,7 +73,7 @@ contract Wrapper {
         return address(_owner);
     }
 
-    function createTokenFactory() external returns (TokenFactory) {
+    function createTokenFactory() external reentrancyProtection returns (TokenFactory) {
         if(address(_tokenFactory) == address(0)){
             TokenFactory tokenFactory_ = new TokenFactory();
             emit FactoryCreated(address(tokenFactory_));
@@ -87,7 +87,7 @@ contract Wrapper {
         return _tokenFactory;
     }
 
-    function createSwapper(string memory name, Token token1_, Token token2_) external returns (Swap) {
+    function createSwapper(string memory name, Token token1_, Token token2_) external reentrancyProtection returns (Swap) {
         if(DEBUG){
             console.log('createSwapper()');
             console.log('name: %s', name);
