@@ -1,9 +1,7 @@
 const { ethers } = hre;
 const { getContractFactory, getSigners } = ethers;
 
-var signer,
-  [owner] = hre.network.config.provider().addresses,
-  user;
+var signer, owner, user;
 var wrapper;
 var Token, fuji, haku, tate;
 var Factory, tokenFactory;
@@ -14,8 +12,9 @@ function setUsers(signers) {
     [signer] = signers;
     owner = signer.address;
     user = signers[1].address;
+    return;
   }
-  return;
+  [owner] = hre.network.config.provider().addresses;
 }
 async function deployWrapper() {
   signer = await hre.ethers.getSigner(owner);
