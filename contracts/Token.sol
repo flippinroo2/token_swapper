@@ -119,6 +119,7 @@ contract Token is Template {
     function _approve(address owner, address spender, uint256 amount) internal {
         _allowances[owner][spender] = amount;
         if(DEBUG){
+            // console.log('_approve()');
             // console.log('owner: %s', owner);
             // console.log('spender: %s', spender);
             // console.log('amount');
@@ -153,6 +154,7 @@ contract Token is Template {
         uint256 recipientBalance = _balances[recipient];
         uint256 newRecipientBalance = recipientBalance + amount;
         if(DEBUG){
+            console.log('_transfer()');
             console.log('sender: %s', sender);
             console.log('recipient: %s', recipient);
             console.log('amount');
