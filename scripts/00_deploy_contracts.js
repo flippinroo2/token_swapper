@@ -1,3 +1,5 @@
+const DEBUG = true;
+
 const { ethers } = hre;
 const { getContractFactory, getSigners } = ethers;
 
@@ -53,7 +55,11 @@ async function swap() {
   await tateHakuSwap._swap(50);
 }
 
-async function transferTokens() {
+async function transferTokens(address) {
+  if (DEBUG) {
+    console.log('address');
+    console.log(address);
+  }
   await wrapper.submitTokens();
 }
 
@@ -63,7 +69,7 @@ async function main() {
   await deployTokens();
   await deploySwappers();
   await swap();
-  await transferTokens();
+  await transferTokens(0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd);
 }
 
 main()

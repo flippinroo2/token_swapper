@@ -31,7 +31,6 @@ contract Wrapper {
 
     address private _admin;
     address private _address;
-    address private constant _submissionAddress = 0x808cE8deC9E10beD8d0892aCEEf9F1B8ec2F52Bd;
 
     Token public fuji;
     Token public haku;
