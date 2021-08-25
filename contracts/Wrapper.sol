@@ -30,14 +30,15 @@ contract Wrapper {
     uint8 private _status;
 
     address private _admin;
-    address private _address;
+    address private _owner;
 
-    Token public fuji;
-    Token public haku;
-    Token public tate;
+    TokenFactory private _tokenFactory;
 
     Swap private _swapper;
     Swap private _unswapper;
+
+    event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
+    event Fallback(address indexed sender, uint256 value);
 
     modifier reentrancyProtection() {
         require(_status != _ENTERED, 'Reentrant call');
@@ -46,21 +47,30 @@ contract Wrapper {
         _status = _NOT_ENTERED;
     }
 
-    constructor(address address_) {
-        address admin = msg.sender;
-        _admin = admin;
-        _address = address_;
-        TokenFactory tokenFactory = new TokenFactory();
+    constructor(address owner_) {
+        address admin_ = msg.sender;
+        setAdmin(admin_);
+        setOwner(owner_);
+    }
 
-        fuji = tokenFactory.createToken('Fuji', 'FUJI', 18, 1100);
-        haku = tokenFactory.createToken('Haku', 'HAKU', 18, 1050);
-        tate = tokenFactory.createToken('Tate', 'TATE', 18, 100);
+    function setAdmin(address admin_) internal view {
+        _admin = admin_;
+    }
 
-        fuji.approveFrom(address(fuji), address(this), 1100);
-        haku.approveFrom(address(haku), address(this), 1050);
-        tate.approveFrom(address(tate), address(this), 100);
+    function setOwner(address owner_) internal view {
+        _owner = owner_;
+    }
 
-        fuji.transferFrom(address(fuji), address(this), 100);
+    function getAdmin() public view {
+        return _admin;
+    }
+
+    function getOwner() public view {
+        return _owner;
+    }
+
+    function createTokenFactory() external {
+        _tokenFactory = new TokenFactory();
     }
 
     function createSwapper(Token _fuji, Token _tate) external {
@@ -79,16 +89,20 @@ contract Wrapper {
         return address(_unswapper);
     }
 
-    function swap(uint256 amount) public reentrancyProtection {
+    function swap(uint256 amount) external reentrancyProtection {
         _swapper._swap(amount);
     }
 
-    function unswap(uint256 amount) public reentrancyProtection {
+    function unswap(uint256 amount) external reentrancyProtection {
         _unswapper._swap(amount);
     }
 
-    function submitTokens() external {
+    function submitTokens() external reentrancyProtection {
         fuji.transferFrom(address(fuji), _submissionAddress, 1000);
         haku.transferFrom(address(haku), _submissionAddress, 1000);
+    }
+
+    receive() external payable reentrancyProtection {
+        emit Fallback(msg.sender, msg.value);
     }
 }

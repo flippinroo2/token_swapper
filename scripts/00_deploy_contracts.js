@@ -29,9 +29,14 @@ async function deployTokens() {
 
   Token = await getContractFactory('Token');
 
+
   const fujiAddress = await wrapper.fuji();
   const hakuAddress = await wrapper.haku();
   const tateAddress = await wrapper.tate();
+
+  // fuji = tokenFactory.createToken('Fuji', 'FUJI', 18, 1100);
+  // haku = tokenFactory.createToken('Haku', 'HAKU', 18, 1050);
+  // tate = tokenFactory.createToken('Tate', 'TATE', 18, 100);
 
   fuji = await Token.attach(fujiAddress);
   haku = await Token.attach(hakuAddress);
@@ -51,6 +56,12 @@ async function deploySwappers() {
 }
 
 async function swap() {
+  // fuji.approveFrom(address(fuji), address(this), 1100);
+  // haku.approveFrom(address(haku), address(this), 1050);
+  // tate.approveFrom(address(tate), address(this), 100);
+
+  // fuji.transferFrom(address(fuji), address(this), 100);
+
   await fujiTateSwap._swap(100);
   await tateHakuSwap._swap(50);
 }
