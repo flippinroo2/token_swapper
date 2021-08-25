@@ -37,7 +37,7 @@ contract Wrapper {
     event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
     event OwnerChanged(address indexed previousOwner, address indexed newOwner);
     event FactoryCreated(address indexed factory_);
-    event SwapCreated(address indexed swap_, address indexed token1_, address indexed token2_);
+    event SwapCreated(string name_, address indexed swap_, address indexed token1_, address indexed token2_);
     event FallbackCalled(address indexed sender, uint256 value);
 
     modifier reentrancyProtection() {
@@ -99,14 +99,14 @@ contract Wrapper {
         return _tokenFactory;
     }
 
-    function createSwapper(Token token1_, Token token2_) external returns (Swap) {
+    function createSwapper(string name, Token token1_, Token token2_) external returns (Swap) {
         if(DEBUG){
             console.log('createSwapper()');
             console.log('token1_: %s', address(token1_));
             console.log('token2_: %s', address(token2_));
         }
-        Swap swap_ = new Swap(token1_, token2_);
-        emit SwapCreated(address(swap_), address(token1_), address(token2_));
+        Swap swap_ = new Swap(name, token1_, token2_);
+        emit SwapCreated(name, address(swap_), address(token1_), address(token2_));
         return swap_;
     }
 
