@@ -56,7 +56,7 @@ contract Wrapper {
         setOwner(owner_);
     }
 
-    function setAdmin(address admin_) internal view {
+    function setAdmin(address admin_) internal {
         if(DEBUG){
             console.log('setAdmin()');
             console.log('Previous Admin: %s', _admin);
@@ -66,7 +66,7 @@ contract Wrapper {
         _admin = admin_;
     }
 
-    function setOwner(address owner_) internal view {
+    function setOwner(address owner_) internal {
         if(DEBUG){
             console.log('setOwner()');
             console.log('Previous Owner: %s', _owner);
@@ -76,26 +76,26 @@ contract Wrapper {
         _owner = owner_;
     }
 
-    function getAdmin() public view {
-        return _admin;
+    function getAdmin() public view returns (address) {
+        return address(_admin);
     }
 
-    function getOwner() public view {
-        return _owner;
+    function getOwner() public view returns (address) {
+        return address(_owner);
     }
 
-    function createTokenFactory() external {
+    function createTokenFactory() external returns (TokenFactory) {
         _tokenFactory = new TokenFactory();
     }
 
-    function createSwapper(Token token1_, Token token2_) external {
+    function createSwapper(Token token1_, Token token2_) external returns (Swap) {
         if(DEBUG){
             console.log('createSwapper()');
-            console.log('token1_: %s', token1_);
-            console.log('token2_: %s', token2_);
+            console.log('token1_: %s', address(token1_));
+            console.log('token2_: %s', address(token2_));
         }
         Swap swap = new Swap(token1_, token2_);
-        emit SwapCreated(token1_, token2_);
+        emit SwapCreated(address(token1_), address(token2_));
         return swap;
     }
 
