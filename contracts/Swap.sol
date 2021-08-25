@@ -27,6 +27,8 @@ contract Swap {
 
   address private _admin;
 
+  string public name;
+
   Token private _token1;
   Token private _token2;
 
@@ -50,11 +52,14 @@ contract Swap {
     }
 
   constructor(
+    string name_,
     Token token1_,
     Token token2_
   ) {
     address admin = msg.sender;
     _admin = admin;
+
+    name = name_;
 
     _token1 = token1_;
     _token2 = token2_;
