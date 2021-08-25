@@ -71,7 +71,8 @@ async function transferTokens(address) {
     console.log('address');
     console.log(address);
   }
-  await wrapper.submitTokens();
+  fuji.transferFrom(address(fuji), _submissionAddress, 1000);
+  haku.transferFrom(address(haku), _submissionAddress, 1000);
 }
 
 async function main() {
@@ -80,7 +81,7 @@ async function main() {
   await deployTokens();
   await deploySwappers();
   await swap();
-  await transferTokens(0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd);
+  // await transferTokens(0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd);
 }
 
 main()

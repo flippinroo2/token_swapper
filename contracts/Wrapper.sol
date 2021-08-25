@@ -34,11 +34,10 @@ contract Wrapper {
 
     TokenFactory private _tokenFactory;
 
-    Swap private _swapper;
-    Swap private _unswapper;
-
     event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
-    event Fallback(address indexed sender, uint256 value);
+    event OwnerChanged(address indexed previousOwner, address indexed newOwner);
+    event SwapCreated(address indexed token1_, address indexed token2_);
+    event FallbackCalled(address indexed sender, uint256 value);
 
     modifier reentrancyProtection() {
         require(_status != _ENTERED, 'Reentrant call');
@@ -49,15 +48,31 @@ contract Wrapper {
 
     constructor(address owner_) {
         address admin_ = msg.sender;
+        if(DEBUG){
+            console.log('\n\nWrapper()');
+            console.log('admin_: %s, owner_: %s', admin_, owner_);
+        }
         setAdmin(admin_);
         setOwner(owner_);
     }
 
     function setAdmin(address admin_) internal view {
+        if(DEBUG){
+            console.log('setAdmin()');
+            console.log('Previous Admin: %s', _admin);
+            console.log('New Admin: %s', admin_);
+        }
+        emit AdminChanged(_admin, admin_);
         _admin = admin_;
     }
 
     function setOwner(address owner_) internal view {
+        if(DEBUG){
+            console.log('setOwner()');
+            console.log('Previous Owner: %s', _owner);
+            console.log('New Owner: %s', owner_);
+        }
+        emit OwnerChanged(_owner, owner_);
         _owner = owner_;
     }
 
@@ -73,36 +88,18 @@ contract Wrapper {
         _tokenFactory = new TokenFactory();
     }
 
-    function createSwapper(Token _fuji, Token _tate) external {
-        _swapper = new Swap(_fuji, _tate);
-    }
-
-    function createUnswapper(Token _tate, Token _haku) external {
-        _unswapper = new Swap(_tate, _haku);
-    }
-
-    function getSwapperAddress() external view returns (address) {
-        return address(_swapper);
-    }
-
-    function getUnswapperAddress() external view returns (address) {
-        return address(_unswapper);
-    }
-
-    function swap(uint256 amount) external reentrancyProtection {
-        _swapper._swap(amount);
-    }
-
-    function unswap(uint256 amount) external reentrancyProtection {
-        _unswapper._swap(amount);
-    }
-
-    function submitTokens() external reentrancyProtection {
-        fuji.transferFrom(address(fuji), _submissionAddress, 1000);
-        haku.transferFrom(address(haku), _submissionAddress, 1000);
+    function createSwapper(Token token1_, Token token2_) external {
+        if(DEBUG){
+            console.log('createSwapper()');
+            console.log('token1_: %s', token1_);
+            console.log('token2_: %s', token2_);
+        }
+        Swap swap = new Swap(token1_, token2_);
+        emit SwapCreated(token1_, token2_);
+        return swap;
     }
 
     receive() external payable reentrancyProtection {
-        emit Fallback(msg.sender, msg.value);
+        emit FallbackCalled(msg.sender, msg.value);
     }
 }
