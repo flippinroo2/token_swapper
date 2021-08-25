@@ -1,15 +1,10 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-// Hardhat - Console Log
-import 'hardhat/console.sol';
-
 // Token
-// import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
 // Math
-// import '@openzeppelin/contracts/utils/math/SafeCast.sol';
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
 // Libraries
@@ -33,13 +28,6 @@ abstract contract Template is IERC20 {
     using SafeMath for uint256;
     using Strings for string;
 
-    bool private constant DEBUG = false;
-
-    // The variables are oredered this way for memory efficiency.
-    uint8 private constant _NOT_ENTERED = 1;
-    uint8 private constant _ENTERED = 2;
-    uint8 private _status;
-
     address private _admin;
 
     event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
@@ -53,13 +41,6 @@ abstract contract Template is IERC20 {
     modifier safe(address account) {
         require(account != address(0), 'Cannot transact with the zero address');
         _;
-    }
-
-    modifier reentrancyProtection() {
-        require(_status != _ENTERED, 'Reentrant call');
-        _status = _ENTERED;
-        _;
-        _status = _NOT_ENTERED;
     }
 
     constructor() {

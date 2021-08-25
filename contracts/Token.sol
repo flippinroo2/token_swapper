@@ -1,16 +1,13 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-// Custom Tokens
-import './Template.sol'; // Template
+import './Template.sol';
 
 contract Token is Template {
     using Address for address;
     using Arrays for uint256[];
     using SafeMath for uint256;
     using Strings for string;
-
-    bool private constant DEBUG = false;
 
     uint8 private constant _NOT_ENTERED = 1;
     uint8 private constant _ENTERED = 2;
@@ -36,12 +33,12 @@ contract Token is Template {
         _;
     }
 
-    // modifier reentrancyProtection() {
-    //     require(_status != _ENTERED, 'Reentrant call');
-    //     _status = _ENTERED;
-    //     _;
-    //     _status = _NOT_ENTERED;
-    // }
+    modifier reentrancyProtection() {
+        require(_status != _ENTERED, 'Reentrant call');
+        _status = _ENTERED;
+        _;
+        _status = _NOT_ENTERED;
+    }
 
     constructor(string memory name_, string memory symbol_, uint256 decimals_, uint256 totalSupply_) payable Template() {
         address admin = msg.sender;
@@ -113,13 +110,6 @@ contract Token is Template {
 
     function _approve(address owner, address spender, uint256 amount) internal {
         _allowances[owner][spender] = amount;
-        if(DEBUG){
-            console.log('_approve()');
-            console.log('owner: %s', owner);
-            console.log('spender: %s', spender);
-            console.log('amount');
-            console.log(amount);
-        }
         emit Approval(owner, spender, amount);
     }
 
@@ -148,13 +138,6 @@ contract Token is Template {
         uint256 senderBalance = _balances[sender];
         uint256 recipientBalance = _balances[recipient];
         uint256 newRecipientBalance = recipientBalance + amount;
-        if(DEBUG){
-            console.log('_transfer()');
-            console.log('sender: %s', sender);
-            console.log('recipient: %s', recipient);
-            console.log('amount');
-            console.log(amount);
-        }
         require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
         unchecked {
         uint256 newSenderBalance = senderBalance - amount;
