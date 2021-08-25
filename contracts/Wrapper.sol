@@ -68,6 +68,10 @@ contract Wrapper {
         emit AdminChanged(_admin, admin_);
     }
 
+    function getAdmin() public view returns (address) {
+        return address(_admin);
+    }
+
     function setOwner(address owner_) internal {
         if(DEBUG){
             console.log('setOwner()');
@@ -76,10 +80,6 @@ contract Wrapper {
         }
         _owner = owner_;
         emit OwnerChanged(_owner, owner_);
-    }
-
-    function getAdmin() public view returns (address) {
-        return address(_admin);
     }
 
     function getOwner() public view returns (address) {
