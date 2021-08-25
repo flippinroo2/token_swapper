@@ -1,8 +1,15 @@
 const DEBUG = false;
 
-const { ethers } = hre;
-const { getContractFactory, getSigners } = ethers;
-const defaultProvider = ethers.getDefaultProvider();
+const { ethers, network, web3, Web3 } = hre;
+const { getContractFactory, getDefaultProvider, getSigners } = ethers;
+const ethersUtils = ethers.utils;
+const { eth } = web3;
+const web3Utils = web3.utils;
+const { abi, Contract, currentProvider, accounts, personal, providers } = eth;
+const DefaultProvider = getDefaultProvider();
+const CurrentProvider = currentProvider;
+const HardhatProvider = network.provider;
+const HDWalletProvider = network.config.provider();
 
 var signer, owner, user;
 var wrapper;
@@ -21,7 +28,10 @@ function setUsers(signers) {
 }
 async function deployWrapper() {
   signer = await hre.ethers.getSigner(owner);
-  Wrapper = await getContractFactory('Wrapper', signer);
+  Wrapper = await getContractFactory('Wrapper');
+  // Wrapper = await getContractFactory('Wrapper', signer);
+  // wrapper = await Wrapper.connect(HDWalletProvider);
+  const unsignedWrapperTransaction = Wrapper.getDeployTransaction(owner);
   wrapper = await Wrapper.deploy(owner);
 }
 
