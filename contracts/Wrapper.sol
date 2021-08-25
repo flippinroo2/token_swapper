@@ -99,9 +99,10 @@ contract Wrapper {
         return _tokenFactory;
     }
 
-    function createSwapper(string name, Token token1_, Token token2_) external returns (Swap) {
+    function createSwapper(string memory name, Token token1_, Token token2_) external returns (Swap) {
         if(DEBUG){
             console.log('createSwapper()');
+            console.log('name: %s', name);
             console.log('token1_: %s', address(token1_));
             console.log('token2_: %s', address(token2_));
         }

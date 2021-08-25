@@ -52,7 +52,7 @@ contract Swap {
     }
 
   constructor(
-    string name_,
+    string memory name_,
     Token token1_,
     Token token2_
   ) {
