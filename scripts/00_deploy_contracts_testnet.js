@@ -2,6 +2,7 @@ const DEBUG = false;
 
 const { ethers } = hre;
 const { getContractFactory, getSigners } = ethers;
+const defaultProvider = ethers.getDefaultProvider();
 
 var signer, owner, user;
 var wrapper;
@@ -10,8 +11,8 @@ var Factory, tokenFactory;
 var Swap, fujiTateSwap, tateHakuSwap;
 
 function setUsers(signers) {
-  if (signers) {
-    [signer] = signers;
+  [signer] = signers;
+  if (signer) {
     owner = signer.address;
     user = signers[1].address;
     return;
@@ -118,30 +119,26 @@ async function getBalances(addresses) {
 }
 
 async function main() {
-  setUsers(await getSigners());
+  const signers = await getSigners();
+  setUsers(signers);
   await deployWrapper();
   await createTokenFactory();
   await createTokens();
   await createSwappers();
   const addresses = [owner, fuji.address, haku.address, tate.address];
   console.dir(await getBalances(addresses));
-  await swap();
-  console.dir(await getBalances(addresses));
-  await transferTokens(owner);
-  // await transferTokens(0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd);
-  console.dir(await getBalances(addresses));
 }
 
-// SUBMISSION_ADDRESS = 0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd
-// owner = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-// user = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
-// wrapper = 0x5FbDB2315678afecb367f032d93F642f64180aa3
-// tokenFactory = 0xa16E02E87b7454126E5E10d957A927A7F5B5d2be
-// fuji = 0x8Ff3801288a85ea261E4277d44E1131Ea736F77B
-// haku = 0x4CEc804494d829bEA93AB8eA7045A7efBED3c229
-// tate = 0xb385A0bAA2F8f30C660ABd207e8624863fcf30AE
-// fujiTateSwapper = 0xB7A5bd0345EF1Cc5E66bf61BdeC17D2461fBd968
-// tateHakuSwapper = 0xeEBe00Ac0756308ac4AaBfD76c05c4F3088B8883
+// SUBMISSION_ADDRESS =
+// owner =
+// user =
+// wrapper =
+// tokenFactory =
+// fuji =
+// haku =
+// tate =
+// fujiTateSwapper =
+// tateHakuSwapper =
 
 main()
   .then(() => process.exit(0))
