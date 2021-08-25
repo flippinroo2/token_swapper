@@ -33,16 +33,6 @@ abstract contract Template is IERC20 {
     event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
     event Fallback(address indexed sender, uint256 value);
 
-    modifier security {
-        require(msg.sender == _admin, 'Must be contract admin');
-        _;
-    }
-
-    modifier safe(address account) {
-        require(account != address(0), 'Cannot transact with the zero address');
-        _;
-    }
-
     constructor() {
         address admin = msg.sender;
         setAdmin(admin);

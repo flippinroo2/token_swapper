@@ -13,6 +13,8 @@ contract Token is Template {
     uint8 private constant _ENTERED = 2;
     uint8 private _status;
 
+    address private _admin;
+
     string public _name;
     string public _symbol;
     uint256 public _tokenDecimals;
@@ -21,6 +23,16 @@ contract Token is Template {
 
     mapping(address => uint256) public _balances;
     mapping(address => mapping(address => uint256)) public _allowances;
+
+    modifier security {
+        require((msg.sender == getAdmin()) || (msg.sender == address(this)), 'Must be contract admin');
+        _;
+    }
+
+    modifier safe(address account) {
+        require(account != address(0), 'Cannot transact with the zero address');
+        _;
+    }
 
     modifier restricted(uint256 number) {
         require(number != 0, 'Number cannot be zero');
