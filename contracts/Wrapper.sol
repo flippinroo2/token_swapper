@@ -37,7 +37,7 @@ contract Wrapper {
     event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
     event OwnerChanged(address indexed previousOwner, address indexed newOwner);
     event FactoryCreated(address indexed factory_);
-    event SwapCreated(address indexed token1_, address indexed token2_);
+    event SwapCreated(address indexed swap_, address indexed token1_, address indexed token2_);
     event FallbackCalled(address indexed sender, uint256 value);
 
     modifier reentrancyProtection() {
@@ -106,7 +106,7 @@ contract Wrapper {
             console.log('token2_: %s', address(token2_));
         }
         Swap swap_ = new Swap(token1_, token2_);
-        emit SwapCreated(address(token1_), address(token2_));
+        emit SwapCreated(address(swap_), address(token1_), address(token2_));
         return swap_;
     }
 
