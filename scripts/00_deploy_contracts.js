@@ -1,63 +1,70 @@
 const { ethers } = hre;
 const { getContractFactory, getSigners } = ethers;
 
-var owner, user;
-var Wrapper, wrapper;
+var signer,
+  [owner] = hre.network.config.provider().addresses,
+  user;
+var wrapper;
 var Token, fuji, haku, tate;
 var Factory, tokenFactory;
 var Swap, fujiTateSwap, tateHakuSwap;
 
-  async function deployWrapper(){
-
+function setUsers(signers) {
+  if (signers) {
+    [signer] = signers;
+    owner = signer.address;
+    user = signers[1].address;
   }
-  async function deployTokens(){
-
-  }
-  async function deploySwappers(){
-
-  }
-
-async function main() {
-  let dataVariable;
-
-  // const signers = await getSigners();
-  // const [signer] = signers;
-
-  [owner] = hre.network.config.provider().addresses;
-  // owner = signer.address;
-  // user = signers[1].address;
-  const signer = await hre.ethers.getSigner(owner);
-
-  const Wrapper = await getContractFactory('Wrapper', signer);
+  return;
+}
+async function deployWrapper() {
+  signer = await hre.ethers.getSigner(owner);
+  Wrapper = await getContractFactory('Wrapper', signer);
   wrapper = await Wrapper.deploy(owner);
-
-  const Factory = await getContractFactory('TokenFactory');
+}
+async function deployTokens() {
+  Factory = await getContractFactory('TokenFactory');
   tokenFactory = await Factory.deploy();
 
-  const Token = await getContractFactory('Token');
-
-  const Swap = await getContractFactory('Swap');
+  Token = await getContractFactory('Token');
 
   const fujiAddress = await wrapper.fuji();
   const hakuAddress = await wrapper.haku();
   const tateAddress = await wrapper.tate();
 
-  const fuji = await Token.attach(fujiAddress);
-  const haku = await Token.attach(hakuAddress);
-  const tate = await Token.attach(tateAddress);
+  fuji = await Token.attach(fujiAddress);
+  haku = await Token.attach(hakuAddress);
+  tate = await Token.attach(tateAddress);
+}
+
+async function deploySwappers() {
+  let dataVariable;
+
+  Swap = await getContractFactory('Swap');
 
   dataVariable = await wrapper.createSwapper(fuji.address, tate.address);
   fujiTateSwap = Swap.attach(await wrapper.getSwapperAddress());
 
   dataVariable = await wrapper.createUnswapper(tate.address, haku.address);
   tateHakuSwap = Swap.attach(await wrapper.getUnswapperAddress());
+}
 
-  // SWAP
-  // await fujiTateSwap._swap(100);
-  // await tateHakuSwap._swap(50);
+async function swap() {
+  await fujiTateSwap._swap(100);
+  await tateHakuSwap._swap(50);
+}
 
-  // TRANSFER
-  // await wrapper.submitTokens();
+async function transferTokens() {
+  await wrapper.submitTokens();
+}
+
+async function main() {
+  setUsers(await getSigners());
+  await deployWrapper();
+  await deployTokens();
+  await deploySwappers();
+  await swap();
+  await transferTokens();
 }
 
 main()
