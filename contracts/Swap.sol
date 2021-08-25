@@ -39,10 +39,8 @@ contract Swap {
   uint256 private _token2TotalSupply;
 
   // Events
-  event SwapCreated(
-    Token indexed token1,
-    Token indexed token2
-  );
+    event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
+    event SwapCreated(string name_, address indexed swap_, address indexed token1_, address indexed token2_);
 
     modifier reentrancyProtection() {
         require(_status != _ENTERED, 'Reentrant call');
@@ -56,8 +54,8 @@ contract Swap {
     Token token1_,
     Token token2_
   ) {
-    address admin = msg.sender;
-    _admin = admin;
+    address admin_ = msg.sender;
+    setAdmin(admin_);
 
     name = name_;
 
@@ -77,8 +75,18 @@ contract Swap {
       // console.log(_token2TotalSupply);
 
     }
-    emit SwapCreated(token1_, token2_);
+    emit SwapCreated(name_, token1_, token2_);
   }
+
+    function setAdmin(address admin_) internal {
+        if(DEBUG){
+            console.log('setAdmin()');
+            console.log('Previous Admin: %s', _admin);
+            console.log('New Admin: %s', admin_);
+        }
+        _admin = admin_;
+        emit AdminChanged(_admin, admin_);
+    }
 
   function _swap(uint256 amount) external reentrancyProtection {
     _token1.approveFrom(address(_token1), address(this), amount);

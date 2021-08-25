@@ -37,7 +37,6 @@ contract Wrapper {
     event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
     event OwnerChanged(address indexed previousOwner, address indexed newOwner);
     event FactoryCreated(address indexed factory_);
-    event SwapCreated(string name_, address indexed swap_, address indexed token1_, address indexed token2_);
     event FallbackCalled(address indexed sender, uint256 value);
 
     modifier reentrancyProtection() {
@@ -63,8 +62,8 @@ contract Wrapper {
             console.log('Previous Admin: %s', _admin);
             console.log('New Admin: %s', admin_);
         }
-        emit AdminChanged(_admin, admin_);
         _admin = admin_;
+        emit AdminChanged(_admin, admin_);
     }
 
     function setOwner(address owner_) internal {
@@ -73,8 +72,8 @@ contract Wrapper {
             console.log('Previous Owner: %s', _owner);
             console.log('New Owner: %s', owner_);
         }
-        emit OwnerChanged(_owner, owner_);
         _owner = owner_;
+        emit OwnerChanged(_owner, owner_);
     }
 
     function getAdmin() public view returns (address) {
@@ -106,7 +105,6 @@ contract Wrapper {
             console.log('token2_: %s', address(token2_));
         }
         Swap swap_ = new Swap(name, token1_, token2_);
-        emit SwapCreated(name, address(swap_), address(token1_), address(token2_));
         return swap_;
     }
 
