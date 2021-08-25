@@ -40,7 +40,7 @@ contract Swap {
 
     // Events
     event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
-    event SwapCreated(string name_, address indexed swap_, address indexed token1_, address indexed token2_);
+    event SwapDeployed(string indexed name_, address indexed swap_);
 
     modifier reentrancyProtection() {
         require(_status != _ENTERED, 'Reentrant call');
@@ -74,7 +74,7 @@ contract Swap {
             // console.log('_token2TotalSupply');
             // console.log(_token2TotalSupply);
         }
-        emit SwapCreated(name_, address(this), address(token1_), address(token2_));
+        emit SwapDeployed(name_, address(this));
     }
 
     function setAdmin(address admin_) internal {

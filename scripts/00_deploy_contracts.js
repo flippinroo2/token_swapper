@@ -76,14 +76,11 @@ async function createSwappers() {
 
   for (const swap of swappers) {
     const { args } = swap;
-    const [address] = args;
-    const tempSwap = Swap.attach(address);
-    const swapName = await tempSwap.name;
-    const test = await swapName();
-    if (swapName == 'FujiTateSwapper') {
+    const [name, address] = args;
+    if (name == 'FujiTateSwapper') {
       fujiTateSwap = Swap.attach(address);
     }
-    if (swapName == 'TateHakuSwapper') {
+    if (name == 'TateHakuSwapper') {
       tateHakuSwap = Swap.attach(address);
     }
   }
@@ -127,6 +124,8 @@ async function main() {
 // fuji = 0x8Ff3801288a85ea261E4277d44E1131Ea736F77B
 // haku = 0x4CEc804494d829bEA93AB8eA7045A7efBED3c229
 // tate = 0xb385A0bAA2F8f30C660ABd207e8624863fcf30AE
+// fujiTateSwapper = 0xB7A5bd0345EF1Cc5E66bf61BdeC17D2461fBd968
+// tateHakuSwapper = 0xeEBe00Ac0756308ac4AaBfD76c05c4F3088B8883
 
 main()
   .then(() => process.exit(0))
