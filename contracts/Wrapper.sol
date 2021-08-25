@@ -36,6 +36,7 @@ contract Wrapper {
 
     event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
     event OwnerChanged(address indexed previousOwner, address indexed newOwner);
+    event FactoryCreated(address indexed factory_);
     event SwapCreated(address indexed token1_, address indexed token2_);
     event FallbackCalled(address indexed sender, uint256 value);
 
@@ -84,11 +85,13 @@ contract Wrapper {
         return address(_owner);
     }
 
-    function createTokenFactory() external returns (TokenFactory tokenFactory_) {
-        _tokenFactory = new TokenFactory();
+    function createTokenFactory() external returns (TokenFactory) {
+        tokenFactory_ = new TokenFactory();
+        emit FactoryCreated(address(TokenFactory_));
+        return tokenFactory_;
     }
 
-    function createSwapper(Token token1_, Token token2_) external returns (address) {
+    function createSwapper(Token token1_, Token token2_) external returns (Swap) {
         if(DEBUG){
             console.log('createSwapper()');
             console.log('token1_: %s', address(token1_));
