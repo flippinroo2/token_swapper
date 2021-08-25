@@ -78,7 +78,8 @@ async function createSwappers() {
     const { args } = swap;
     const [address] = args;
     const tempSwap = Swap.attach(address);
-    const swapName = await tempSwap.name();
+    const swapName = await tempSwap.name;
+    const test = await swapName();
     if (swapName == 'FujiTateSwapper') {
       fujiTateSwap = Swap.attach(address);
     }
