@@ -97,19 +97,43 @@ async function transferTokens(address) {
     console.log(address);
   }
   debugger;
-  fuji.transferFrom(address(fuji), _submissionAddress, 1000);
-  haku.transferFrom(address(haku), _submissionAddress, 1000);
+  fuji.transferFrom(fuji.address, address, 1000);
+  haku.transferFrom(haku.address, address, 1000);
+}
+
+async function checkBalances(addresses) {
+  let data = {};
+  const balances = await Promise.all(
+    addresses.map(async (item, index) => {
+      let fujiBalance, hakuBalance, tateBalance;
+      fujiBalance = await fuji.balanceOf(item);
+      hakuBalance = await haku.balanceOf(item);
+      tateBalance = await tate.balanceOf(item);
+      return {
+        fuji: fujiBalance.toNumber(),
+        haku: hakuBalance.toNumber(),
+        tate: tateBalance.toNumber(),
+      };
+    }),
+  );
+  debugger;
+  return data;
 }
 
 async function main() {
+  var balances;
   setUsers(await getSigners());
   await deployWrapper();
   await createTokenFactory();
   await createTokens();
   await createSwappers();
+  const addresses = [owner, user, fuji.address, haku.address, tate.address];
+  balances = await checkBalances(addresses);
   await swap();
-  await transferTokens(owner.address);
+  balances = await checkBalances(addresses);
+  await transferTokens(owner);
   // await transferTokens(0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd);
+  balances = await checkBalances(addresses);
 }
 
 // SUBMISSION_ADDRESS = 0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd
