@@ -62,7 +62,7 @@ contract Token is Template {
         mint(address(this), totalSupply);
     }
 
-    function setTotalSupply(uint256 totalSupply_) internal override {
+    function setTotalSupply(uint256 totalSupply_) internal override security safe(msg.sender) {
         totalSupply = totalSupply_;
     }
 
@@ -101,7 +101,7 @@ contract Token is Template {
         return _allowances[owner][spender];
     }
 
-    function approve(address spender, uint256 amount) public override returns (bool){
+    function approve(address spender, uint256 amount) public override safe(msg.sender) returns (bool){
         address owner = msg.sender;
         require((owner != address(0) || (spender != address(0))), "ERC20: approve from the zero address");
         require(amount >= (amount - totalSupply), "Approval would exceed the total supply");
@@ -114,7 +114,7 @@ contract Token is Template {
     function approveFrom(
     address owner,
     address spender,
-    uint256 amount) public returns (bool) {
+    uint256 amount) public safe(msg.sender)  returns (bool) {
         require((owner != address(0) || (spender != address(0))), "ERC20: approve from the zero address");
         _approve(owner, spender, amount);
         return true;
@@ -125,7 +125,7 @@ contract Token is Template {
         emit Approval(owner, spender, amount);
     }
 
-    function transfer(address recipient, uint256 amount) public override returns (bool){
+    function transfer(address recipient, uint256 amount) public override safe(msg.sender) returns (bool){
         _transfer(msg.sender, recipient, amount);
         return true;
     }
@@ -134,7 +134,7 @@ contract Token is Template {
     address sender,
     address recipient,
     uint256 amount
-    ) external override reentrancyProtection returns (bool) {
+    ) external override safe(msg.sender) reentrancyProtection returns (bool) {
         _transfer(sender, recipient, amount);
         uint256 currentAllowance = _allowances[sender][msg.sender];
         require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
