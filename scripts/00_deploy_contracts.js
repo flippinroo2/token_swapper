@@ -87,12 +87,6 @@ async function createSwappers() {
 }
 
 async function swap() {
-  // fuji.approveFrom(address(fuji), address(this), 1100);
-  // haku.approveFrom(address(haku), address(this), 1050);
-  // tate.approveFrom(address(tate), address(this), 100);
-
-  // fuji.transferFrom(address(fuji), address(this), 100);
-
   await fujiTateSwap._swap(100);
   await tateHakuSwap._swap(50);
 }
@@ -102,6 +96,7 @@ async function transferTokens(address) {
     console.log('address');
     console.log(address);
   }
+  debugger;
   fuji.transferFrom(address(fuji), _submissionAddress, 1000);
   haku.transferFrom(address(haku), _submissionAddress, 1000);
 }
@@ -113,6 +108,7 @@ async function main() {
   await createTokens();
   await createSwappers();
   await swap();
+  await transferTokens(owner.address);
   // await transferTokens(0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd);
 }
 
