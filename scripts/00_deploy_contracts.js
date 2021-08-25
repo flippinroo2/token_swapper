@@ -69,17 +69,21 @@ async function createTokens() {
 async function deploySwappers() {
   Swap = await getContractFactory('Swap');
 
-  await wrapper.createSwapper(fuji.address, tate.address);
-  await wrapper.createSwapper(tate.address, haku.address);
+  await wrapper.createSwapper('FujiTateSwapper', fuji.address, tate.address);
+  await wrapper.createSwapper('TateHakuSwapper', tate.address, haku.address);
 
   const swappers = await wrapper.queryFilter('SwapCreated');
 
-  debugger;
-
   for (const swap of swappers) {
-    debugger;
-    fujiTateSwap = Swap.attach(await wrapper.getSwapperAddress());
-    tateHakuSwap = Swap.attach(await wrapper.getUnswapperAddress());
+    const { args } = swap;
+    const [address] = args;
+    const tempSwap = Swap.attach(address);
+    if (tempSwap.name() == 'FujiTateSwapper') {
+      fujiTateSwap = Swap.attach(address);
+    }
+    if (tempSwap.name() == 'TatehakuSwapper') {
+      tateHakuSwap = Swap.attach(address);
+    }
   }
 }
 
