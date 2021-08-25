@@ -9,7 +9,7 @@ contract Swap {
     using SafeMath for uint256;
     using Strings for string;
 
-    bool private constant DEBUG = true;
+    bool private constant DEBUG = false;
 
     uint8 private constant _NOT_ENTERED = 1;
     uint8 private constant _ENTERED = 2;
@@ -61,10 +61,10 @@ contract Swap {
             console.log('\n\nSwap()');
             console.log('token1_: %s', address(token1_));
             console.log('token2_: %s', address(token2_));
-            // console.log('_token1TotalSupply');
-            // console.log(_token1TotalSupply);
-            // console.log('_token2TotalSupply');
-            // console.log(_token2TotalSupply);
+            console.log('_token1TotalSupply');
+            console.log(_token1TotalSupply);
+            console.log('_token2TotalSupply');
+            console.log(_token2TotalSupply);
         }
     }
 
@@ -80,7 +80,7 @@ contract Swap {
 
     function swap(uint256 amount) external reentrancyProtection {
         if(DEBUG){
-            // console.log('\n\nSwap admin: %s', address(_admin)); // Wrapper
+            console.log('\n\nSwap admin: %s', address(_admin)); // Wrapper
         }
         _token1.approveFrom(address(_token1), address(this), amount);
         _token2.approveFrom(address(_token2), address(this), amount);
@@ -89,7 +89,7 @@ contract Swap {
 
     function unswap(uint256 amount) external reentrancyProtection {
         if(DEBUG){
-            // console.log('\n\nSwap admin: %s', address(_admin)); // Wrapper
+            console.log('\n\nSwap admin: %s', address(_admin)); // Wrapper
         }
         _token1.approveFrom(address(_token2), address(this), amount);
         _token2.approveFrom(address(_token1), address(this), amount);
@@ -115,8 +115,8 @@ contract Swap {
         if(DEBUG){
             console.log('\nsender: %s', sender);
             console.log('receiver: %s', receiver);
-            // console.log('amount');
-            // console.log(amount);
+            console.log('amount');
+            console.log(amount);
         }
         bool sent = token.transferFrom(sender, receiver, amount);
         require(sent, 'Token transfer failed.');
