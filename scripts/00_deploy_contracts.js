@@ -1,4 +1,4 @@
-const DEBUG = true;
+const DEBUG = false;
 
 const { ethers } = hre;
 const { getContractFactory, getSigners } = ethers;
@@ -96,10 +96,9 @@ async function transferTokens(address) {
     console.log('address');
     console.log(address);
   }
-  debugger;
-  // fuji.approveFrom();
+  fuji.approveFrom(fuji.address, address, 1000);
   fuji.transferFrom(fuji.address, address, 1000);
-  // haku.approveFrom();
+  haku.approveFrom(haku.address, address, 1000);
   haku.transferFrom(haku.address, address, 1000);
 }
 
