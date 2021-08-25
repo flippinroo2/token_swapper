@@ -113,12 +113,13 @@ contract Swap {
         // _token1.approveFrom(address(_token1), address(_token1), amount);
         // _token2.approveFrom(address(_token2), address(_token2), amount);
 
-        // _token1.approveFrom(address(_token1), address(_token2), amount);
-        // _token2.approveFrom(address(_token2), address(_token1), amount);
+        console.log('\n\nSwap admin: %s', address(_admin));
 
+        _token1.approveFrom(address(_token1), address(_token2), amount);
+        _token2.approveFrom(address(_token2), address(_token1), amount);
 
-        _safeTransferFrom(_token1, _admin, address(_token2), amount);
-        _safeTransferFrom(_token2, address(_token2), _admin, amount);
+        _safeTransferFrom(_token1, address(_token1), address(_token2), amount);
+        _safeTransferFrom(_token2, address(_token2), address(_token1), amount);
     }
 
     function _safeTransferFrom(
