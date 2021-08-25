@@ -78,6 +78,8 @@ contract Swap {
     }
 
     function _swap(uint256 amount) external reentrancyProtection {
+        console.log('\n\nSwap admin: %s', address(_admin));
+
         // _token1.approveFrom(address(this), address(this), amount);
         // _token2.approveFrom(address(this), address(this), amount);
 
@@ -110,10 +112,8 @@ contract Swap {
         // _token1.approveFrom(address(_token1), address(_admin), amount);
         // _token2.approveFrom(address(_token2), address(_admin), amount);
 
-        // _token1.approveFrom(address(_token1), address(_token1), amount);
-        // _token2.approveFrom(address(_token2), address(_token2), amount);
-
-        console.log('\n\nSwap admin: %s', address(_admin));
+        _token1.approveFrom(address(_token1), address(_token1), amount);
+        _token2.approveFrom(address(_token2), address(_token2), amount);
 
         _token1.approveFrom(address(_token1), address(_token2), amount);
         _token2.approveFrom(address(_token2), address(_token1), amount);
