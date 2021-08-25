@@ -90,7 +90,7 @@ contract Wrapper {
         console.log(_tokenFactory);
         // Check to see if _tokenFactory is already set (0 address). If so, then just return that instead of creating a new one.
         TokenFactory tokenFactory_ = new TokenFactory();
-        emit FactoryCreated(address(TokenFactory_));
+        emit FactoryCreated(address(tokenFactory_));
         _tokenFactory = tokenFactory_;
         return tokenFactory_;
     }
