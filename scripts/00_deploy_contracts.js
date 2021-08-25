@@ -1,17 +1,21 @@
 const { ethers } = hre;
 const { getContractFactory, getSigners } = ethers;
 
-var Factory, Swap, Token, Wrapper;
+var owner, user;
+var Wrapper, wrapper;
+var Token, fuji, haku, tate;
+var Factory, tokenFactory;
+var Swap, fujiTateSwap, tateHakuSwap;
 
-var fuji,
-  fujiTateSwap,
-  haku,
-  owner,
-  tate,
-  tateHakuSwap,
-  tokenFactory,
-  user,
-  wrapper;
+  async function deployWrapper(){
+
+  }
+  async function deployTokens(){
+
+  }
+  async function deploySwappers(){
+
+  }
 
 async function main() {
   let dataVariable;
