@@ -64,20 +64,23 @@ async function createTokens() {
   // fuji = await Token.attach(fujiAddress);
   // haku = await Token.attach(hakuAddress);
   // tate = await Token.attach(tateAddress);
-
-  debugger;
 }
 
 async function deploySwappers() {
-  let dataVariable;
-
   Swap = await getContractFactory('Swap');
 
-  dataVariable = await wrapper.createSwapper(fuji.address, tate.address);
-  fujiTateSwap = Swap.attach(await wrapper.getSwapperAddress());
+  await wrapper.createSwapper(fuji.address, tate.address);
+  await wrapper.createSwapper(tate.address, haku.address);
 
-  dataVariable = await wrapper.createUnswapper(tate.address, haku.address);
-  tateHakuSwap = Swap.attach(await wrapper.getUnswapperAddress());
+  const swappers = await wrapper.queryFilter('SwapCreated');
+
+  debugger;
+
+  for (const swap of swappers) {
+    debugger;
+    fujiTateSwap = Swap.attach(await wrapper.getSwapperAddress());
+    tateHakuSwap = Swap.attach(await wrapper.getUnswapperAddress());
+  }
 }
 
 async function swap() {

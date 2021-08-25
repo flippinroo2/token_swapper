@@ -86,16 +86,16 @@ contract Wrapper {
     }
 
     function createTokenFactory() external returns (TokenFactory) {
-        console.log('_tokenFactory early');
-        console.log(_tokenFactory);
-        // Check to see if _tokenFactory is already set (0 address). If so, then just return that instead of creating a new one.
-        TokenFactory tokenFactory_ = new TokenFactory();
-        emit FactoryCreated(address(tokenFactory_));
-        _tokenFactory = tokenFactory_;
-        return tokenFactory_;
+        if(address(_tokenFactory) == address(0)){
+            TokenFactory tokenFactory_ = new TokenFactory();
+            emit FactoryCreated(address(tokenFactory_));
+            _tokenFactory = tokenFactory_;
+            return tokenFactory_;
+        }
+        return _tokenFactory;
     }
 
-    function getTokenFactory() external returns (TokenFactory) {
+    function getTokenFactory() external view returns (TokenFactory) {
         return _tokenFactory;
     }
 
