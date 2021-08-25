@@ -27,6 +27,9 @@ function setUsers(signers) {
   [owner] = hre.network.config.provider().addresses;
 }
 async function deployWrapper() {
+  /*
+    Deploy to Avalanche C-Chain with Truffle - https://docs.avax.network/build/tutorials/smart-contracts/using-truffle-with-the-avalanche-c-chain
+  */
   signer = await hre.ethers.getSigner(owner);
   Wrapper = await getContractFactory('Wrapper');
   // Wrapper = await getContractFactory('Wrapper', signer);
@@ -129,6 +132,21 @@ async function getBalances(addresses) {
 }
 
 async function main() {
+  // Deploy Wrapper Contract
+  // Call createTokenFactory() function on Wrapper
+  // Call createToken() function on TokenFactory 3 times providing the following arguments:
+  // 1.
+  // 2.
+  // 3.
+  // Call createSwapper() function on Wrapper providing the following arguments: 'FujiTateSwapper', 0xbdCf46A20E8d323BBc45D74685B5B84919B007fD, 0xa07e242E8D40A5AdA75419958A4085eD53D7a29F
+  // Call createSwapper() function on Wrapper providing the following arguments: 'TateHakuSwapper', 0xa07e242E8D40A5AdA75419958A4085eD53D7a29F, 0x4212389C5d88bd27514F0141C4fA2538c7216114
+  // Call swap() function on the 'FujiTateSwapper' Swap providing the following argument 100
+  // Call swap() function on the 'TateHakuSwapper' Swap providing the following argument 50
+  // Call approveFrom() function on the 'Fuji' Token providing the following arguments: 0xbdCf46A20E8d323BBc45D74685B5B84919B007fD, 0xeB5c8FB7d97bF7084ABdD77CCaF7dB5BeAAB08fA, 1000
+  // Call transferFrom() function on the 'Fuji' Token providing the following arguments: 0xbdCf46A20E8d323BBc45D74685B5B84919B007fD, 0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd, 1000
+  // Call approveFrom() function on the 'Haku' Token providing the following arguments: 0x4212389C5d88bd27514F0141C4fA2538c7216114, 0xeB5c8FB7d97bF7084ABdD77CCaF7dB5BeAAB08fA, 1000
+  // Call transferFrom() function on the 'Haku' Token providing the following arguments: 0x4212389C5d88bd27514F0141C4fA2538c7216114, 0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd, 1000
+
   const signers = await getSigners();
   setUsers(signers);
   await deployWrapper();
@@ -139,16 +157,16 @@ async function main() {
   console.dir(await getBalances(addresses));
 }
 
-// SUBMISSION_ADDRESS =
-// owner =
+// SUBMISSION_ADDRESS = 0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd
+// owner = 0xeB5c8FB7d97bF7084ABdD77CCaF7dB5BeAAB08fA
 // user =
-// wrapper =
-// tokenFactory =
-// fuji =
-// haku =
-// tate =
-// fujiTateSwapper =
-// tateHakuSwapper =
+// wrapper = 0x55aB662996D3b0AD0adFDEE9F4145fF4765AF879
+// tokenFactory = 0x228acB69E7EeD6aBa0De4123674a3310be3f800D
+// fuji = 0xbdCf46A20E8d323BBc45D74685B5B84919B007fD
+// haku = 0x4212389C5d88bd27514F0141C4fA2538c7216114
+// tate = 0xa07e242E8D40A5AdA75419958A4085eD53D7a29F
+// fujiTateSwapper = 0x0E3D5C6Adcb3F353840F59AB6D3CD1804221E350
+// tateHakuSwapper = 0x2B0B1ec8443F5BCc4f8a107e3C7376CAA84C2B99
 
 main()
   .then(() => process.exit(0))
