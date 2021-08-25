@@ -112,7 +112,7 @@ async function main() {
   await createTokenFactory();
   await createTokens();
   await createSwappers();
-  // await swap();
+  await swap();
   // await transferTokens(0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd);
 }
 

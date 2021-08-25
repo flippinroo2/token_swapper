@@ -78,6 +78,19 @@ contract Swap {
     }
 
     function _swap(uint256 amount) external reentrancyProtection {
+        // _token1.approveFrom(address(this), address(this), amount);
+        // _token2.approveFrom(address(this), address(this), amount);
+
+        // _token1.approveFrom(address(this), address(_admin), amount);
+        // _token2.approveFrom(address(this), address(_admin), amount);
+
+        // _token1.approveFrom(address(this), address(_token1), amount);
+        // _token2.approveFrom(address(this), address(_token2), amount);
+
+        // _token1.approveFrom(address(this), address(_token2), amount);
+        // _token2.approveFrom(address(this), address(_token1), amount);
+
+
         // _token1.approveFrom(address(_admin), address(this), amount);
         // _token2.approveFrom(address(_admin), address(this), amount);
 
