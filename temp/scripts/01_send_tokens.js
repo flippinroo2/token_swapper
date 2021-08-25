@@ -24,6 +24,8 @@ async function main() {
   const fuji = await Token.attach(fujiAddress);
   const haku = await Token.attach(hakuAddress);
 
+  console.log('Wrapper Address: ', wrapper.address);
+
   dataVariable = await fuji.transfer(1000, submissionAddress);
   dataVariable = await haku.transfer(1000, submissionAddress);
 }

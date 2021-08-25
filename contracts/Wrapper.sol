@@ -1,20 +1,7 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-// Token
-import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-
-// Libraries
-import '@openzeppelin/contracts/utils/Address.sol';
-import '@openzeppelin/contracts/utils/Arrays.sol';
-import '@openzeppelin/contracts/utils/Strings.sol';
-
-// Math
-import '@openzeppelin/contracts/utils/math/SafeMath.sol';
-
 // Custom Tokens
-import './Template.sol'; // Template Contract
-import './Token.sol'; // Token Contract
 import './TokenFactory.sol'; // TokenFactory Contract
 import './Swap.sol'; // Swap Contract
 
@@ -23,59 +10,96 @@ contract Wrapper {
     using SafeMath for uint256;
     using Strings for string;
 
-    bool private constant DEBUG = true;
+    bool private constant DEBUG = false;
 
-    address private _admin;
-    address private _address;
+    uint8 private constant _NOT_ENTERED = 1;
+    uint8 private constant _ENTERED = 2;
+    uint8 private _status;
 
-    Token public fuji;
-    Token public haku;
-    Token public tate;
+    address private _admin; // Addresses default to 0x000...000;
+    address private _owner;
 
-    Swap private _swapper;
-    Swap private _unswapper;
+    TokenFactory private _tokenFactory;
 
-    constructor(address address_) {
-        address admin = msg.sender;
-        _admin = admin;
-        _address = address_;
-        TokenFactory tokenFactory = new TokenFactory();
+    // EVENTS
+    event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
+    event OwnerChanged(address indexed previousOwner, address indexed newOwner);
+    event FactoryCreated(address indexed factory_);
+    event SwapCreated(string name_, address swap_, address indexed token1_, address indexed token2_);
+    event FallbackCalled(address indexed sender, uint256 value);
 
-        fuji = tokenFactory.createToken('Fuji', 'FUJI', 18, 1100);
-        haku = tokenFactory.createToken('Haku', 'HAKU', 18, 1050);
-        tate = tokenFactory.createToken('Tate', 'TATE', 18, 100);
+    // modifier reentrancyProtection() {
+    //     require(_status != _ENTERED, 'Reentrant call');
+    //     _status = _ENTERED;
+    //     _;
+    //     _status = _NOT_ENTERED;
+    // }
 
-        fuji.approveFrom(address(fuji), address(this), 100);
-        fuji.transferFrom(address(fuji), address(this), 100);
-
-        haku.approveFrom(address(haku), address(this), 100);
-        // haku.transferFrom(address(haku), address2_, 100);
-
-        tate.approveFrom(address(tate), address(this), 100);
-        // tate.transferFrom(address(tate), address2_, 100);
+    constructor(address owner_) {
+        address admin_ = msg.sender;
+        if(DEBUG){
+            console.log('\n\nWrapper()');
+            console.log('admin_: %s, owner_: %s', admin_, owner_);
+        }
+        setAdmin(admin_);
+        setOwner(owner_);
     }
 
-    function createSwapper(Token _fuji, Token _tate) external {
-        _swapper = new Swap(_fuji, _tate);
+    function setAdmin(address admin_) internal {
+        if(DEBUG){
+            console.log('setAdmin()');
+            console.log('Previous Admin: %s', _admin);
+            console.log('New Admin: %s', admin_);
+        }
+        _admin = admin_;
+        emit AdminChanged(_admin, admin_);
     }
 
-    function createUnswapper(Token _tate, Token _haku) external {
-        _unswapper = new Swap(_tate, _haku);
+    function getAdmin() public view returns (address) {
+        return address(_admin);
     }
 
-    function getSwapperAddress() external view returns (address) {
-        return address(_swapper);
+    function setOwner(address owner_) internal {
+        if(DEBUG){
+            console.log('setOwner()');
+            console.log('Previous Owner: %s', _owner);
+            console.log('New Owner: %s', owner_);
+        }
+        _owner = owner_;
+        emit OwnerChanged(_owner, owner_);
     }
 
-    function getUnswapperAddress() external view returns (address) {
-        return address(_unswapper);
+    function getOwner() public view returns (address) {
+        return address(_owner);
     }
 
-    function swap(uint256 amount) public {
-        _swapper._swap(amount);
+    function createTokenFactory() external returns (TokenFactory) {
+        if(address(_tokenFactory) == address(0)){
+            TokenFactory tokenFactory_ = new TokenFactory();
+            emit FactoryCreated(address(tokenFactory_));
+            _tokenFactory = tokenFactory_;
+            return tokenFactory_;
+        }
+        return _tokenFactory;
     }
 
-    function unswap(uint256 amount) public {
-        _unswapper._swap(amount);
+    function getTokenFactory() external view returns (TokenFactory) {
+        return _tokenFactory;
+    }
+
+    function createSwapper(string memory name, Token token1_, Token token2_) external returns (Swap) {
+        if(DEBUG){
+            console.log('createSwapper()');
+            console.log('name: %s', name);
+            console.log('token1_: %s', address(token1_));
+            console.log('token2_: %s', address(token2_));
+        }
+        Swap swap_ = new Swap(name, token1_, token2_);
+        emit SwapCreated(name, address(swap_), address(token1_), address(token2_));
+        return swap_;
+    }
+
+    receive() external payable {
+        emit FallbackCalled(msg.sender, msg.value);
     }
 }
