@@ -86,9 +86,17 @@ contract Wrapper {
     }
 
     function createTokenFactory() external returns (TokenFactory) {
-        tokenFactory_ = new TokenFactory();
+        console.log('_tokenFactory early');
+        console.log(_tokenFactory);
+
+        TokenFactory tokenFactory_ = new TokenFactory();
         emit FactoryCreated(address(TokenFactory_));
+        _tokenFactory = tokenFactory_;
         return tokenFactory_;
+    }
+
+    function getTokenFactory external returns (TokenFactory) {
+        return _tokenFactory;
     }
 
     function createSwapper(Token token1_, Token token2_) external returns (Swap) {
@@ -97,9 +105,9 @@ contract Wrapper {
             console.log('token1_: %s', address(token1_));
             console.log('token2_: %s', address(token2_));
         }
-        Swap swap = new Swap(token1_, token2_);
+        Swap swap_ = new Swap(token1_, token2_);
         emit SwapCreated(address(token1_), address(token2_));
-        return swap;
+        return swap_;
     }
 
     receive() external payable reentrancyProtection {
