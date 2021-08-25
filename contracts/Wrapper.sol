@@ -1,20 +1,7 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-// Token
-import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-
-// // Libraries
-// import '@openzeppelin/contracts/utils/Address.sol';
-// import '@openzeppelin/contracts/utils/Arrays.sol';
-// import '@openzeppelin/contracts/utils/Strings.sol';
-
-// // Math
-// import '@openzeppelin/contracts/utils/math/SafeMath.sol';
-
 // Custom Tokens
-import './Template.sol'; // Template Contract
-import './Token.sol'; // Token Contract
 import './TokenFactory.sol'; // TokenFactory Contract
 import './Swap.sol'; // Swap Contract
 

@@ -1,16 +1,6 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-// Hardhat - Console Log
-import 'hardhat/console.sol';
-
-// Math
-import '@openzeppelin/contracts/utils/math/SafeMath.sol';
-
-// Libraries
-import '@openzeppelin/contracts/utils/Address.sol';
-import '@openzeppelin/contracts/utils/Strings.sol';
-
 // Custom Tokens
 import './Token.sol'; // Token Contract
 
