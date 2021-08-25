@@ -1,13 +1,18 @@
-# AVA LABS SMART CONTRACT TASK
+# AVA LABS SMART CONTRACT ASSIGNMENT
 
 ## PSEUDOCODE
 
-1. Deploy Wrapper contract with 2 arguments (*sender address* & a *receiver address*). This will include all of the sub-contracts within this call.
-
-2. Call the __mint()__ function on the 3 tokens created (__fuji__, __haku__ and __tate__ | __A__, __B__ and __C__). I have statically set the max supply to 1,100 for contract A, 1,050 for contract B and 1,000 for contract C. These max supply numbers were chosen because of the instructions requiring the swapping of tokens & then depositing 1,000 tokens to the testnet address.
-
-3. I have created a Swap contract (*which probably could've been a library*) to handle the swapping of tokens. Instances of the Swap contract have been pre-created to only allow tokens A & C / B & C to be swapped (both pairs in both directions).
-
-4. The Wrapper contract has a "__swap()__" and "__unswap()__" function to interface with these pairs. (*All you have to do is pass in an argument of the number of tokens to swap*).
-
-5. The contract is not fully operational at the moment (*...unfortunately :/*), but I will be updating the code once I finish it up. (*I ran into two issues that took up a lot of my time. I couldn't get Avash to accept rpc connections & I had trouble with instantiating & passing the ERC20 tokens between the Wrapper & Swapper contracts.*)
+1. Deploy Wrapper contract with 1 argument: "__address owner__" (*the address of the account being used to execute these function calls*).
+2. Call the "__createTokenFactory()__" function on the Wrapper contract deployed above.
+3. Call "__createToken()__" function __3 times__ on the TokenFactory contract deployed within the function call above. Provide the following arguments:
+    1. "__Fuji__", "__FUJI__", __18__, __1100__
+    2. "__Haku__", "__HAKU__", __18__, __1050__
+    3. "__Tate__", "__TATE__", __18__, __150__
+4. Call "__createSwapper()__" function on Wrapper contract providing the following arguments: "__FujiTateSwapper__", __<FUJI_ADDRESS>__, __<TATE_ADDRESS>__
+5. Call "__createSwapper()__" function on Wrapper contract providing the following arguments: "__TateHakuSwapper__", __<TATE_ADDRESS>__, __<HAKU_ADDRESS>__
+6. Call "__swap()__" function on the 'FujiTateSwapper' Swap contract providing the following argument __100__.
+7. Call "__swap()__" function on the 'TateHakuSwapper' Swap contract providing the following argument __50__.
+8. Call "__approveFrom()__" function on the 'Fuji' Token providing the following arguments: __<FUJI_ADDRESS>__, __<OWNER_ADDRESS__, __1000__
+9. Call "__transferFrom()__" function on the 'Fuji' Token providing the following arguments: __<FUJI_ADDRESS__, __<TOKEN_SUBMISSION_ADDRESS__, __1000__
+10. Call "__approveFrom()__" function on the 'Haku' Token providing the following arguments: __<HAKU_ADDRESS>__, __<OWNER_ADDRESS__, __1000__
+11. Call "__transferFrom()__" function on the 'Haku' Token providing the following arguments: __<HAKU_ADDRESS>__, __<TOKEN_SUBMISSION_ADDRESS__, __1000__
