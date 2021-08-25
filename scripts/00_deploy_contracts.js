@@ -1,4 +1,4 @@
-const DEBUG = true;
+const DEBUG = false;
 
 const { ethers } = hre;
 const { getContractFactory, getSigners } = ethers;
@@ -42,7 +42,7 @@ async function createTokens() {
 
   await tokenFactory.createToken('Fuji', 'FUJI', 18, 1100);
   await tokenFactory.createToken('Haku', 'HAKU', 18, 1050);
-  await tokenFactory.createToken('Tate', 'TATE', 18, 100);
+  await tokenFactory.createToken('Tate', 'TATE', 18, 150);
 
   const tokens = await tokenFactory.queryFilter('TokenCreated');
 
@@ -60,10 +60,6 @@ async function createTokens() {
       tate = tempToken;
     }
   }
-
-  // fuji = await Token.attach(fujiAddress);
-  // haku = await Token.attach(hakuAddress);
-  // tate = await Token.attach(tateAddress);
 }
 
 async function createSwappers() {
@@ -87,14 +83,10 @@ async function createSwappers() {
 }
 
 async function swap() {
-  // fuji.approveFrom(address(fuji), address(this), 1100);
-  // haku.approveFrom(address(haku), address(this), 1050);
-  // tate.approveFrom(address(tate), address(this), 100);
-
-  // fuji.transferFrom(address(fuji), address(this), 100);
-
-  await fujiTateSwap._swap(100);
-  await tateHakuSwap._swap(50);
+  await fujiTateSwap.swap(100);
+  // await fujiTateSwap.unswap(100);
+  await tateHakuSwap.swap(50);
+  // await tateHakuSwap.unswap(50);
 }
 
 async function transferTokens(address) {
@@ -102,8 +94,27 @@ async function transferTokens(address) {
     console.log('address');
     console.log(address);
   }
-  fuji.transferFrom(address(fuji), _submissionAddress, 1000);
-  haku.transferFrom(address(haku), _submissionAddress, 1000);
+  fuji.approveFrom(fuji.address, address, 1000);
+  fuji.transferFrom(fuji.address, address, 1000);
+
+  haku.approveFrom(haku.address, address, 1000);
+  haku.transferFrom(haku.address, address, 1000);
+}
+
+async function getBalances(addresses) {
+  return await Promise.all(
+    addresses.map(async (item, index) => {
+      let fujiBalance, hakuBalance, tateBalance;
+      fujiBalance = await fuji.balanceOf(item);
+      hakuBalance = await haku.balanceOf(item);
+      tateBalance = await tate.balanceOf(item);
+      return {
+        fuji: fujiBalance.toNumber(),
+        haku: hakuBalance.toNumber(),
+        tate: tateBalance.toNumber(),
+      };
+    }),
+  );
 }
 
 async function main() {
@@ -112,8 +123,13 @@ async function main() {
   await createTokenFactory();
   await createTokens();
   await createSwappers();
-  // await swap();
+  const addresses = [owner, fuji.address, haku.address, tate.address];
+  console.dir(await getBalances(addresses));
+  await swap();
+  console.dir(await getBalances(addresses));
+  await transferTokens(owner);
   // await transferTokens(0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd);
+  console.dir(await getBalances(addresses));
 }
 
 // SUBMISSION_ADDRESS = 0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd

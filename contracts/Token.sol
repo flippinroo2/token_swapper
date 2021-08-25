@@ -1,18 +1,6 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-// Hardhat - Console Log
-import 'hardhat/console.sol';
-
-// Math
-// import '@openzeppelin/contracts/utils/math/SafeCast.sol';
-import '@openzeppelin/contracts/utils/math/SafeMath.sol';
-
-// Libraries
-import '@openzeppelin/contracts/utils/Address.sol';
-import '@openzeppelin/contracts/utils/Arrays.sol';
-import '@openzeppelin/contracts/utils/Strings.sol';
-
 // Custom Tokens
 import './Template.sol'; // Template
 
@@ -47,6 +35,13 @@ contract Token is Template {
         );
         _;
     }
+
+    // modifier reentrancyProtection() {
+    //     require(_status != _ENTERED, 'Reentrant call');
+    //     _status = _ENTERED;
+    //     _;
+    //     _status = _NOT_ENTERED;
+    // }
 
     constructor(string memory name_, string memory symbol_, uint256 decimals_, uint256 totalSupply_) payable Template() {
         address admin = msg.sender;
@@ -137,7 +132,7 @@ contract Token is Template {
     address sender,
     address recipient,
     uint256 amount
-    ) external override returns (bool) {
+    ) external override reentrancyProtection returns (bool) {
         _transfer(sender, recipient, amount);
         uint256 currentAllowance = _allowances[sender][msg.sender];
         require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");

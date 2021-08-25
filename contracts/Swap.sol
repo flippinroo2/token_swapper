@@ -1,16 +1,6 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-// Hardhat - Console Log
-import 'hardhat/console.sol';
-
-// Math
-import '@openzeppelin/contracts/utils/math/SafeMath.sol';
-
-// Libraries
-import '@openzeppelin/contracts/utils/Address.sol';
-import '@openzeppelin/contracts/utils/Strings.sol';
-
 // Custom Tokens
 import './Token.sol'; // Token Contract
 
@@ -19,7 +9,7 @@ contract Swap {
     using SafeMath for uint256;
     using Strings for string;
 
-    bool private constant DEBUG = false;
+    bool private constant DEBUG = true;
 
     uint8 private constant _NOT_ENTERED = 1;
     uint8 private constant _ENTERED = 2;
@@ -54,6 +44,8 @@ contract Swap {
         Token token1_,
         Token token2_
     ) {
+        emit SwapDeployed(name_, address(this));
+
         address admin_ = msg.sender;
         setAdmin(admin_);
 
@@ -74,7 +66,6 @@ contract Swap {
             // console.log('_token2TotalSupply');
             // console.log(_token2TotalSupply);
         }
-        emit SwapDeployed(name_, address(this));
     }
 
     function setAdmin(address admin_) internal {
@@ -87,35 +78,32 @@ contract Swap {
         emit AdminChanged(_admin, admin_);
     }
 
-    function _swap(uint256 amount) external reentrancyProtection {
-        _token1.approveFrom(address(_admin), address(this), amount);
-        _token2.approveFrom(address(_admin), address(this), amount);
-
-        _token1.approveFrom(address(_admin), address(_admin), amount);
-        _token2.approveFrom(address(_admin), address(_admin), amount);
-
-        _token1.approveFrom(address(_admin), address(_token1), amount);
-        _token2.approveFrom(address(_admin), address(_token2), amount);
-
-        _token1.approveFrom(address(_admin), address(_token2), amount);
-        _token2.approveFrom(address(_admin), address(_token1), amount);
-
-
+    function swap(uint256 amount) external reentrancyProtection {
+        if(DEBUG){
+            // console.log('\n\nSwap admin: %s', address(_admin)); // Wrapper
+        }
         _token1.approveFrom(address(_token1), address(this), amount);
         _token2.approveFrom(address(_token2), address(this), amount);
+        _swap(amount);
+    }
 
-        _token1.approveFrom(address(_token1), address(_admin), amount);
-        _token2.approveFrom(address(_token2), address(_admin), amount);
+    function unswap(uint256 amount) external reentrancyProtection {
+        if(DEBUG){
+            // console.log('\n\nSwap admin: %s', address(_admin)); // Wrapper
+        }
+        _token1.approveFrom(address(_token2), address(this), amount);
+        _token2.approveFrom(address(_token1), address(this), amount);
+        _unswap(amount);
+    }
 
-        _token1.approveFrom(address(_token1), address(_token1), amount);
-        _token2.approveFrom(address(_token2), address(_token2), amount);
+    function _swap(uint256 amount) internal {
+        _safeTransferFrom(_token1, address(_token1), address(_token2), amount);
+        _safeTransferFrom(_token2, address(_token2), address(_token1), amount);
+    }
 
-        _token1.approveFrom(address(_token1), address(_token2), amount);
-        _token2.approveFrom(address(_token2), address(_token1), amount);
-
-
-        _safeTransferFrom(_token1, _admin, address(_token2), amount);
-        _safeTransferFrom(_token2, address(_token2), _admin, amount);
+    function _unswap(uint256 amount) internal {
+        _safeTransferFrom(_token1, address(_token2), address(_token1), amount);
+        _safeTransferFrom(_token2, address(_token1), address(_token2), amount);
     }
 
     function _safeTransferFrom(

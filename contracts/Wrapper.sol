@@ -1,20 +1,7 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-// Token
-import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-
-// Libraries
-import '@openzeppelin/contracts/utils/Address.sol';
-import '@openzeppelin/contracts/utils/Arrays.sol';
-import '@openzeppelin/contracts/utils/Strings.sol';
-
-// Math
-import '@openzeppelin/contracts/utils/math/SafeMath.sol';
-
 // Custom Tokens
-import './Template.sol'; // Template Contract
-import './Token.sol'; // Token Contract
 import './TokenFactory.sol'; // TokenFactory Contract
 import './Swap.sol'; // Swap Contract
 
@@ -23,7 +10,7 @@ contract Wrapper {
     using SafeMath for uint256;
     using Strings for string;
 
-    bool private constant DEBUG = true;
+    bool private constant DEBUG = false;
 
     uint8 private constant _NOT_ENTERED = 1;
     uint8 private constant _ENTERED = 2;
@@ -41,12 +28,12 @@ contract Wrapper {
     event SwapCreated(string name_, address swap_, address indexed token1_, address indexed token2_);
     event FallbackCalled(address indexed sender, uint256 value);
 
-    modifier reentrancyProtection() {
-        require(_status != _ENTERED, 'Reentrant call');
-        _status = _ENTERED;
-        _;
-        _status = _NOT_ENTERED;
-    }
+    // modifier reentrancyProtection() {
+    //     require(_status != _ENTERED, 'Reentrant call');
+    //     _status = _ENTERED;
+    //     _;
+    //     _status = _NOT_ENTERED;
+    // }
 
     constructor(address owner_) {
         address admin_ = msg.sender;
@@ -112,7 +99,7 @@ contract Wrapper {
         return swap_;
     }
 
-    receive() external payable reentrancyProtection {
+    receive() external payable {
         emit FallbackCalled(msg.sender, msg.value);
     }
 }
