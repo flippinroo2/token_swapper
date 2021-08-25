@@ -29,7 +29,7 @@ contract Wrapper {
     uint8 private constant _ENTERED = 2;
     uint8 private _status;
 
-    address private _admin;
+    address private _admin; // Addresses default to 0x000...000;
     address private _owner;
 
     TokenFactory private _tokenFactory;
