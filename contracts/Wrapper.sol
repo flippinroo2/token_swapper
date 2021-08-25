@@ -84,11 +84,11 @@ contract Wrapper {
         return address(_owner);
     }
 
-    function createTokenFactory() external returns (TokenFactory) {
+    function createTokenFactory() external returns (TokenFactory tokenFactory_) {
         _tokenFactory = new TokenFactory();
     }
 
-    function createSwapper(Token token1_, Token token2_) external returns (Swap) {
+    function createSwapper(Token token1_, Token token2_) external returns (address) {
         if(DEBUG){
             console.log('createSwapper()');
             console.log('token1_: %s', address(token1_));
