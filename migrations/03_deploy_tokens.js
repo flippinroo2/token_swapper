@@ -2,11 +2,13 @@ const DEBUG = true;
 
 var owner, user;
 
-var tokenFactory;
+var wrapper, tokenFactory;
 
 var fuji, haku, tate;
 
+const Wrapper = artifacts.require('Wrapper');
 const TokenFactory = artifacts.require('TokenFactory');
+const Token = artifacts.require('Token');
 
 function setUsers(signers) {
   [signer] = signers;
@@ -18,8 +20,16 @@ function setUsers(signers) {
   [owner] = hre.network.config.provider().addresses;
 }
 
+async function getWrapper(deployer) {
+  wrapper = await Wrapper.deployed();
+}
+
+async function getTokenFactory(deployer) {
+  const tokenFactoryAddress = await wrapper.getTokenFactory();
+  tokenFactory = await TokenFactory.at(tokenFactoryAddress);
+}
+
 async function createTokens(deployer) {
-  debugger;
   const fujiCreatedTransaction = await tokenFactory.createToken(
     'Fuji',
     'FUJI',
@@ -51,22 +61,10 @@ async function createTokens(deployer) {
   tate = await Token.at(tateAddress);
 }
 
-async function getTokenFactory(deployer) {
-  tokenFactory = await TokenFactory.deployed();
-}
-
 module.exports = async function (deployer, network, [primary, secondary]) {
   owner = primary;
   user = secondary;
-
-  const { chain, emitter, logger, networks, provider } = deployer;
-
+  await getWrapper();
   await getTokenFactory();
   await createTokens();
-
-  debugger;
-
-  if (DEBUG) {
-    debugger;
-  }
 };

@@ -9,7 +9,6 @@ var wrapper, tokenFactory;
 
 async function getWrapper(deployer) {
   wrapper = await Wrapper.deployed();
-  debugger;
 }
 
 async function createTokenFactory(deployer) {
