@@ -4,6 +4,7 @@ var owner, user;
 
 const Wrapper = artifacts.require('Wrapper');
 const TokenFactory = artifacts.require('TokenFactory');
+const Token = artifacts.require('Token');
 const Swap = artifacts.require('Swap');
 
 var wrapper, tokenFactory, fuji, haku, tate, fujiTateSwapper, tateHakuSwapper;
@@ -18,8 +19,18 @@ async function getTokenFactory(deployer) {
 }
 
 async function getTokens(deployer) {
-  const test = tokenFactory;
-  debugger;
+  const getNumberOfTokensTransaction = await tokenFactory.getNumberOfTokens();
+  const [numberOfTokens] = getNumberOfTokensTransaction.words;
+  for (let i; i <= numberOfTokens; i++) {}
+  // const symbols = await tokenFactory.tokenSymbols_();
+  const fujiAddress = await tokenFactory.getTokenAddress('FUJI');
+  fuji = await Token.at(fujiAddress);
+
+  const hakuAddress = await tokenFactory.getTokenAddress('HAKU');
+  haku = await Token.at(hakuAddress);
+
+  const tateAddress = await tokenFactory.getTokenAddress('TATE');
+  tate = await Token.at(tateAddress);
 }
 
 async function createSwappers(deployer) {
@@ -53,7 +64,6 @@ async function createSwappers(deployer) {
   );
   const tateHakuSwapAddress = tateHakuSwapCreatedEvent.args.swap_;
   tateHakuSwapper = Swap.at(tateHakuSwapAddress);
-  debugger;
 }
 
 module.exports = async function (deployer, network, [primary, secondary]) {
