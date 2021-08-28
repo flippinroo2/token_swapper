@@ -82,11 +82,8 @@ async function getTokens(deployer) {
 }
 
 async function swapTokens() {
-  debugger;
   await fujiTateSwapper.swap(100); // Needs to be contract admin to work.
-  // await fujiTateSwapper.unswap(100);
   await tateHakuSwapper.swap(50); // Needs to be contract admin to work.
-  // await tateHakuSwapper.unswap(50);
 }
 
 async function getBalances(addresses) {
