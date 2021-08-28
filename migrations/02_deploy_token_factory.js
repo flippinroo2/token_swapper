@@ -18,7 +18,6 @@ async function createTokenFactory(deployer) {
   const [tokenFactoryCreatedEvent] = tokenFactoryCreatedTransaction.logs;
   const tokenFactoryAddress = tokenFactoryCreatedEvent.args.factory_;
   tokenFactory = await TokenFactory.at(tokenFactoryAddress);
-  debugger;
 }
 
 module.exports = async function (deployer, network, [primary, secondary]) {
