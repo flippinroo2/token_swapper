@@ -5,8 +5,9 @@ var owner, user;
 const Wrapper = artifacts.require('Wrapper');
 const TokenFactory = artifacts.require('TokenFactory');
 const Token = artifacts.require('Token');
+const Swap = artifacts.require('Swap');
 
-var wrapper, tokenFactory, fuji, haku, tate;
+var wrapper, tokenFactory, fuji, haku, tate, fujiTateSwapper, tateHakuSwapper;
 
 function setUsers(signers) {
   [signer] = signers;
@@ -27,6 +28,44 @@ async function getTokenFactory(deployer) {
   tokenFactory = await TokenFactory.at(tokenFactoryAddress);
 }
 
+async function createSwappers(deployer) {
+  function getSwapCreatedEvent(events) {
+    return events.logs.filter((item) => {
+      const { event } = item;
+      if (event == 'SwapCreated') {
+        return item;
+      }
+    });
+  }
+
+  const fujiTateSwapCreatedTransaction = await wrapper.createSwapper(
+    'FujiTateSwapper',
+    fuji.address,
+    tate.address,
+  );
+  const [fujiTateSwapCreatedEvent] = getSwapCreatedEvent(
+    fujiTateSwapCreatedTransaction,
+  );
+  const fujiTateSwapAddress = fujiTateSwapCreatedEvent.args.swap_;
+  fujiTateSwapper = await Swap.at(fujiTateSwapAddress);
+
+  const tateHakuSwapCreatedTransaction = await wrapper.createSwapper(
+    'TateHakuSwapper',
+    tate.address,
+    haku.address,
+  );
+  const [tateHakuSwapCreatedEvent] = getSwapCreatedEvent(
+    tateHakuSwapCreatedTransaction,
+  );
+  const tateHakuSwapAddress = tateHakuSwapCreatedEvent.args.swap_;
+  tateHakuSwapper = await Swap.at(tateHakuSwapAddress);
+}
+
+// async function getSwapper(deployer) {
+//   const fujiTateSwapperAddress = await Swap.deployed();
+//   const tateHakuSwapperAddress = await Swap.deployed();
+// }
+
 async function getTokens(deployer) {
   const getNumberOfTokensTransaction = await tokenFactory.getNumberOfTokens();
   const [numberOfTokens] = getNumberOfTokensTransaction.words;
@@ -42,12 +81,12 @@ async function getTokens(deployer) {
   tate = await Token.at(tateAddress);
 }
 
-async function transferTokens(address) {
-  fuji.approveFrom(fuji.address, address, 1000);
-  fuji.transferFrom(fuji.address, address, 1000);
-
-  haku.approveFrom(haku.address, address, 1000);
-  haku.transferFrom(haku.address, address, 1000);
+async function swapTokens() {
+  debugger;
+  await fujiTateSwapper.swap(100); // Needs to be contract admin to work.
+  // await fujiTateSwapper.unswap(100);
+  await tateHakuSwapper.swap(50); // Needs to be contract admin to work.
+  // await tateHakuSwapper.unswap(50);
 }
 
 async function getBalances(addresses) {
@@ -76,7 +115,8 @@ module.exports = async function (deployer, network, [primary, secondary]) {
   await getTokenFactory(deployer);
   await getTokens(deployer);
   const addresses = [owner, fuji.address, haku.address, tate.address];
+  await createSwappers();
   console.log(await getBalances(addresses));
-  await transferTokens(owner);
+  await swapTokens();
   console.log(await getBalances(addresses));
 };

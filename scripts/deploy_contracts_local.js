@@ -83,7 +83,7 @@ async function createSwappers() {
   }
 }
 
-async function swap() {
+async function swapTokens() {
   await fujiTateSwap.swap(100);
   // await fujiTateSwap.unswap(100);
   await tateHakuSwap.swap(50);
@@ -128,7 +128,7 @@ async function main() {
   await createSwappers();
   const addresses = [owner, fuji.address, haku.address, tate.address];
   console.dir(await getBalances(addresses));
-  await swap();
+  await swapTokens();
   console.dir(await getBalances(addresses));
   await transferTokens(owner);
   // await transferTokens(0x808ce8dec9e10bed8d0892aceef9f1b8ec2f52bd);
