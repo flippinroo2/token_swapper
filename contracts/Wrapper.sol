@@ -27,22 +27,8 @@ contract Wrapper {
         setOwner(owner_);
     }
 
-    function setAdmin(address admin_) internal {
-        _admin = admin_;
-        emit AdminChanged(_admin, admin_);
-    }
-
-    function getAdmin() public view returns (address) {
-        return address(_admin);
-    }
-
-    function setOwner(address owner_) internal {
-        _owner = owner_;
-        emit OwnerChanged(_owner, owner_);
-    }
-
-    function getOwner() public view returns (address) {
-        return address(_owner);
+    receive() external payable {
+        emit FallbackCalled(msg.sender, msg.value);
     }
 
     function createTokenFactory() external returns (TokenFactory) {
@@ -55,17 +41,32 @@ contract Wrapper {
         return _tokenFactory;
     }
 
-    function getTokenFactory() external view returns (TokenFactory) {
-        return _tokenFactory;
-    }
-
     function createSwapper(string memory name, Token token1_, Token token2_) external returns (Swap) {
         Swap swap_ = new Swap(name, token1_, token2_);
         emit SwapCreated(name, address(swap_), address(token1_), address(token2_));
         return swap_;
     }
 
-    receive() external payable {
-        emit FallbackCalled(msg.sender, msg.value);
+    function getTokenFactory() external view returns (TokenFactory) {
+        return _tokenFactory;
     }
+
+    function getAdmin() public view returns (address) {
+        return address(_admin);
+    }
+
+    function getOwner() public view returns (address) {
+        return address(_owner);
+    }
+
+    function setAdmin(address admin_) internal {
+        _admin = admin_;
+        emit AdminChanged(_admin, admin_);
+    }
+
+    function setOwner(address owner_) internal {
+        _owner = owner_;
+        emit OwnerChanged(_owner, owner_);
+    }
+
 }
