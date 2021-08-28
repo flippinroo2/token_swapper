@@ -68,5 +68,4 @@ contract Wrapper {
         _owner = owner_;
         emit OwnerChanged(_owner, owner_);
     }
-
 }
