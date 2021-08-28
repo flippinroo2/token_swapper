@@ -50,7 +50,6 @@ contract Swap {
         _token1TotalSupply = token1_.totalSupply();
         _token2TotalSupply = token2_.totalSupply();
     }
-    }
 
     function swap(uint256 amount) external reentrancyProtection {
         _token1.approveFrom(address(_token1), address(this), amount);
@@ -67,6 +66,7 @@ contract Swap {
     function setAdmin(address admin_) internal {
         _admin = admin_;
         emit AdminChanged(_admin, admin_);
+    }
 
     function _swap(uint256 amount) internal {
         _safeTransferFrom(_token1, address(_token1), address(_token2), amount);
