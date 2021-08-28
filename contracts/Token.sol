@@ -24,13 +24,13 @@ contract Token is Template {
     mapping(address => uint256) public _balances;
     mapping(address => mapping(address => uint256)) public _allowances;
 
-    modifier security {
-        require((msg.sender == getAdmin()) || (msg.sender == address(this)), 'Must be contract admin');
+    modifier safe(address account) {
+        require(account != address(0), 'Cannot transact with the zero address');
         _;
     }
 
-    modifier safe(address account) {
-        require(account != address(0), 'Cannot transact with the zero address');
+    modifier security {
+        require((msg.sender == getAdmin()) || (msg.sender == address(this)), 'Must be contract admin');
         _;
     }
 
@@ -62,17 +62,18 @@ contract Token is Template {
         mint(address(this), totalSupply);
     }
 
-    function setTotalSupply(uint256 totalSupply_) internal override security safe(msg.sender) {
-        totalSupply = totalSupply_;
-    }
-
-    function balanceOf(address account)
-    public
-    view
-    override
-    returns (uint256)
-    {
-        return _balances[account];
+    function transferFrom(
+    address sender,
+    address recipient,
+    uint256 amount
+    ) external override safe(msg.sender) reentrancyProtection returns (bool) {
+        _transfer(sender, recipient, amount);
+        uint256 currentAllowance = _allowances[sender][msg.sender];
+        require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
+        unchecked {
+            _approve(sender, msg.sender, currentAllowance - amount);
+        }
+        return true;
     }
 
     function mint(address account, uint256 amount)
@@ -85,20 +86,6 @@ contract Token is Template {
         _balances[account] += amount;
         totalMinted += amount;
         emit Transfer(address(0), account, amount);
-    }
-
-    function getTotalMinted() public view override returns (uint256) {
-        return totalMinted;
-    }
-
-    function allowance(address owner, address spender)
-        public
-        view
-        override
-        returns (uint256)
-    {
-        require((owner != address(0) || (spender != address(0))), "ERC20: mint from the zero address");
-        return _allowances[owner][spender];
     }
 
     function approve(address spender, uint256 amount) public override safe(msg.sender) returns (bool){
@@ -120,28 +107,41 @@ contract Token is Template {
         return true;
     }
 
-    function _approve(address owner, address spender, uint256 amount) internal {
-        _allowances[owner][spender] = amount;
-        emit Approval(owner, spender, amount);
-    }
-
     function transfer(address recipient, uint256 amount) public override safe(msg.sender) returns (bool){
         _transfer(msg.sender, recipient, amount);
         return true;
     }
 
-    function transferFrom(
-    address sender,
-    address recipient,
-    uint256 amount
-    ) external override safe(msg.sender) reentrancyProtection returns (bool) {
-        _transfer(sender, recipient, amount);
-        uint256 currentAllowance = _allowances[sender][msg.sender];
-        require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
-        unchecked {
-            _approve(sender, msg.sender, currentAllowance - amount);
-        }
-        return true;
+    function getTotalMinted() public view override returns (uint256) {
+        return totalMinted;
+    }
+
+    function balanceOf(address account)
+    public
+    view
+    override
+    returns (uint256)
+    {
+        return _balances[account];
+    }
+
+    function allowance(address owner, address spender)
+        public
+        view
+        override
+        returns (uint256)
+    {
+        require((owner != address(0) || (spender != address(0))), "ERC20: mint from the zero address");
+        return _allowances[owner][spender];
+    }
+
+    function setTotalSupply(uint256 totalSupply_) internal override security safe(msg.sender) {
+        totalSupply = totalSupply_;
+    }
+
+    function _approve(address owner, address spender, uint256 amount) internal {
+        _allowances[owner][spender] = amount;
+        emit Approval(owner, spender, amount);
     }
 
     function _transfer(address sender, address recipient, uint256 amount) internal {

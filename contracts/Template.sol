@@ -38,19 +38,28 @@ abstract contract Template is IERC20 {
         setAdmin(admin);
     }
 
-    function setAdmin(address admin) internal {
-        address _previousAdmin = _admin;
-        _admin = admin;
-        emit AdminChanged(_previousAdmin, _admin);
+    receive() external payable {
+        emit Fallback(msg.sender, msg.value);
     }
+
+    function transferFrom(
+        address spender,
+        address recipient,
+        uint256 amount
+    ) external virtual override returns (bool);
+
+    function totalSupply() external view override virtual returns (uint256);
+
+    function mint(address account, uint256 amount) public virtual;
+    function approve(address spender, uint256 amount) public virtual override returns (bool);
+    function transfer(address recipient, uint256 amount) public virtual override returns (bool);
+
 
     function getAdmin() public view returns (address) {
         return _admin;
     }
 
-    function totalSupply() external view override virtual returns (uint256);
-
-    function setTotalSupply(uint256 totalSupply_) internal virtual;
+    function getTotalMinted() public view virtual returns (uint256);
 
     function balanceOf(address account)
         public
@@ -59,8 +68,6 @@ abstract contract Template is IERC20 {
         override
         returns (uint256);
 
-    function transfer(address recipient, uint256 amount) public virtual override returns (bool);
-
     function allowance(address owner, address spender)
         public
         view
@@ -68,19 +75,11 @@ abstract contract Template is IERC20 {
         override
         returns (uint256);
 
-    function approve(address spender, uint256 amount) public virtual override returns (bool);
-
-    function transferFrom(
-        address spender,
-        address recipient,
-        uint256 amount
-    ) external virtual override returns (bool);
-
-    function mint(address account, uint256 amount) public virtual;
-
-    function getTotalMinted() public view virtual returns (uint256);
-
-    receive() external payable {
-        emit Fallback(msg.sender, msg.value);
+    function setAdmin(address admin) internal {
+        address _previousAdmin = _admin;
+        _admin = admin;
+        emit AdminChanged(_previousAdmin, _admin);
     }
+
+    function setTotalSupply(uint256 totalSupply_) internal virtual;
 }
