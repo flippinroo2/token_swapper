@@ -2,7 +2,11 @@ const DEBUG = true;
 
 var owner, user;
 
-var fuji, haku, tate;
+const Wrapper = artifacts.require('Wrapper');
+const TokenFactory = artifacts.require('TokenFactory');
+const Token = artifacts.require('Token');
+
+var wrapper, tokenFactory, fuji, haku, tate;
 
 function setUsers(signers) {
   [signer] = signers;
@@ -14,16 +18,31 @@ function setUsers(signers) {
   [owner] = hre.network.config.provider().addresses;
 }
 
+async function getWrapper(deployer) {
+  wrapper = await Wrapper.deployed();
+}
+
+async function getTokenFactory(deployer) {
+  const tokenFactoryAddress = await wrapper.getTokenFactory();
+  tokenFactory = await TokenFactory.at(tokenFactoryAddress);
+}
+
 async function getTokens(deployer) {
-  debugger;
+  const getNumberOfTokensTransaction = await tokenFactory.getNumberOfTokens();
+  const [numberOfTokens] = getNumberOfTokensTransaction.words;
+  for (let i; i <= numberOfTokens; i++) {}
+  // const symbols = await tokenFactory.tokenSymbols_();
+  const fujiAddress = await tokenFactory.getTokenAddress('FUJI');
+  fuji = await Token.at(fujiAddress);
+
+  const hakuAddress = await tokenFactory.getTokenAddress('HAKU');
+  haku = await Token.at(hakuAddress);
+
+  const tateAddress = await tokenFactory.getTokenAddress('TATE');
+  tate = await Token.at(tateAddress);
 }
 
 async function transferTokens(address) {
-  debugger;
-  if (DEBUG) {
-    console.log('address');
-    console.log(address);
-  }
   fuji.approveFrom(fuji.address, address, 1000);
   fuji.transferFrom(fuji.address, address, 1000);
 
@@ -53,13 +72,11 @@ module.exports = async function (deployer, network, [primary, secondary]) {
 
   const { chain, emitter, logger, networks, provider } = deployer;
 
-  if (DEBUG) {
-    debugger;
-  }
-
-  debugger;
-
-  if (DEBUG) {
-    debugger;
-  }
+  await getWrapper(deployer);
+  await getTokenFactory(deployer);
+  await getTokens(deployer);
+  const addresses = [owner, fuji.address, haku.address, tate.address];
+  console.dir(await getBalances(addresses));
+  await transferTokens(owner);
+  console.dir(await getBalances(addresses));
 };

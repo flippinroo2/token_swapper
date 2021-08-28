@@ -18,6 +18,7 @@ function setUsers(signers) {
   }
   [owner] = hre.network.config.provider().addresses;
 }
+
 async function deployWrapper() {
   signer = await hre.ethers.getSigner(owner);
   Wrapper = await getContractFactory('Wrapper', signer);
