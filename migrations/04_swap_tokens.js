@@ -8,15 +8,10 @@ const Token = artifacts.require('Token');
 const Swap = artifacts.require('Swap');
 
 var wrapper, tokenFactory, fuji, haku, tate, fujiTateSwapper, tateHakuSwapper;
-
-function setUsers(signers) {
-  [signer] = signers;
-  if (signer) {
-    owner = signer.address;
-    user = signers[1].address;
-    return;
+function debug(value) {
+  if (DEBUG) {
+    console.log(value);
   }
-  [owner] = hre.network.config.provider().addresses;
 }
 
 async function getWrapper(deployer) {

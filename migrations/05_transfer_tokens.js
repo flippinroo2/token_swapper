@@ -8,6 +8,12 @@ const Token = artifacts.require('Token');
 
 var wrapper, tokenFactory, fuji, haku, tate;
 
+function debug(value) {
+  if (DEBUG) {
+    console.log(value);
+  }
+}
+
 function setUsers(signers) {
   [signer] = signers;
   if (signer) {

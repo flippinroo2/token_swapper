@@ -1,17 +1,22 @@
 const DEBUG = true;
 
-var owner, user;
+var owner;
 
 const Wrapper = artifacts.require('Wrapper');
 
 var wrapper;
-async function deployWrapper(deployer) {
-  await deployer.deploy(Wrapper, owner);
-  wrapper = await Wrapper.deployed();
+function debug(value) {
+  if (DEBUG) {
+    console.log(value);
+  }
 }
 
-module.exports = async function (deployer, network, [primary, secondary]) {
+async function deployWrapper(deployer) {
+  await deployer.deploy(Wrapper, owner);
+  debug(await Wrapper.deployed());
+}
+
+module.exports = async function (deployer, network, [primary]) {
   owner = primary;
-  user = secondary;
   await deployWrapper(deployer);
 };

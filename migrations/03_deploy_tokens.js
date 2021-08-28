@@ -10,14 +10,10 @@ const Wrapper = artifacts.require('Wrapper');
 const TokenFactory = artifacts.require('TokenFactory');
 const Token = artifacts.require('Token');
 
-function setUsers(signers) {
-  [signer] = signers;
-  if (signer) {
-    owner = signer.address;
-    user = signers[1].address;
-    return;
+function debug(value) {
+  if (DEBUG) {
+    console.log(value);
   }
-  [owner] = hre.network.config.provider().addresses;
 }
 
 async function getWrapper(deployer) {
