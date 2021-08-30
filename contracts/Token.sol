@@ -53,11 +53,9 @@ contract Token is Template {
     }
 
     constructor(string memory name_, string memory symbol_, uint256 decimals_, uint256 totalSupply_) payable Template() {
-        address admin = msg.sender;
         _name = name_;
         _symbol = symbol_;
         _tokenDecimals = decimals_;
-        setAdmin(admin);
         setTotalSupply(totalSupply_);
         mint(address(this), totalSupply);
     }
