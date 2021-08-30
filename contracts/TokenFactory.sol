@@ -31,7 +31,11 @@ contract TokenFactory {
         return tokenSymbols_.length;
     }
 
-    function getTokenAddress(string memory symbol_) external view returns (address tokenAddress){
+    function getTokenSymbols() external view returns (string[]){
+        return tokenSymbols_;
+    }
+
+    function getTokenAddressFromSymbol(string memory symbol_) external view returns (address tokenAddress){
         return _tokens[symbol_];
     }
 
