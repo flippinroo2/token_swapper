@@ -1,5 +1,3 @@
-const DEBUG = true;
-
 var owner, user;
 
 var wrapper, tokenFactory;
@@ -10,22 +8,16 @@ const Wrapper = artifacts.require('Wrapper');
 const TokenFactory = artifacts.require('TokenFactory');
 const Token = artifacts.require('Token');
 
-function debug(value) {
-  if (DEBUG) {
-    console.log(value);
-  }
-}
-
-async function getWrapper(deployer) {
+async function getWrapper() {
   wrapper = await Wrapper.deployed();
 }
 
-async function getTokenFactory(deployer) {
+async function getTokenFactory() {
   const tokenFactoryAddress = await wrapper.getTokenFactory();
   tokenFactory = await TokenFactory.at(tokenFactoryAddress);
 }
 
-async function createTokens(deployer) {
+async function createTokens() {
   const fujiCreatedTransaction = await tokenFactory.createToken(
     'Fuji',
     'FUJI',

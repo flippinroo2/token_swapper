@@ -12,7 +12,8 @@ contract TokenFactory {
     string[] public tokenSymbols_;
 
     address private _admin;
-    mapping(string => address) private _tokens;
+    mapping(string => address) private _tokenAddresses;
+    mapping(address => string) private _tokenSymbols;
 
     event TokenCreated(address indexed tokenAddress, string indexed name, string indexed symbol, uint256 decimals, uint256 totalSupply);
 
@@ -36,14 +37,19 @@ contract TokenFactory {
     }
 
     function getTokenAddressFromSymbol(string memory symbol_) external view returns (address tokenAddress){
-        return _tokens[symbol_];
+        return _tokenAddresses[symbol_];
+    }
+
+    function getTokenNameFromSymbol(address address_) external view returns (string memory name) {
+        return _tokenSymbols[address_];
     }
 
     function createToken(string memory name, string memory symbol, uint256 decimals, uint256 totalSupply) public returns (Token) {
         Token token = new Token(name, symbol, decimals, totalSupply);
         address tokenAddress = address(token);
         tokenSymbols_.push(symbol);
-        _tokens[symbol] = tokenAddress;
+        _tokenAddresses[symbol] = tokenAddress;
+        _tokenSymbols[tokenAddress] = symbol;
         emit TokenCreated(tokenAddress, name, symbol, decimals, totalSupply);
         return token;
     }

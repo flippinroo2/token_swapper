@@ -1,5 +1,3 @@
-const DEBUG = true;
-
 var owner, user;
 
 const Wrapper = artifacts.require('Wrapper');
@@ -7,23 +5,25 @@ const TokenFactory = artifacts.require('TokenFactory');
 const Token = artifacts.require('Token');
 const Swap = artifacts.require('Swap');
 
-var wrapper, tokenFactory, fuji, haku, tate, fujiTateSwapper, tateHakuSwapper;
-function debug(value) {
-  if (DEBUG) {
-    console.log(value);
-  }
-}
+var wrapper,
+  tokenFactory,
+  tokens = {},
+  fuji,
+  haku,
+  tate,
+  fujiTateSwapper,
+  tateHakuSwapper;
 
-async function getWrapper(deployer) {
+async function getWrapper() {
   wrapper = await Wrapper.deployed();
 }
 
-async function getTokenFactory(deployer) {
+async function getTokenFactory() {
   const tokenFactoryAddress = await wrapper.getTokenFactory();
   tokenFactory = await TokenFactory.at(tokenFactoryAddress);
 }
 
-async function createSwappers(deployer) {
+async function createSwappers() {
   function getSwapCreatedEvent(events) {
     return events.logs.filter((item) => {
       const { event } = item;
@@ -56,29 +56,23 @@ async function createSwappers(deployer) {
   tateHakuSwapper = await Swap.at(tateHakuSwapAddress);
 }
 
-// async function getSwapper(deployer) {
-//   const fujiTateSwapperAddress = await Swap.deployed();
-//   const tateHakuSwapperAddress = await Swap.deployed();
-// }
-
-async function getTokens(deployer) {
+async function getTokens() {
   const getNumberOfTokensTransaction = await tokenFactory.getNumberOfTokens();
   const [numberOfTokens] = getNumberOfTokensTransaction.words;
-  for (let i; i <= numberOfTokens; i++) {}
-  // const symbols = await tokenFactory.tokenSymbols_();
-  const fujiAddress = await tokenFactory.getTokenAddressFromSymbol('FUJI');
-  fuji = await Token.at(fujiAddress);
+  for (let i = 0; i < numberOfTokens; i++) {
+    const symbol = await tokenFactory.tokenSymbols_(i);
+    const address = await tokenFactory.getTokenAddressFromSymbol(symbol);
+    tokens[symbol] = await Token.at(address);
+  }
 
-  const hakuAddress = await tokenFactory.getTokenAddressFromSymbol('HAKU');
-  haku = await Token.at(hakuAddress);
-
-  const tateAddress = await tokenFactory.getTokenAddressFromSymbol('TATE');
-  tate = await Token.at(tateAddress);
+  fuji = tokens['FUJI'];
+  haku = tokens['HAKU'];
+  tate = tokens['TATE'];
 }
 
 async function swapTokens() {
-  await fujiTateSwapper.swap(100); // Needs to be contract admin to work.
-  await tateHakuSwapper.swap(50); // Needs to be contract admin to work.
+  await fujiTateSwapper.swap(100);
+  await tateHakuSwapper.swap(50);
 }
 
 async function getBalances(addresses) {
@@ -107,7 +101,7 @@ module.exports = async function (deployer, network, [primary, secondary]) {
   await getTokenFactory(deployer);
   await getTokens(deployer);
   const addresses = [owner, fuji.address, haku.address, tate.address];
-  await createSwappers();
+  await createSwappers(deployer);
   console.log(await getBalances(addresses));
   await swapTokens();
   console.log(await getBalances(addresses));
