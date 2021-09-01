@@ -57,12 +57,6 @@ contract Swap {
         _swap(amount);
     }
 
-    function unswap(uint256 amount) external reentrancyProtection {
-        _token1.approveFrom(address(_token2), address(this), amount);
-        _token2.approveFrom(address(_token1), address(this), amount);
-        _unswap(amount);
-    }
-
     function setAdmin(address admin_) internal {
         _admin = admin_;
         emit AdminChanged(_admin, admin_);
@@ -71,11 +65,6 @@ contract Swap {
     function _swap(uint256 amount) internal {
         _safeTransferFrom(_token1, address(_token1), address(_token2), amount);
         _safeTransferFrom(_token2, address(_token2), address(_token1), amount);
-    }
-
-    function _unswap(uint256 amount) internal {
-        _safeTransferFrom(_token1, address(_token2), address(_token1), amount);
-        _safeTransferFrom(_token2, address(_token1), address(_token2), amount);
     }
 
     function _safeTransferFrom(

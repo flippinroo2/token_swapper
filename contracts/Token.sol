@@ -13,8 +13,6 @@ contract Token is Template {
     uint8 private constant _ENTERED = 2;
     uint8 private _status;
 
-    address private _admin;
-
     string public _name;
     string public _symbol;
     uint256 public _tokenDecimals;
@@ -110,7 +108,7 @@ contract Token is Template {
         return true;
     }
 
-    function getTotalMinted() public view override returns (uint256) {
+    function getTotalMinted() public view returns (uint256) {
         return totalMinted;
     }
 
@@ -133,7 +131,7 @@ contract Token is Template {
         return _allowances[owner][spender];
     }
 
-    function setTotalSupply(uint256 totalSupply_) internal override security safe(msg.sender) {
+    function setTotalSupply(uint256 totalSupply_) internal security safe(msg.sender) {
         totalSupply = totalSupply_;
     }
 

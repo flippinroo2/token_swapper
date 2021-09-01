@@ -1,6 +1,9 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
+// Hardhat
+import 'hardhat/console.sol';
+
 // Token
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
@@ -48,32 +51,20 @@ abstract contract Template is IERC20 {
         uint256 amount
     ) external virtual override returns (bool);
 
-    function totalSupply() external view override virtual returns (uint256);
-
-    function mint(address account, uint256 amount) public virtual;
-    function approve(address spender, uint256 amount) public virtual override returns (bool);
-    function transfer(address recipient, uint256 amount) public virtual override returns (bool);
-
-
-    function getAdmin() public view returns (address) {
-        return _admin;
-    }
-
-    function getTotalMinted() public view virtual returns (uint256);
+    function totalSupply() external view virtual override returns (uint256);
 
     function balanceOf(address account)
-        public
+        external
         view
         virtual
         override
         returns (uint256);
 
-    function allowance(address owner, address spender)
-        public
-        view
-        virtual
-        override
-        returns (uint256);
+    function mint(address account, uint256 amount) public virtual;
+
+    function approve(address spender, uint256 amount) public virtual override returns (bool);
+
+    function transfer(address recipient, uint256 amount) public virtual override returns (bool);
 
     function setAdmin(address admin) internal {
         address _previousAdmin = _admin;
@@ -81,5 +72,14 @@ abstract contract Template is IERC20 {
         emit AdminChanged(_previousAdmin, _admin);
     }
 
-    function setTotalSupply(uint256 totalSupply_) internal virtual;
+    function getAdmin() internal view returns (address) {
+        return _admin;
+    }
+
+    function allowance(address owner, address spender)
+        public
+        view
+        virtual
+        override
+        returns (uint256);
 }
