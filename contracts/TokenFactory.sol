@@ -31,7 +31,7 @@ contract TokenFactory {
         return tokenSymbols_.length;
     }
 
-    function getTokenSymbols() external view returns (string[]){
+    function getTokenSymbols() external view returns (string[] memory){
         return tokenSymbols_;
     }
 

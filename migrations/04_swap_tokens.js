@@ -66,13 +66,13 @@ async function getTokens(deployer) {
   const [numberOfTokens] = getNumberOfTokensTransaction.words;
   for (let i; i <= numberOfTokens; i++) {}
   // const symbols = await tokenFactory.tokenSymbols_();
-  const fujiAddress = await tokenFactory.getTokenAddress('FUJI');
+  const fujiAddress = await tokenFactory.getTokenAddressFromSymbol('FUJI');
   fuji = await Token.at(fujiAddress);
 
-  const hakuAddress = await tokenFactory.getTokenAddress('HAKU');
+  const hakuAddress = await tokenFactory.getTokenAddressFromSymbol('HAKU');
   haku = await Token.at(hakuAddress);
 
-  const tateAddress = await tokenFactory.getTokenAddress('TATE');
+  const tateAddress = await tokenFactory.getTokenAddressFromSymbol('TATE');
   tate = await Token.at(tateAddress);
 }
 
