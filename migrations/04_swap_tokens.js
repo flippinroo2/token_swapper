@@ -59,8 +59,9 @@ async function createSwappers() {
 async function getTokens() {
   const getNumberOfTokensTransaction = await tokenFactory.getNumberOfTokens();
   const [numberOfTokens] = getNumberOfTokensTransaction.words;
-  for (let i = 0; i < numberOfTokens; i++) {
-    const symbol = await tokenFactory.tokenSymbols_(i);
+  const tokenSymbols = await tokenFactory.getTokenSymbols();
+
+  for (symbol of tokenSymbols) {
     const address = await tokenFactory.getTokenAddressFromSymbol(symbol);
     tokens[symbol] = await Token.at(address);
   }

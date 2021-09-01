@@ -9,7 +9,7 @@ contract TokenFactory {
     using SafeMath for uint256;
     using Strings for string;
 
-    string[] public tokenSymbols_;
+    string[] private tokenSymbols_;
 
     address private _admin;
     mapping(string => address) private _tokenAddresses;
