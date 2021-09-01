@@ -1,5 +1,3 @@
-const Transaction = require('./Transaction.js');
-
 module.exports = class TokenInterface {
   address;
   #_admin;
