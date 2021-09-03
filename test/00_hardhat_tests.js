@@ -124,7 +124,7 @@ async function getBalances(addresses) {
 }
 
 describe('Test Suite', function () {
-  this.timeout(100000);
+  this.timeout(1000000);
   let fujiMetadata = {},
     hakuMetadata = {},
     tateMetadata = {};
