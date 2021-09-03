@@ -47,11 +47,11 @@ debug
 function logAccounts() {
   console.log('\n\nBALANCES:');
   console.log(
-    `fujiAdmin: ${fujiMetadata.admin.balance}\tfujiMetadata: ${fujiMetadata.balance}\thakuAdmin: ${hakuMetadata.admin.balance}\thakuMetadata: ${hakuMetadata.balance}\towner: ${owner.balance}\treceiver: ${receiver.balance}\tsender: ${sender.balance}\ttateAdmin: ${tateMetadata.admin.balance}\ttateMetadata: ${tateMetadata.balance}\tuser: ${user.balance}`,
+    `fujiAdmin: ${fujiMetadata.admin.balance}\tfujiMetadata: ${fujiMetadata.balance}\thakuAdmin: ${hakuMetadata.admin.balance}\thakuMetadata: ${hakuMetadata.balance}\towner: ${owner.balance}\ttateAdmin: ${tateMetadata.admin.balance}\ttateMetadata: ${tateMetadata.balance}\tuser: ${user.balance}`,
   );
   console.log('\nALLOWANCES:');
   console.log(
-    `fujiAdmin: ${fujiMetadata.admin.ownerAllowance}\tfujiMetadata: ${fujiMetadata.ownerAllowance}\thakuAdmin: ${hakuMetadata.admin.ownerAllowance}\thakuMetadata: ${hakuMetadata.ownerAllowance}\towner: ${owner.ownerAllowance}\treceiver: ${receiver.ownerAllowance}\tsender: ${sender.ownerAllowance}\ttateAdmin: ${tateMetadata.admin.ownerAllowance}\ttateMetadata: ${tateMetadata.ownerAllowance}\tuser: ${user.ownerAllowance}`,
+    `fujiAdmin: ${fujiMetadata.admin.ownerAllowance}\tfujiMetadata: ${fujiMetadata.ownerAllowance}\thakuAdmin: ${hakuMetadata.admin.ownerAllowance}\thakuMetadata: ${hakuMetadata.ownerAllowance}\towner: ${owner.ownerAllowance}\ttateAdmin: ${tateMetadata.admin.ownerAllowance}\ttateMetadata: ${tateMetadata.ownerAllowance}\tuser: ${user.ownerAllowance}`,
   );
 }
 
@@ -66,17 +66,13 @@ async function refreshBalances(token, metadata) {
   const tokenAddress = token.address;
   const tokenName = metadata.name;
   const adminAddress = metadata.admin.address;
-  const { owner, sender, receiver, user } = accountData;
+  const { owner, user } = accountData;
 
   const propertyString = `${tokenName.toLowerCase()}Balance`;
 
   metadata[propertyString] = await token.getBalance(tokenAddress);
   metadata.admin[propertyString] = await token.getBalance(adminAddress);
   accountData.owner[propertyString] = await token.getBalance(owner.address);
-  accountData.sender[propertyString] = await token.getBalance(sender.address);
-  accountData.receiver[propertyString] = await token.getBalance(
-    receiver.address,
-  );
   accountData.user[propertyString] = await token.getBalance(user.address);
 
   if (DEBUG) {
@@ -98,8 +94,6 @@ async function refreshAllowance(token, metadata, account) {
 
 async function refreshAllowances(token, metadata) {
   await refreshAllowance(token, metadata, accountData.owner);
-  await refreshAllowance(token, metadata, accountData.sender);
-  await refreshAllowance(token, metadata, accountData.receiver);
   await refreshAllowance(token, metadata, accountData.user);
 }
 
@@ -172,14 +166,12 @@ async function approveAll(token, metadata) {
   const tokenName = metadata.name;
   const { admin, totalSupply } = metadata;
   const adminAddress = admin.address;
-  const { owner, sender, receiver, user } = accountData;
+  const { owner, user } = accountData;
 
   const propertyString = `${tokenName.toLowerCase()}Balance`;
 
   await token.approve(tokenAddress, adminAddress, totalSupply);
   await token.approve(tokenAddress, owner.address, totalSupply);
-  await token.approve(tokenAddress, sender.address, totalSupply);
-  await token.approve(tokenAddress, receiver.address, totalSupply);
   await token.approve(tokenAddress, user.address, totalSupply);
 
   // approve(address owner, address spender, uint256 amount)
@@ -192,55 +184,15 @@ async function approveAll(token, metadata) {
   const approvalReceiptExample = parseTransactionData(approvalExample.receipt);
 
   await token.approve(adminAddress, owner.address, totalSupply);
-  await token.approve(adminAddress, sender.address, totalSupply);
-  await token.approve(adminAddress, receiver.address, totalSupply);
   await token.approve(adminAddress, user.address, totalSupply);
 
   await token.approve(owner.address, tokenAddress, totalSupply);
   await token.approve(owner.address, adminAddress, totalSupply);
-  await token.approve(owner.address, sender.address, totalSupply);
-  await token.approve(owner.address, receiver.address, totalSupply);
   await token.approve(owner.address, user.address, totalSupply);
-
-  await token.approve(sender.address, tokenAddress, totalSupply);
-  await token.approve(sender.address, adminAddress, totalSupply);
-  await token.approve(sender.address, owner.address, totalSupply);
-  await token.approve(sender.address, receiver.address, totalSupply);
-  await token.approve(sender.address, user.address, totalSupply);
-
-  await token.approve(receiver.address, tokenAddress, totalSupply);
-  await token.approve(receiver.address, adminAddress, totalSupply);
-  await token.approve(receiver.address, owner.address, totalSupply);
-  await token.approve(receiver.address, sender.address, totalSupply);
-  await token.approve(receiver.address, user.address, totalSupply);
 
   await token.approve(user.address, tokenAddress, totalSupply);
   await token.approve(user.address, adminAddress, totalSupply);
   await token.approve(user.address, owner.address, totalSupply);
-  await token.approve(user.address, sender.address, totalSupply);
-  await token.approve(user.address, receiver.address, totalSupply);
-}
-
-async function tokenTransactions(token, metadata) {
-  const { admin, totalSupply } = metadata;
-
-  await refreshBalances(token, metadata);
-
-  await approveAll(token, metadata);
-
-  await refreshAllowances(token, metadata);
-
-  const transfer = await token.transfer(
-    admin.address,
-    accountData.sender.address,
-    50,
-  );
-  const transferReceipt = parseTransactionData(transfer.receipt);
-
-  await refreshBalances(token, metadata);
-  if (DEBUG) {
-    // debugger;
-  }
 }
 
 function getEvent({ tx, receipt }) {
@@ -262,8 +214,6 @@ let accountData = {
   fuji: { balance: 0, admin: {} },
   haku: { balance: 0, admin: {} },
   owner: { balance: 0 },
-  receiver: { balance: 0 },
-  sender: { balance: 0 },
   tate: { balance: 0, admin: {} },
   tokenFactory: { balance: 0, admin: {} },
   user: { balance: 0 },
@@ -272,15 +222,37 @@ let accountData = {
 
 let wrapper, tokenFactory, fuji, haku, tate;
 
+async function approveTokens(addresses) {
+  for (address of addresses) {
+    await fuji.approveFrom(fuji.address, address, 1100);
+    await haku.approveFrom(haku.address, address, 1050);
+    await tate.approveFrom(tate.address, address, 150);
+  }
+}
+
+async function getBalances(addresses) {
+  return await Promise.all(
+    addresses.map(async (item, index) => {
+      let fujiBalance, hakuBalance, tateBalance;
+      fujiBalance = await fuji.balanceOf(item);
+      hakuBalance = await haku.balanceOf(item);
+      tateBalance = await tate.balanceOf(item);
+      return {
+        fuji: fujiBalance.toNumber(),
+        haku: hakuBalance.toNumber(),
+        tate: tateBalance.toNumber(),
+      };
+    }),
+  );
+}
+
 // describe('TokenFactory', (accounts) => {
 contract('Wrapper', (accounts) => {
   // this.timeout(timeout); // This doesn't work without mocha enabled.
   console.log('Accounts:');
   console.dir(accounts);
   accountData.owner.address = accounts[0];
-  accountData.receiver.address = accounts[1];
-  accountData.sender.address = accounts[2];
-  accountData.user.address = accounts[3];
+  accountData.user.address = accounts[1];
 
   let fujiMetadata = {},
     hakuMetadata = {},
@@ -333,12 +305,12 @@ contract('Wrapper', (accounts) => {
     const fujiTransaction = readTransaction(createFujiTransaction);
     // fuji = await Token.at(fujiMetadata.address);
     fuji = await Token.at(fujiAddress);
+    accountData.fuji.address = fujiAddress;
     accountData.fuji.admin.address = await fuji.getAdmin();
 
     const fujiInterface = new TokenInterface(fuji);
     fujiMetadata = await fujiInterface.getMetadata();
 
-    await tokenTransactions(fujiInterface, fujiMetadata);
     // const createHakuTransaction = await tokenFactory.createToken(
     //   'Haku',
     //   'HAKU',
@@ -350,6 +322,7 @@ contract('Wrapper', (accounts) => {
     // );
     // haku = await Token.at(hakuMetadata.address);
     haku = await Token.at(hakuAddress);
+    accountData.haku.address = hakuAddress;
     accountData.haku.admin.address = await haku.getAdmin();
 
     const hakuInterface = new TokenInterface(haku);
@@ -366,14 +339,15 @@ contract('Wrapper', (accounts) => {
     // );
     // tate = await Token.at(tateMetadata.address);
     tate = await Token.at(tateAddress);
+    accountData.tate.address = tateAddress;
     accountData.tate.admin.address = await tate.getAdmin();
 
     const tateInterface = new TokenInterface(tate);
     tateMetadata = await tateInterface.getMetadata();
   });
 
-  describe('Deployment', async () => {
-    it('DEPLOY', () => {
+  describe('DEPLOY', async () => {
+    it('Check valid account address ', () => {
       const { address } = accountData.owner;
       assert.equal(address, accounts[0]);
       assert.notEqual(address, 0x0);
@@ -383,29 +357,97 @@ contract('Wrapper', (accounts) => {
     });
 
     it('MINT', async () => {
-      // if (DEBUG) {
-      //   // console.log(
-      //   //   `Mint Transaction: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
-      //   // );
-      //   debugger;
-      // }
+      if (DEBUG) {
+        // console.log(
+        //   `Mint Transaction: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
+        // );
+        // debugger;
+      }
     });
   });
 
-  describe('Swap', async () => {
-    it('SWAP', async () => {
-      if (DEBUG) {
-        debugger;
-      }
-      const wrapperAdmin = await wrapper._admin();
-      if (DEBUG) {
-        debugger;
-      }
-      const createFujiSwap = await wrapper.createFujiSwap(fuji, tate);
-      const createHakuSwap = await wrapper.createHakuSwap(haku, tate);
-      if (DEBUG) {
-        debugger;
-      }
+  describe('TRANSFER', async () => {
+    it('Initial Transfer', async () => {
+      const initialBalances = await getBalances([
+        wrapper.address,
+        fuji.address,
+        haku.address,
+        tate.address,
+        accountData.owner.address,
+        accountData.user.address,
+      ]);
+
+      // debugger;
+
+      // await fuji.transfer(accountData.fuji.address, 100);
+      // await haku.transfer(accountData.haku.address, 100);
+      // await tate.transfer(accountData.tate.address, 100);
+
+      const finalBalances = await getBalances([
+        wrapper.address,
+        fuji.address,
+        haku.address,
+        tate.address,
+        accountData.owner.address,
+        accountData.user.address,
+      ]);
+    });
+  });
+
+  describe('SWAP', async () => {
+    it('Fuji Tate Swap', async () => {
+      const wrapperAdmin = await wrapper.getAdmin();
+
+      const createFujiTateSwapTransaction = await wrapper.createSwapper(
+        'Fuji Tate Swap',
+        fuji.address,
+        tate.address,
+      );
+      const [fujiTateSwapEvent] = createFujiTateSwapTransaction.logs.filter(
+        (item) => {
+          if (item.event == 'SwapCreated') {
+            return item;
+          }
+        },
+      );
+      const fujiTateSwap = await Swap.at(fujiTateSwapEvent.args.swap);
+
+      const createTateHakuSwapTransaction = await wrapper.createSwapper(
+        'Tate Haku Swap',
+        tate.address,
+        haku.address,
+      );
+      const [tateHakuSwapEvent] = createTateHakuSwapTransaction.logs.filter(
+        (item) => {
+          if (item.event == 'SwapCreated') {
+            return item;
+          }
+        },
+      );
+      const tateHakuSwap = await Swap.at(tateHakuSwapEvent.args.swap);
+
+      const preSwapBalances = await getBalances([
+        wrapper.address,
+        fuji.address,
+        haku.address,
+        tate.address,
+        accountData.owner.address,
+        accountData.user.address,
+      ]);
+
+      const fujiTateSwapResult = await fujiTateSwap.swap(100);
+      const tateHakuSwapResult = await tateHakuSwap.swap(50);
+
+      const postSwapBalances = await getBalances([
+        wrapper.address,
+        fuji.address,
+        haku.address,
+        tate.address,
+        accountData.owner.address,
+        accountData.user.address,
+      ]);
+
+      // debugger;
     });
   });
 

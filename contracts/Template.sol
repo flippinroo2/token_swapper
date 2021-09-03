@@ -72,7 +72,7 @@ abstract contract Template is IERC20 {
         emit AdminChanged(_previousAdmin, _admin);
     }
 
-    function getAdmin() internal view returns (address) {
+    function getAdmin() public view returns (address) {
         return _admin;
     }
 
