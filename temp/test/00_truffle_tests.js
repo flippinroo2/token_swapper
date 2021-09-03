@@ -5,27 +5,6 @@ const DEBUG = true;
 const { use, expect } = require('chai');
 use(require('chai-as-promised')).should();
 
-/*
-_
-artifacts
-Atomics
-btoa
-config
-console
-crypto
-debug
-WebAssembly
-*/
-
-// const hre = require('hardhat');
-
-// const hardhatArtifacts = hre.artifacts;
-// const hardhatConfig = hre.config;
-// const hardhatWeb3 = hre.web3;
-// const { ethers, network, waffle } = hre;
-
-const { eth, utils } = web3;
-
 const Wrapper = artifacts.require('Wrapper');
 const Swap = artifacts.require('Swap');
 const Token = artifacts.require('Token');
@@ -126,9 +105,7 @@ async function getBalances(addresses) {
   );
 }
 
-// describe('TokenFactory', (accounts) => {
 contract('Wrapper', (accounts) => {
-  // this.timeout(timeout); // This doesn't work without mocha enabled.
   console.log('Accounts:');
   console.dir(accounts);
   accountData.owner.address = accounts[0];
@@ -142,16 +119,10 @@ contract('Wrapper', (accounts) => {
     wrapper = await Wrapper.deployed();
     accountData.wrapper.address = wrapper.address;
     const wrapperAdmin = await wrapper.getAdmin();
-    // const wrapperFujiTateSwapper = await wrapper._fujiTateSwapper();
-    // const wrapperHakuTateSwapper = await wrapper._hakuTateSwapper();
 
-    // Factory.setProvider(web3.currentProvider);
     const tokenFactoryAddress = await wrapper.getTokenFactory();
     tokenFactory = await Factory.at(tokenFactoryAddress);
     accountData.tokenFactory.address = tokenFactory.address;
-
-    // Token.setProvider(web3.currentProvider);
-    // const tokenTest = await Token.deployed();
 
     const tokenSymbols = await tokenFactory.getTokenSymbols();
 
@@ -166,24 +137,6 @@ contract('Wrapper', (accounts) => {
     accountData.haku.address = hakuAddress;
     accountData.tate.address = tateAddress;
 
-    // These functions below only work if hardhat has compiled the abis
-    // const temp = await hardhatEthers.getContractFactory('Fuji');
-    // const test = await temp.deploy('Fuji', 'FUJI');
-
-    // These functions all link to a different version of the Fuji contract that's not on Ganache.
-    // const FujiDefaults = await Fuji.defaults();
-    // const FujiAddress = await Fuji.address;
-    // const fujiNew = await Fuji.new('Fuji', 'FUJI');
-    // const fujiDeployed = await Fuji.deployed();
-
-    const createFujiTransaction = await tokenFactory.createToken(
-      'Fuji',
-      'FUJI',
-      18,
-      100,
-    );
-    const fujiTransaction = readTransaction(createFujiTransaction);
-    // fuji = await Token.at(fujiMetadata.address);
     fuji = await Token.at(fujiAddress);
     accountData.fuji.address = fujiAddress;
     accountData.fuji.admin.address = await fuji.getAdmin();
@@ -191,16 +144,6 @@ contract('Wrapper', (accounts) => {
     const fujiInterface = new TokenInterface(fuji);
     fujiMetadata = await fujiInterface.getMetadata();
 
-    // const createHakuTransaction = await tokenFactory.createToken(
-    //   'Haku',
-    //   'HAKU',
-    //   18,
-    //   100,
-    // );
-    // hakuMetadata.address = getNewTokenData(
-    //   readTransaction(createHakuTransaction),
-    // );
-    // haku = await Token.at(hakuMetadata.address);
     haku = await Token.at(hakuAddress);
     accountData.haku.address = hakuAddress;
     accountData.haku.admin.address = await haku.getAdmin();
@@ -208,16 +151,6 @@ contract('Wrapper', (accounts) => {
     const hakuInterface = new TokenInterface(haku);
     hakuMetadata = await hakuInterface.getMetadata();
 
-    // const createTateTransaction = await tokenFactory.createToken(
-    //   'Tate',
-    //   'TATE',
-    //   18,
-    //   100,
-    // );
-    // tateMetadata.address = getNewTokenData(
-    //   readTransaction(createTateTransaction),
-    // );
-    // tate = await Token.at(tateMetadata.address);
     tate = await Token.at(tateAddress);
     accountData.tate.address = tateAddress;
     accountData.tate.admin.address = await tate.getAdmin();
@@ -237,12 +170,6 @@ contract('Wrapper', (accounts) => {
     });
 
     it('MINT', async () => {
-      if (DEBUG) {
-        // console.log(
-        //   `Mint Transaction: ${tx}\nFrom: ${receipt.from}\nTo: ${receipt.to}\nBlock #: ${receipt.blockNumber}\nGas: ${receipt.gasUsed}`,
-        // );
-        // debugger;
-      }
       const fujiMintFail = await fuji.mint(fuji.address, 5000);
       const hakuMintFail = await haku.mint(haku.address, 5000);
       const tateMintFail = await tate.mint(tate.address, 5000);
