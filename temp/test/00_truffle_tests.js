@@ -1,4 +1,4 @@
-const TokenInterface = require('../classes/TokenInterface.js');
+const TokenInterface = require('../../classes/TokenInterface.js');
 
 const DEBUG = true;
 
@@ -31,19 +31,6 @@ const Swap = artifacts.require('Swap');
 const Token = artifacts.require('Token');
 const Factory = artifacts.require('TokenFactory');
 
-// const fujiAddress = '0xa4Ed0801954569a0583f59b9761C6B0508184B98';
-// const hakuAddress = '0x99d6BEEd728dfC469f4f2F6fb2AF0F9206100ca9';
-// const tateAddress = '0x2e6Db5C4FFdeF431E87cf15990a016db85657B50';
-const wrapperAddress = '0x5bA0b58c328f075deC10f6bf60E073ef298Bb628';
-
-/*
-Potentially useful objects:
-_
-crypto
-eth
-debug
-*/
-
 function logAccounts() {
   console.log('\n\nBALANCES:');
   console.log(
@@ -74,10 +61,6 @@ async function refreshBalances(token, metadata) {
   metadata.admin[propertyString] = await token.getBalance(adminAddress);
   accountData.owner[propertyString] = await token.getBalance(owner.address);
   accountData.user[propertyString] = await token.getBalance(user.address);
-
-  if (DEBUG) {
-    // logAccounts();
-  }
 }
 
 async function refreshAllowance(token, metadata, account) {
@@ -90,109 +73,6 @@ async function refreshAllowance(token, metadata, account) {
   metadata[propertyString] = tokenAllowance;
   const adminAllowance = await token.getAllowance(adminAddress, accountAddress);
   metadata.admin[propertyString] = adminAllowance;
-}
-
-async function refreshAllowances(token, metadata) {
-  await refreshAllowance(token, metadata, accountData.owner);
-  await refreshAllowance(token, metadata, accountData.user);
-}
-
-function parseTransactionData({
-  blockHash,
-  blockNumber,
-  confirmations,
-  events,
-  from,
-  gasUsed,
-  logs,
-  status,
-  to,
-  transactionHash,
-  transactionIndex,
-  type,
-}) {
-  if (DEBUG) {
-    // logTransaction(transactionHash, blockNumber, from, gasUsed, to);
-  }
-  let eventObject = {};
-
-  if (events) {
-    events.forEach((element, index, array) => {
-      // console.log('element:');
-      // console.dir(element);
-      // console.log(`index ${index}`);
-      if (index === 0) {
-      }
-      const eventProperty = element.hasOwnProperty('event');
-      const argsProperty = element.hasOwnProperty('args');
-      // const eventString = `event${index}`;
-      if (eventProperty) {
-        let eventArguments = {};
-        if (argsProperty) {
-          eventArguments.address = element.args[0];
-          eventArguments.name = element.args[1].hash;
-          eventArguments.symbol = element.args[2].hash;
-          eventArguments.decimals = element.args[3];
-          eventArguments.totalSupply = element.args[4].toNumber();
-        }
-        eventObject[element.event] = {
-          signature: element.eventSignature,
-          arguments: eventArguments,
-        };
-      }
-      if (index === array.length - 1) {
-        eventObject.data = element.data;
-      }
-    });
-  }
-  return {
-    from,
-    to,
-    transactionIndex,
-    transactionHash,
-    gasUsed,
-    type,
-    status,
-    blockNumber,
-    blockHash,
-    confirmations,
-    events: eventObject,
-  };
-}
-
-async function approveAll(token, metadata) {
-  // Could add an "accounts" parameter so we don't have to touch state variables.
-  const tokenAddress = token.address;
-  const tokenName = metadata.name;
-  const { admin, totalSupply } = metadata;
-  const adminAddress = admin.address;
-  const { owner, user } = accountData;
-
-  const propertyString = `${tokenName.toLowerCase()}Balance`;
-
-  await token.approve(tokenAddress, adminAddress, totalSupply);
-  await token.approve(tokenAddress, owner.address, totalSupply);
-  await token.approve(tokenAddress, user.address, totalSupply);
-
-  // approve(address owner, address spender, uint256 amount)
-  const approvalExample = await token.approve(
-    adminAddress,
-    tokenAddress,
-    totalSupply,
-  ); // This returns a transaction response. (Not a receipt yet until it has confirmations.)
-  // const approvalReceiptExample = await approvalExample.wait(); // The wait() function returns a transaction receipt.
-  const approvalReceiptExample = parseTransactionData(approvalExample.receipt);
-
-  await token.approve(adminAddress, owner.address, totalSupply);
-  await token.approve(adminAddress, user.address, totalSupply);
-
-  await token.approve(owner.address, tokenAddress, totalSupply);
-  await token.approve(owner.address, adminAddress, totalSupply);
-  await token.approve(owner.address, user.address, totalSupply);
-
-  await token.approve(user.address, tokenAddress, totalSupply);
-  await token.approve(user.address, adminAddress, totalSupply);
-  await token.approve(user.address, owner.address, totalSupply);
 }
 
 function getEvent({ tx, receipt }) {
@@ -363,11 +243,15 @@ contract('Wrapper', (accounts) => {
         // );
         // debugger;
       }
+      const fujiMintFail = await fuji.mint(fuji.address, 5000);
+      const hakuMintFail = await haku.mint(haku.address, 5000);
+      const tateMintFail = await tate.mint(tate.address, 5000);
+      debugger;
     });
   });
 
   describe('TRANSFER', async () => {
-    it('Initial Transfer', async () => {
+    it('Transfers', async () => {
       const initialBalances = await getBalances([
         wrapper.address,
         fuji.address,
@@ -376,8 +260,6 @@ contract('Wrapper', (accounts) => {
         accountData.owner.address,
         accountData.user.address,
       ]);
-
-      // debugger;
 
       // await fuji.transfer(accountData.fuji.address, 100);
       // await haku.transfer(accountData.haku.address, 100);
@@ -396,8 +278,6 @@ contract('Wrapper', (accounts) => {
 
   describe('SWAP', async () => {
     it('Fuji Tate Swap', async () => {
-      const wrapperAdmin = await wrapper.getAdmin();
-
       const createFujiTateSwapTransaction = await wrapper.createSwapper(
         'Fuji Tate Swap',
         fuji.address,
@@ -446,8 +326,6 @@ contract('Wrapper', (accounts) => {
         accountData.owner.address,
         accountData.user.address,
       ]);
-
-      // debugger;
     });
   });
 
