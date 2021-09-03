@@ -41,7 +41,7 @@ async function createSwappers() {
   const [fujiTateSwapCreatedEvent] = getSwapCreatedEvent(
     fujiTateSwapCreatedTransaction,
   );
-  const fujiTateSwapAddress = fujiTateSwapCreatedEvent.args.swap_;
+  const fujiTateSwapAddress = fujiTateSwapCreatedEvent.args.swap;
   fujiTateSwapper = await Swap.at(fujiTateSwapAddress);
 
   const tateHakuSwapCreatedTransaction = await wrapper.createSwapper(
@@ -52,7 +52,7 @@ async function createSwappers() {
   const [tateHakuSwapCreatedEvent] = getSwapCreatedEvent(
     tateHakuSwapCreatedTransaction,
   );
-  const tateHakuSwapAddress = tateHakuSwapCreatedEvent.args.swap_;
+  const tateHakuSwapAddress = tateHakuSwapCreatedEvent.args.swap;
   tateHakuSwapper = await Swap.at(tateHakuSwapAddress);
 }
 

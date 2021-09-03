@@ -289,21 +289,26 @@ contract('Wrapper', (accounts) => {
   before(async () => {
     wrapper = await Wrapper.deployed();
     accountData.wrapper.address = wrapper.address;
-    const wrapperAdmin = await wrapper._admin();
-    const wrapperAddress1 = await wrapper._address1();
-    const wrapperAddress2 = await wrapper._address2();
-    const wrapperFujiTateSwapper = await wrapper._fujiTateSwapper();
-    const wrapperHakuTateSwapper = await wrapper._hakuTateSwapper();
+    const wrapperAdmin = await wrapper.getAdmin();
+    // const wrapperFujiTateSwapper = await wrapper._fujiTateSwapper();
+    // const wrapperHakuTateSwapper = await wrapper._hakuTateSwapper();
 
     // Factory.setProvider(web3.currentProvider);
-    tokenFactory = await Factory.deployed();
+    const tokenFactoryAddress = await wrapper.getTokenFactory();
+    tokenFactory = await Factory.at(tokenFactoryAddress);
     accountData.tokenFactory.address = tokenFactory.address;
 
     // Token.setProvider(web3.currentProvider);
     // const tokenTest = await Token.deployed();
 
-    const tokenAddressesTransaction = await tokenFactory.getAddresses();
-    const [fujiAddress, hakuAddress, tateAddress] = tokenAddressesTransaction;
+    const tokenSymbols = await tokenFactory.getTokenSymbols();
+
+    const tokenAddresses = [];
+    for (symbol of tokenSymbols) {
+      const address = await tokenFactory.getTokenAddressFromSymbol(symbol);
+      tokenAddresses.push(address);
+    }
+    const [fujiAddress, hakuAddress, tateAddress] = tokenAddresses;
 
     accountData.fuji.address = fujiAddress;
     accountData.haku.address = hakuAddress;
@@ -393,15 +398,11 @@ contract('Wrapper', (accounts) => {
         debugger;
       }
       const wrapperAdmin = await wrapper._admin();
-      const wrapperAddress1 = await wrapper._address1();
-      const wrapperAddress2 = await wrapper._address2();
       if (DEBUG) {
         debugger;
       }
       const createFujiSwap = await wrapper.createFujiSwap(fuji, tate);
       const createHakuSwap = await wrapper.createHakuSwap(haku, tate);
-      const wrapperFujiTateSwapper = await wrapper._fujiTateSwapper();
-      const wrapperHakuTateSwapper = await wrapper._hakuTateSwapper();
       if (DEBUG) {
         debugger;
       }

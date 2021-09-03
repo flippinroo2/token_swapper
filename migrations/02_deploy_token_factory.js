@@ -12,7 +12,7 @@ async function getWrapper() {
 async function createTokenFactory() {
   const tokenFactoryCreatedTransaction = await wrapper.createTokenFactory();
   const [tokenFactoryCreatedEvent] = tokenFactoryCreatedTransaction.logs;
-  const tokenFactoryAddress = tokenFactoryCreatedEvent.args.factory_;
+  const tokenFactoryAddress = tokenFactoryCreatedEvent.args.factory;
   tokenFactory = await TokenFactory.at(tokenFactoryAddress);
 }
 

@@ -14,17 +14,19 @@ contract Wrapper {
 
     TokenFactory private _tokenFactory;
 
+    mapping(string => address) private _swapperAddresses;
+
     // EVENTS
     event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
     event OwnerChanged(address indexed previousOwner, address indexed newOwner);
-    event FactoryCreated(address indexed factory_);
-    event SwapCreated(string name_, address swap_, address indexed token1_, address indexed token2_);
+    event FactoryCreated(address indexed factory);
+    event SwapCreated(string name, address swap, address indexed token1, address indexed token2);
     event FallbackCalled(address indexed sender, uint256 value);
 
-    constructor(address owner_) {
-        address admin_ = msg.sender;
-        setAdmin(admin_);
+    constructor(address admin_) {
+        address owner_ = msg.sender;
         setOwner(owner_);
+        setAdmin(admin_);
     }
 
     receive() external payable {
@@ -41,14 +43,20 @@ contract Wrapper {
         return _tokenFactory;
     }
 
-    function createSwapper(string memory name, Token token1_, Token token2_) external returns (Swap) {
-        Swap swap_ = new Swap(name, token1_, token2_);
-        emit SwapCreated(name, address(swap_), address(token1_), address(token2_));
+    function createSwapper(string memory name_, Token token1_, Token token2_) external returns (Swap) {
+        Swap swap_ = new Swap(name_, token1_, token2_);
+        address swapAddress_ = address(swap_);
+        _swapperAddresses[name_] = swapAddress_;
+        emit SwapCreated(name_, swapAddress_, address(token1_), address(token2_));
         return swap_;
     }
 
     function getTokenFactory() external view returns (TokenFactory) {
         return _tokenFactory;
+    }
+
+    function getSwapperAddress(string memory name_) external view returns (address) {
+        return _swapperAddresses[name_];
     }
 
     function getAdmin() public view returns (address) {
